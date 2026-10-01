@@ -1,0 +1,2807 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>YT Arhiva</title>
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#fff;--panel2:#f1f3f6;--line:#e2e5ea;--text:#16181d;--muted:#667085;
+  --acc:#2563eb;--acc-t:#fff;--acc-soft:#eaf0ff;--ok:#15803d;--warn:#b45309;--err:#dc2626;--live:#e11d48;
+  --chip:#eef2ff;--chip-t:#3730a3;--shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  --bar-shadow:0 -4px 18px rgba(16,24,40,.10),0 1px 3px rgba(16,24,40,.08);
+  --toast-bg:#1f2937;--toast-t:#f9fafb;--toast-a:#93c5fd;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e1014;--panel:#161920;--panel2:#1d212a;--line:#2a2f3a;--text:#e7e9ee;--muted:#9aa3b2;
+  --acc:#3b82f6;--acc-soft:#1a2644;--ok:#22c55e;--warn:#f59e0b;--err:#f87171;--chip:#1e2540;--chip-t:#c7d2fe;--shadow:none;
+  --bar-shadow:0 -6px 20px rgba(0,0,0,.5);--toast-bg:#e5e7eb;--toast-t:#111827;--toast-a:#1d4ed8;
+}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif}
+a{color:var(--acc)}
+/* ---------- header */
+header{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line)}
+.hrow{max-width:1180px;margin:0 auto;padding:7px 20px;display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap}
+header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;color:var(--muted);text-decoration:none;font-weight:600;font-size:13.5px;white-space:nowrap}
+nav.tabs a:hover{background:var(--panel2);color:var(--text)}
+nav.tabs a.on{background:var(--acc-soft);color:var(--acc)}
+nav.tabs a.ico .lbl{display:none}
+a.help{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;color:var(--muted);text-decoration:none;font-weight:600;font-size:13.5px;white-space:nowrap}
+a.help:hover{background:var(--panel2);color:var(--text)}
+a.help .q{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;border:1.5px solid currentColor;font-size:11px;line-height:1}
+.bdg{font-size:11px;min-width:18px;height:18px;line-height:18px;padding:0 5px;border-radius:9px;background:var(--panel2);color:var(--muted);text-align:center;font-weight:700;border:1px solid var(--line)}
+.bdg.hot{background:var(--acc);border-color:var(--acc);color:#fff}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;align-items:center;min-width:0}
+.pill{font-size:12px;padding:2px 9px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:4px;max-width:100%}
+.pill b{color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.pill button{padding:0 7px;font-size:11.5px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);flex:none}
+.dot.ok{background:var(--ok)}.dot.err{background:var(--err)}.dot.warn{background:var(--warn)}
+/* ---------- layout */
+main{max-width:1180px;margin:0 auto;padding:14px 20px 28px}
+section.tab{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.pad{padding:12px 14px}
+.head{display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap;padding:9px 14px;border-bottom:1px solid var(--line)}
+h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0;font-weight:650}
+textarea,input[type=text],input[type=search],select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 9px;width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+button{font:inherit;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+button:hover{border-color:var(--muted)}
+button.primary{background:var(--acc);border-color:var(--acc);color:var(--acc-t);font-weight:600}
+button.danger{color:var(--err)}
+button.sm{padding:3px 8px;font-size:12.5px}
+button:disabled{opacity:.5;cursor:default}
+button.lnk{background:none;border:0;padding:0;color:var(--acc);text-decoration:underline;text-underline-offset:2px;font-size:inherit}
+button.x{color:var(--muted)}
+:is(button,a,input,select,textarea,summary):focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.empty{padding:22px 16px;color:var(--muted);text-align:center}
+.err{color:var(--err);font-size:13px;white-space:pre-wrap}
+.note{font-size:12.5px;color:var(--warn);margin-top:6px}
+.hint{font-size:12px;color:var(--muted);margin-top:4px}
+kbd{font:11px ui-monospace,Menlo,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--panel2)}
+/* badges */
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 8px}
+.b{font-size:11.5px;padding:1px 7px;border-radius:99px;background:var(--chip);color:var(--chip-t);font-weight:550;white-space:nowrap}
+.b.live{background:var(--live);color:#fff}.b.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.b.warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.b.plain{background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+/* forme (dele ih i toolbox.js) */
+fieldset{border:1px solid var(--line);border-radius:10px;padding:8px 12px 12px;margin:10px 0 0;min-width:0}
+legend{font-size:12px;font-weight:650;text-transform:uppercase;letter-spacing:.05em;color:var(--text);padding:0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+legend .sm,legend .chk{text-transform:none;letter-spacing:0;font-weight:500}
+fieldset.off .grid .f:not(.always){opacity:.4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:10px 12px}
+.f{min-width:0}
+.f label{display:block;font-size:11.5px;color:var(--muted);margin:0 0 3px;font-weight:550;text-transform:uppercase;letter-spacing:.04em}
+.f label.chk{text-transform:none;letter-spacing:0;color:var(--text);font-weight:500;font-size:13px}
+.f.wide{grid-column:1/-1}
+.f.dis{opacity:.4}
+.chk{display:flex;gap:6px;align-items:center;font-size:13px;margin-top:4px;cursor:pointer}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;align-items:center}
+.est{margin-right:auto;font-size:12.5px;color:var(--muted);min-width:0}
+.flash{animation:flash 1.2s}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}
+.hl{animation:hl 1.4s}
+@keyframes hl{0%,30%{background:var(--acc-soft)}100%{background:transparent}}
+/* stari obrasci koje koristi toolbox.js */
+.item{display:grid;grid-template-columns:200px 1fr;gap:16px;padding:14px 16px;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.thumb{width:200px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:var(--panel2);display:block}
+.ttl{font-weight:650;font-size:15px;margin:0 0 3px}
+.outs{font-size:12px;color:var(--muted);margin-top:6px;word-break:break-all}
+pre.log{grid-column:1/-1;margin:0;max-height:260px;overflow:auto;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:11.5px;white-space:pre-wrap;word-break:break-all}
+.have{margin:0 0 10px;padding:8px 10px;border-radius:8px;background:color-mix(in srgb,var(--ok) 10%,transparent);border:1px solid color-mix(in srgb,var(--ok) 35%,transparent);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.have.part{background:var(--panel2);border-color:var(--line)}
+/* ---------- kompaktni redovi (Preuzmi, Red, Biblioteka) */
+.ri,.li,.jr,.grp{border-top:1px solid var(--line)}
+.ri:first-child,.li:first-child,.jr:first-child,.grp:first-child{border-top:0}
+.r{display:grid;grid-template-columns:18px 64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 14px;min-height:48px}
+.r.sel{background:color-mix(in srgb,var(--acc) 6%,transparent)}
+.rt{width:64px;height:36px;object-fit:cover;border-radius:5px;background:var(--panel2);display:block}
+.rt.noimg{display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted)}
+.rm{min-width:0}
+.rtl{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rtl .b,.rtl .state{margin-right:6px;vertical-align:1px}
+.rsub{display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center;font-size:12px;color:var(--muted);margin-top:2px;min-width:0}
+.rsub .b{font-size:11px}
+.ra{display:flex;gap:4px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.ra .lbl{margin-left:2px}
+button.gear.on{border-color:var(--acc);color:var(--acc);background:var(--acc-soft)}
+.rdet{padding:2px 14px 12px 106px}
+.rdet .grid{grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
+.stt{color:var(--muted)}
+.err1{color:var(--err);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spin::before{content:"";display:inline-block;width:9px;height:9px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin-right:6px;vertical-align:-1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ---------- Preuzmi */
+.addrow{display:flex;gap:8px;align-items:flex-start}
+#urls{min-height:42px;height:42px;max-height:168px;resize:none;font:15px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;padding:10px 12px;overflow-y:hidden}
+#btnAdd{height:42px}
+.addmsg{margin-top:6px;min-height:0}
+.addmsg:empty{display:none}
+/* "Sta da uradim" (static/plan.js) */
+.plh{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.plh h2{margin-right:4px}
+.plq{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.qk{padding:3px 10px;font-size:12.5px;border-radius:99px;color:var(--muted)}
+.qk[aria-pressed=true]{border-color:var(--acc);color:var(--acc);background:var(--acc-soft);font-weight:650}
+.pall{margin-left:auto}
+.pall.on{border-color:var(--acc);color:var(--acc);background:var(--acc-soft)}
+.plan{border:1px solid var(--line);border-radius:10px;margin-top:10px;min-width:0}
+.prow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:6px 12px;min-height:40px;border-top:1px solid var(--line);min-width:0}
+.prow:first-child{border-top:0}
+.prow.on{background:color-mix(in srgb,var(--acc) 4%,transparent)}
+.pchk{display:flex;align-items:center;gap:7px;font-weight:650;font-size:13.5px;cursor:pointer;flex:0 0 205px;min-width:0}
+.pchk input{margin:0;flex:none;width:16px;height:16px}
+.pchk .pi{width:20px;text-align:center;flex:none}
+.prow.off .pchk{color:var(--muted);font-weight:550}
+.prow.dis .pchk{opacity:.5;cursor:not-allowed}
+.prow.lock .pchk{cursor:default}
+.pmenus{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;flex:1 1 300px;min-width:0}
+.pmenus .knob{max-width:100%;flex-wrap:wrap}
+.pmenus select{max-width:100%;min-width:0}
+.pwhy{font-size:12px;color:var(--muted)}
+.pnote{font-size:12.5px;color:var(--muted)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+/* bedz stanja prevoda/transkripta */
+.trs{display:inline-flex;flex-wrap:wrap;gap:3px 6px;align-items:center;min-width:0;max-width:100%}
+.b.trb{white-space:normal;overflow-wrap:anywhere}
+.trs button.sm{padding:1px 8px;font-size:11.5px}
+.jx{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;min-width:0;max-width:100%}
+.jx:empty{display:none}
+.jx .lnk{font-size:12px}
+.jx .b.warn{white-space:normal;max-width:100%}
+.rsum{margin-top:10px;font-size:13px;display:flex;gap:6px;align-items:baseline}
+.rsum .arr{color:var(--acc);font-weight:700}
+.knobs{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;align-items:center}
+.knob{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);min-width:0}
+.knob select{width:auto;padding:3px 6px;font-size:13px}
+.knob .lnk{color:var(--text);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:bottom}
+#custom{margin-top:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel2);flex:none}
+.seg button{border:0;border-radius:0;background:transparent;padding:3px 9px;font-size:12.5px;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--panel);color:var(--text);font-weight:650}
+.seg button b{font-weight:600;margin-left:3px}
+/* grupe (plejlista / kanal) */
+.gh{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 14px;background:var(--panel2)}
+.gh .gi{font-size:18px;text-align:center}
+.gh .tog{font-size:10px;line-height:1;padding:5px 8px;color:var(--muted)}
+.gtools{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:6px 14px;border-top:1px solid var(--line)}
+.gtools .plf{width:220px;padding:3px 8px}
+.gtools .chk{margin:0}
+.gl{max-height:min(60vh,560px);overflow:auto;border-top:1px solid var(--line)}
+.pr{display:grid;grid-template-columns:18px 56px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:4px 14px;border-top:1px solid var(--line);font-size:13px;cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 42px}
+.pr:first-child{border-top:0}
+.pr:hover{background:var(--panel2)}
+.pr.open{background:var(--acc-soft)}
+.pr img{width:56px;height:32px;object-fit:cover;border-radius:4px;background:var(--panel2);display:block}
+.pr .t{min-width:0;display:flex;flex-direction:column}
+.pr .tt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr small{color:var(--muted);font-size:11.5px;display:flex;flex-wrap:wrap;gap:2px 5px;align-items:center;min-width:0}
+.pr small .b{font-size:10.5px;padding:0 6px}
+.pr .pb{display:contents}
+.pr button.gear{padding:1px 7px}
+.pr.dim > :not(button){opacity:.62}
+.prdet{padding:6px 14px 12px 98px;border-top:1px dashed var(--line)}
+.pinfo{display:flex;flex-direction:column;gap:4px;font-size:12.5px;margin-bottom:8px}
+.pinfo .chips{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.chkp{font-size:12px;color:var(--muted)}
+/* sticky traka akcija */
+.sbar{position:sticky;bottom:10px;z-index:10;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:9px 12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--bar-shadow)}
+.sbar .sum{margin-right:auto;font-size:12.5px;color:var(--muted);min-width:0}
+.sbar .sum b{color:var(--text)}
+.pop{position:absolute;bottom:calc(100% + 8px);right:0;width:min(440px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.22);padding:12px 14px;z-index:12;display:flex;flex-direction:column;gap:10px}
+.pop h3{margin:0;font-size:13.5px}
+/* ---------- Red */
+.jrow{grid-template-columns:64px minmax(0,1fr) auto}
+.state{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.state.done{color:var(--ok)}.state.error{color:var(--err)}.state.running{color:var(--acc)}.state.cancelled,.state.queued{color:var(--muted)}
+.pbar{height:5px;border-radius:5px;background:var(--line);overflow:hidden;margin:5px 0 2px}
+.pbar>i{display:block;height:100%;width:0;background:var(--acc);transition:width .5s}
+.jr.done .pbar>i{background:var(--ok)}.jr.error .pbar>i{background:var(--err)}.jr.cancelled .pbar>i{background:var(--muted)}
+.jr.running .pbar>i{background-image:linear-gradient(45deg,rgba(255,255,255,.28) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.28) 50%,rgba(255,255,255,.28) 75%,transparent 75%);background-size:14px 14px;animation:stripes 1s linear infinite}
+@keyframes stripes{to{background-position:14px 0}}
+.phase{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%}
+.jdet{padding-left:88px}
+.jdet .jd{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.stages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.st{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
+.st .n{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;display:flex;justify-content:space-between;gap:4px}
+.st .i{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.bar{height:4px;border-radius:4px;background:var(--line);margin-top:5px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--acc);width:0;transition:width .4s}
+.st.running{border-color:var(--acc)}.st.done .bar>i{background:var(--ok)}.st.error{border-color:var(--err)}
+.st.running .bar.ind>i{width:30%!important;animation:ind 1.2s infinite linear}
+@keyframes ind{from{transform:translateX(-100%)}to{transform:translateX(340%)}}
+/* ---------- Biblioteka */
+.libbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.libbar input[type=search]{flex:1 1 220px;width:auto}
+.libbar select{width:auto;max-width:100%}
+.libhead{display:flex;gap:6px 12px;align-items:center;flex-wrap:wrap;padding:6px 14px;border-bottom:1px solid var(--line)}
+.libhead .chk{margin:0;font-size:12.5px}
+.ldet{display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.ldet .path{word-break:break-all;color:var(--muted)}
+.ldet .chips{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.ldet fieldset{margin-top:6px}
+.ldet .edw{display:inline-flex;gap:6px;align-items:center;min-width:0;max-width:100%}
+.ldet .edw select{width:auto;max-width:min(320px,100%);padding:3px 6px;font-size:12.5px}
+#libCard.plmode .itm{display:none!important}
+.libbar .seg{flex:none}
+button.sm.on{border-color:var(--acc);color:var(--acc);background:var(--acc-soft)}
+/* zdravlje kataloga */
+.hbox{padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel2);display:flex;flex-direction:column;gap:8px;font-size:13px;min-width:0}
+.hbox .hh{display:flex;gap:6px 10px;align-items:center;flex-wrap:wrap;min-width:0}
+.hbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;max-height:min(40vh,360px);overflow:auto}
+.hbox li{display:flex;gap:4px 8px;align-items:center;flex-wrap:wrap;min-width:0}
+.hbox li .tt{font-weight:600;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbox .path{word-break:break-all;color:var(--muted);font-size:12px;min-width:0}
+/* plejliste (Biblioteka) */
+.plr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:8px 14px;border-top:1px solid var(--line)}
+.plr:first-child{border-top:0}
+.plr .rtl{cursor:pointer}
+.b.new{background:var(--acc);color:#fff}
+.gnote{padding:5px 14px 6px;border-top:1px solid var(--line);font-size:12.5px;color:var(--warn)}
+.gnote summary{cursor:pointer;width:max-content;max-width:100%}
+.gnote ul{margin:4px 0 0;padding-left:18px;color:var(--muted);max-height:160px;overflow:auto}
+/* ---------- editor titla (preko cele strane) */
+body.edopen{overflow:hidden}
+.ed{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column}
+.edh{display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:relative;z-index:3}
+.edgl{position:absolute;top:calc(100% + 6px);right:12px;width:min(520px,calc(100vw - 24px));max-height:calc(100vh - 100px);overflow:auto;padding:10px 14px 12px;box-shadow:0 12px 32px rgba(16,24,40,.25)}
+.edh .et{min-width:0;flex:1 1 220px}
+.edh .et b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.edh .et span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edh input[type=search]{width:220px}
+.edh .hits{font-size:12px;color:var(--muted);white-space:nowrap}
+.dirty{color:var(--warn);font-size:12.5px;font-weight:650;white-space:nowrap}
+.edb{flex:1;min-height:0;display:grid;grid-template-columns:minmax(260px,38%) minmax(0,1fr)}
+.edm{padding:12px 16px;border-right:1px solid var(--line);overflow:auto;display:flex;flex-direction:column;gap:8px;min-width:0}
+.edv{position:relative;border-radius:10px;overflow:hidden;background:#000}
+.edv.aud{background:none;overflow:visible}
+.edv video{display:block;width:100%;max-height:52vh;background:#000}
+.edv audio{display:block;width:100%}
+.edcap{position:absolute;left:5%;right:5%;bottom:48px;text-align:center;color:#fff;font-size:15px;line-height:1.3;text-shadow:0 0 3px #000,0 0 4px #000;pointer-events:none;white-space:pre-line}
+.edv.aud .edcap{position:static;color:var(--text);text-shadow:none;margin-top:8px;min-height:2.6em;font-size:14px}
+.edt{overflow:auto;min-height:0;background:var(--panel)}
+.crh,.cr{display:grid;grid-template-columns:78px minmax(0,1fr) minmax(0,1fr);gap:8px;padding:5px 14px}
+.edt.nosrc .crh,.edt.nosrc .cr{grid-template-columns:78px minmax(0,1fr)}
+.edt.nosrc .co,.edt.nosrc .crh .hs{display:none}
+.crh{position:sticky;top:0;z-index:1;background:var(--panel);border-bottom:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:650}
+.cr{border-top:1px solid var(--line);align-items:start;cursor:pointer;content-visibility:auto;contain-intrinsic-size:auto 50px}
+.crh + .cr{border-top:0}
+.cr:hover{background:var(--panel2)}
+.cr.cur{background:var(--acc-soft);box-shadow:inset 3px 0 0 var(--acc)}
+.ct{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);padding-top:5px;white-space:nowrap}
+.cr.chg .ct::after{content:" ●";color:var(--warn)}
+.co{font-size:13px;color:var(--muted);white-space:pre-wrap;word-break:break-word;padding-top:4px;min-width:0}
+textarea.cx{min-height:0;resize:none;font:13.5px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;padding:4px 7px;field-sizing:content}
+@supports (field-sizing:content){textarea.cx{overflow:hidden}}
+.cr.chg textarea.cx{border-color:color-mix(in srgb,var(--warn) 55%,var(--line))}
+.edf{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+@media (max-width:760px){
+  .edh{padding:6px 12px}
+  .edh input[type=search]{width:auto;flex:1 1 150px;order:9}
+  .edh .hits{order:10}
+  .edb{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .edm{border-right:0;border-bottom:1px solid var(--line);max-height:38vh;padding:8px 12px}
+  .edv video{max-height:26vh}
+  .edcap{bottom:52px;font-size:13px}
+  .crh{display:none}
+  .cr,.edt.nosrc .cr{grid-template-columns:minmax(0,1fr);gap:3px;padding:6px 12px}
+  .ct{padding-top:0}
+  .edf .kb{display:none}
+}
+@media (max-width:640px){
+  .plr{grid-template-columns:minmax(0,1fr);padding:8px 12px}
+  .plr .ra{justify-content:flex-start}
+  .hbox{padding:10px 12px}
+  .gnote{padding:5px 12px 6px}
+}
+/* ---------- toast */
+#toasts{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:50;width:max-content;max-width:calc(100vw - 32px);pointer-events:none}
+.toast{pointer-events:auto;display:flex;gap:12px;align-items:center;background:var(--toast-bg);color:var(--toast-t);padding:8px 10px 8px 14px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:13.5px;animation:tin .18s ease-out;max-width:100%}
+.toast.err{background:#991b1b;color:#fff}
+.toast a{color:var(--toast-a);font-weight:650;white-space:nowrap}
+.toast .tx{background:none;border:0;color:inherit;opacity:.6;padding:0 4px}
+.toast.out{opacity:0;transition:opacity .2s}
+@keyframes tin{from{transform:translateY(6px);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}}
+/* ---------- uzak ekran */
+@media (max-width:600px){
+  .pchk{flex:1 1 100%}
+  .pmenus{flex-basis:100%;padding-left:23px}
+  .pwhy{padding-left:23px}
+  .pall{margin-left:0}
+}
+@media (max-width:720px){
+  .item{grid-template-columns:1fr}.thumb{width:100%}
+  .stages{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .hrow{padding:6px 16px}
+  nav.tabs{order:3;width:100%}
+  nav.tabs a{padding:6px 9px}
+  nav.tabs a:not(.on) .lbl{display:none}
+  nav.tabs a.ico.on .lbl{display:inline}
+  a.help .lbl{display:none}
+  .pill.opt{display:none}
+  .pill .pl{display:none}
+  .pill b{max-width:150px}
+  main{padding:10px 16px 24px}
+  .r{grid-template-columns:18px 52px minmax(0,1fr) auto;gap:8px;padding:6px 12px}
+  .rt{width:52px;height:30px}
+  .ra .lbl{display:none}
+  .rdet,.jdet{padding:2px 12px 12px}
+  .jrow{grid-template-columns:48px minmax(0,1fr)}
+  .jrow .rt{width:48px;height:27px}
+  .jrow .ra{grid-column:1/-1;justify-content:flex-start}
+  .pr{grid-template-columns:18px 44px minmax(0,1fr) auto auto;gap:6px;padding:4px 12px}
+  .pr img{width:44px;height:25px}
+  .prdet{padding:4px 12px 12px}
+  .gh{padding:7px 12px}.gtools{padding:6px 12px}
+  .gtools .plf{width:100%;order:9}
+  .head,.libbar,.libhead,.pad{padding-left:12px;padding-right:12px}
+  .sbar{bottom:8px;padding:8px 10px}
+  .knob .lnk{max-width:170px}
+  .hint.kb{display:none}
+  #limits{flex-basis:100%;order:5}
+  #urls{font-size:16px}
+  #dlBar .sum{flex-basis:100%}
+  #libBar{gap:6px}
+  #libBar button:not(.lnk){padding:4px 9px;font-size:12.5px}
+  #libBar .sum{flex-basis:100%}
+  #btnGo{flex:1}
+  #toasts{bottom:128px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <h1>YT Arhiva</h1>
+    <nav class="tabs" id="tabs" aria-label="Kartice">
+      <a href="#preuzmi" data-tab="preuzmi" title="Preuzmi (1)"><span aria-hidden="true">⤓</span><span class="lbl">Preuzmi</span></a>
+      <a href="#red" data-tab="red" title="Red poslova (2)"><span aria-hidden="true">▶</span><span class="lbl">Red</span><span class="bdg" id="bdgRed" hidden></span></a>
+      <a href="#biblioteka" data-tab="biblioteka" title="Biblioteka (3)"><span aria-hidden="true">📚</span><span class="lbl">Biblioteka</span><span class="bdg" id="bdgLib" hidden></span></a>
+      <a href="#memorija" data-tab="memorija" title="Memorija ispravki — glosar i naučena pravila (4)"><span aria-hidden="true">🧠</span><span class="lbl">Memorija</span></a>
+      <a href="#toolbox" data-tab="toolbox" title="Toolbox — transkoder (5)"><span aria-hidden="true">🛠</span><span class="lbl">Toolbox</span></a>
+      <a href="#podesavanja" data-tab="podesavanja" class="ico" title="Podešavanja (6)" aria-label="Podešavanja"><span aria-hidden="true">⚙</span><span class="lbl">Podešavanja</span></a>
+    </nav>
+    <a class="help" href="/static/uputstvo.html" target="_blank" rel="noopener" title="Uputstvo za upotrebu" aria-label="Pomoć — uputstvo za upotrebu (otvara se u novom tabu)"><span class="q" aria-hidden="true">?</span><span class="lbl">Pomoć</span></a>
+    <div class="pills" id="pills"></div>
+  </div>
+</header>
+
+<main>
+  <!-- ============================================================ PREUZMI -->
+  <section class="tab" data-tab="preuzmi" id="secLinks" hidden>
+    <div class="card pad">
+      <div class="addrow">
+        <textarea id="urls" rows="1" placeholder="Nalepi link — video, plejlista ili kanal (može više odjednom)" aria-label="Linkovi" spellcheck="false" autocomplete="off"></textarea>
+        <button class="primary" id="btnAdd">Dodaj</button>
+      </div>
+      <div class="addmsg small muted" id="addMsg"></div>
+      <div class="hint kb">Nalepi (<kbd>⌘V</kbd>) dodaje odmah · <kbd>Enter</kbd> dodaje · <kbd>⌘Enter</kbd> preuzmi izabrane · <kbd>1</kbd>–<kbd>6</kbd> kartice</div>
+    </div>
+
+    <div class="card pad" id="planCard">
+      <div id="planBox"><div class="small muted">Učitavam izbor…</div></div>
+      <div class="rsum"><span class="arr" aria-hidden="true">→</span><span id="rsum" aria-live="polite"></span></div>
+      <div class="knobs" id="knobs"></div>
+      <div id="custom" hidden></div>
+    </div>
+
+    <div class="card" id="dlCard">
+      <div class="head">
+        <h2 class="grow">Spremno za preuzimanje</h2>
+        <span class="seg" id="dlAll"><button data-all="all">Sve</button><button data-all="none">Ništa</button><button data-all="new" title="Samo ono što nije u biblioteci">Samo novi</button></span>
+      </div>
+      <div id="rows"></div>
+      <div class="empty" id="dlEmpty">Lista je prazna — nalepi link iznad. Video, plejlista ili ceo kanal; može i više odjednom.</div>
+    </div>
+
+    <div class="sbar" id="dlBar" hidden>
+      <span class="sum" id="dlSum"></span>
+      <button id="btnClear">Očisti listu</button>
+      <button class="primary" id="btnGo" disabled>Preuzmi (0)</button>
+    </div>
+  </section>
+
+  <!-- ============================================================ RED -->
+  <section class="tab" data-tab="red" id="secJobs" hidden>
+    <div class="card">
+      <div class="head">
+        <span class="seg" id="jf"><button data-f="all">Svi<b></b></button><button data-f="act">Aktivni<b></b></button><button data-f="done">Završeni<b></b></button><button data-f="err">Greške<b></b></button></span>
+        <span class="small muted grow" id="limits"></span>
+        <button class="sm" id="btnClearDone">Očisti završene</button>
+      </div>
+      <div id="jobs"><div class="empty">Nema poslova.</div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ BIBLIOTEKA -->
+  <section class="tab" data-tab="biblioteka" id="secLib" hidden>
+    <div class="card" id="libCard">
+      <div class="libbar">
+        <span class="seg" id="libView" aria-label="Prikaz"><button data-v="items" class="on">Stavke</button><button data-v="pl" title="Snimljene plejliste: šta imaš, šta nedostaje, šta je uklonjeno sa YouTube-a">Plejliste</button></span>
+        <input class="itm" type="search" id="libFilter" placeholder="Traži: naslov, kanal, link ili ID…" aria-label="Pretraga biblioteke">
+        <select class="itm" id="libKind" aria-label="Tip"><option value="">Svi tipovi</option><option value="video">Video</option><option value="audio">Samo audio</option><option value="none">Bez izvora</option></select>
+        <select class="itm" id="libPl" aria-label="Plejlista"><option value="">Sve plejliste</option></select>
+        <select class="itm" id="libSr" aria-label="Stanje prevoda i transkripta"><option value="">Stanje: sve</option><option value="translated">🟢 Prevedeno</option><option value="transcript">🟠 Samo transkript bez prevoda</option><option value="none">⚪ Bez titla</option>
+          <optgroup label="Srpski prevod"><option value="yes">Sa SR prevodom</option><option value="no">Bez SR prevoda</option></optgroup></select>
+        <select class="itm" id="libSort" aria-label="Sortiranje"><option value="new">Najnovije</option><option value="title">Naslov A–Z</option><option value="size">Veličina</option><option value="date">Datum objave</option></select>
+        <button class="sm" id="btnLibRefresh" title="Osveži">↻</button>
+        <button class="sm" id="btnHealth" aria-expanded="false" aria-controls="healthBox" title="Provera kataloga: izvori koji nedostaju ili su skraćeni, titlovi, izlazi, folderi bez indeksa">Zdravlje</button>
+        <button class="sm" id="btnOpenOut" title="Otvori folder arhive u Finder-u">Otvori folder</button>
+      </div>
+      <div class="hbox" id="healthBox" hidden></div>
+      <div class="libhead itm">
+        <label class="chk"><input type="checkbox" id="libAll"> Izaberi sve prikazane</label>
+        <span class="small muted grow" id="libStats"></span>
+      </div>
+      <div id="lib" class="itm"><div class="empty">Biblioteka je prazna.</div></div>
+      <div id="plBox" hidden></div>
+    </div>
+
+    <div class="sbar" id="libBar" hidden>
+      <span class="sum"><b id="libSelN">Izabrano 0</b> · <button class="lnk" data-b="none">poništi</button></span>
+      <label class="knob">Jezik <select id="bTarget" aria-label="Jezik prevoda"><option value="lat">srpski latinica</option><option value="cyr">srpski ćirilica</option><option value="el">grčki</option></select></label>
+      <button data-b="translate" title="Srpski prevod titla (preskače stavke koje već imaju isti prevod)">Prevedi</button>
+      <button data-b="transcribe" title="Whisper transkript na originalnom jeziku, bez prevoda (preskače stavke koje već imaju whisper transkript i one bez izvora zvuka)">Transkribuj</button>
+      <button data-b="burn" title="MP4 sa upečenim srpskim titlom (HEVC); ako nema prevoda — prvo prevede">Video sa titlom</button>
+      <button data-b="soft" title="MKV sa mekim titlovima, bez rekodiranja">MKV sa titlovima</button>
+      <button data-b="lk" aria-haspopup="true" title="Lektura postojećeg prevoda (Claude ili Gemini) — nastaje nov, ispravljen titl">Lektura…</button>
+      <button data-b="tc" aria-haspopup="true">Transkoduj…</button>
+      <button data-b="audio" aria-haspopup="true">Izvuci audio…</button>
+      <button data-b="open" title="Otvori foldere u Finder-u (najviše 5)">Otvori foldere</button>
+      <div class="pop" id="popTc" hidden>
+        <h3>Transkoduj izabrane (Toolbox)</h3>
+        <div class="f"><label for="tcPreset">Toolbox preset</label><select id="tcPreset"></select><div class="hint" id="tcDesc"></div></div>
+        <div class="f"><label>Srpski titl</label><span class="seg" id="tcSub"><button data-v="none" class="on">ne</button><button data-v="soft">meki</button><button data-v="burn">upečen</button></span></div>
+        <div class="note" id="tcNote" hidden></div>
+        <div class="hint" id="tcInfo"></div>
+        <div class="actions" style="margin-top:0"><button class="sm" data-b="close">Otkaži</button><button class="primary sm" data-b="tcgo">Dodaj u red</button></div>
+      </div>
+      <div class="pop" id="popAu" hidden>
+        <h3>Izvuci audio iz izabranih izvora</h3>
+        <div class="row"><button class="primary" data-b="acopy" title="Originalna audio traka bez rekodiranja (AAC → .m4a, Opus → .opus, ostalo → .mka), sa omotom i tagovima">Izvuci audio (bez rekodiranja)</button></div>
+        <div class="hint" style="margin-top:-4px">Najbrže i bez gubitka kvaliteta — isti zvuk kao na YouTube-u.</div>
+        <div class="row"><span class="small muted">ili konverzija:</span><button data-b="au" data-v="audio_m4a">M4A (AAC 256)</button><button data-b="au" data-v="audio_mp3">MP3 320</button><button data-b="au" data-v="audio_flac">FLAC</button></div>
+        <div class="hint">Prva (originalna) audio traka · fajl ide u folder stavke.</div>
+      </div>
+      <div class="pop" id="popLk" hidden>
+        <h3>Lektura prevoda izabranih</h3>
+        <div class="f"><label>Lektor</label><span class="seg" id="lkEng"><button data-v="claude|sonnet" class="on">Claude Sonnet</button><button data-v="claude|opus">Claude Opus</button><button data-v="gemini|gemini-3.8-flash">Gemini</button></span></div>
+        <label class="chk"><input type="checkbox" id="lkForce"> ponovo i za stavke koje već imaju lekturu</label>
+        <div class="note" id="lkNote" hidden></div>
+        <div class="hint" id="lkInfo"></div>
+        <div class="actions" style="margin-top:0"><button class="sm" data-b="close">Otkaži</button><button class="primary sm" data-b="lkgo">Dodaj u red</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ MEMORIJA (static/memory.js) -->
+  <section class="tab" data-tab="memorija" id="secMem" hidden>
+    <div id="mem"><div class="card"><div class="empty">Memorija se učitava…</div></div></div>
+  </section>
+
+  <!-- ============================================================ TOOLBOX -->
+  <section class="tab" data-tab="toolbox" id="secTb" hidden>
+    <div class="card">
+      <div class="head"><h2 class="grow">Toolbox — transkoder (Mac)</h2>
+        <span class="small muted">Bilo koji lokalni video/audio fajl ili izvor iz Biblioteke · VideoToolbox / x265 / AV1 / ProRes</span></div>
+      <div id="tb"><div class="empty">Toolbox se učitava…</div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ PODESAVANJA -->
+  <section class="tab" data-tab="podesavanja" id="settings" hidden>
+    <div class="card pad">
+      <fieldset style="margin-top:0"><legend>Preuzimanje</legend><div class="grid">
+        <div class="f"><label for="s_recipe">Podrazumevani izbor</label><select id="s_recipe" title="Čekirani koraci u ⤓ Preuzmi pri prvom otvaranju i kad ga ovde promeniš; inače se pamti tvoj poslednji izbor"></select></div>
+        <div class="f"><label for="s_embed_subs">Titlovi i u MKV izvoru</label>
+          <select id="s_embed_subs" title="Posle preuzimanja svi titlovi se ubacuju i kao trake u izvorni MKV (bez rekodiranja); SRT fajlovi u subs/ ostaju"><option value="true">Da — titlovi kao trake u MKV (bez rekodiranja)</option><option value="false">Ne — samo SRT fajlovi u subs/</option></select></div>
+        <div class="f"><label for="s_browser">Nalog — cookies iz browsera</label>
+          <select id="s_browser">
+            <option value="chrome">Chrome</option><option value="brave">Brave</option><option value="edge">Edge</option>
+            <option value="firefox">Firefox</option><option value="safari">Safari</option><option value="chromium">Chromium</option>
+            <option value="vivaldi">Vivaldi</option><option value="opera">Opera</option><option value="none">Bez naloga</option>
+          </select></div>
+        <div class="f"><label for="s_cookies_file">…ili cookies.txt (putanja)</label><input type="text" id="s_cookies_file" placeholder="prazno = koristi browser"></div>
+        <div class="f wide"><label for="s_out_dir">Folder arhive</label>
+          <div class="row"><input type="text" id="s_out_dir" class="grow"><button class="sm" data-pick="s_out_dir">Izaberi…</button></div></div>
+        <div class="f"><label for="s_parallel_downloads">Paralelna preuzimanja</label><select id="s_parallel_downloads"></select></div>
+        <div class="f"><label for="s_fragments">Fragmenti po preuzimanju</label><select id="s_fragments"></select></div>
+      </div></fieldset>
+      <fieldset><legend>Prevod (srpski titl)</legend><div class="grid">
+        <div class="f"><label for="s_auto_translate">Prevod u receptima</label>
+          <select id="s_auto_translate"><option value="true">Da — Arhiva, Arhiva + video i Samo titlovi prevode (preporuka)</option><option value="false">Ne — recepti bez prevoda</option></select></div>
+        <div class="f"><label for="s_script">Pismo prevoda</label><select id="s_script"><option value="lat">Srpski — latinica</option><option value="cyr">Srpski — ćirilica</option></select></div>
+        <div class="f"><label for="s_model_full">Prevodilac</label><select id="s_model_full"></select></div>
+        <div class="f"><label for="s_cf_account">Cloudflare Account ID</label><input type="text" id="s_cf_account" placeholder="za Cloudflare prevodioca (opciono)"></div>
+        <div class="f wide small muted" id="keysInfo"></div>
+        <div class="f"><label for="s_parallel_translate">Paralelni prevodi</label><select id="s_parallel_translate"></select></div>
+        <div class="f"><label for="pullName">Ollama model (preuzimanje)</label>
+          <div class="row"><input type="text" id="pullName" class="grow" value="gemma4:12b-it-qat"><button class="sm" id="btnPull">Preuzmi model</button></div>
+          <div class="small muted" id="pullStatus"></div></div>
+        <div class="f"><label for="s_whisper_quality_langs">Whisper „kvalitet“ model za jezike</label>
+          <input type="text" id="s_whisper_quality_langs" placeholder="npr. el,sr (prazno = nikad)" title="Za ove jezike se koristi tačniji large-v3 (1,08 GB, 3–4× sporiji); ostali jezici idu na turbo."></div>
+        <div class="f"><label for="s_whisper_vad">Whisper VAD (Silero)</label>
+          <select id="s_whisper_vad"><option value="true">Uključen — manje izmišljenog teksta na muzici/tišini</option><option value="false">Isključen</option></select></div>
+        <div class="f"><label for="s_whisper_prompt">Whisper prompt po jeziku</label>
+          <select id="s_whisper_prompt"><option value="true">Uključen — fiksira pismo (latinica) i pomaže sa imenima</option><option value="false">Isključen</option></select></div>
+        <div class="f"><label for="s_mem_tr">Memorija ispravki u prevodu</label>
+          <select id="s_mem_tr" title="Glosar, naučena pravila i primeri tvojih ispravki idu u prevod i lekturu (kartica Memorija)"><option value="true">Uključena — glosar, naučena pravila i primeri ispravki</option><option value="false">Isključena</option></select></div>
+        <div class="f"><label for="s_mem_stt">Memorija ispravki u whisper-u</label>
+          <select id="s_mem_stt" title="Termini iz glosara i ispravki idu u whisper prompt; naučene zamene se primenjuju na transkript i automatske titlove"><option value="true">Uključena — termini u promptu i ispravke transkripta</option><option value="false">Isključena</option></select></div>
+        <div class="f"><label for="s_auto_fetch">Alati i modeli (Ollama, whisper, modeli)</label>
+          <select id="s_auto_fetch"><option value="true">Preuzmi automatski pri prvom korišćenju</option><option value="false">Ručno (javi grešku ako nešto nedostaje)</option></select></div>
+        <div class="f"><label for="s_whisper_model">Whisper model (kad nema titla)</label>
+          <select id="s_whisper_model">
+            <option value="large-v3-turbo-q5_0">large-v3-turbo q5 (≈550 MB, preporuka)</option>
+            <option value="large-v3-turbo">large-v3-turbo (≈1,6 GB)</option>
+            <option value="large-v3">large-v3 (≈3 GB, najtačniji, sporiji)</option>
+            <option value="medium">medium (≈1,5 GB)</option>
+            <option value="small">small (≈470 MB, brz)</option>
+          </select></div>
+      </div></fieldset>
+      <fieldset><legend>Obrada</legend><div class="grid">
+        <div class="f"><label for="s_keep_original">Zadrži preuzeti izvor posle obrade</label>
+          <select id="s_keep_original"><option value="true">Da (može ponovna obrada)</option><option value="false">Ne (štedi prostor)</option></select></div>
+        <div class="f"><label for="s_parallel_encodes">Paralelna enkodiranja</label><select id="s_parallel_encodes"></select></div>
+      </div></fieldset>
+      <fieldset><legend>Prilagođeno — početne vrednosti</legend><div class="grid">
+        <div class="f"><label for="s_dl_audio">Audio trake</label>
+          <select id="s_dl_audio"><option value="all">Sve audio trake</option><option value="auto">Samo originalna</option></select></div>
+        <div class="f"><label for="s_dl_subs">Titlovi</label>
+          <select id="s_dl_subs"><option value="all">Svi CC + auto original</option><option value="auto">Samo najbolji za prevod</option></select></div>
+        <div class="f"><label for="s_proc_when">Obrada</label>
+          <select id="s_proc_when"><option value="later">Samo preuzmi (obrada na klik)</option><option value="now">Odmah prevedi/obradi posle preuzimanja</option></select></div>
+      </div><div class="hint">Početne vrednosti forme „⚙ Sve opcije“ (Obrada: kad je ona podrazumevani izbor). Forma posle pamti tvoj poslednji izbor; izmena ovde ga zamenjuje.</div></fieldset>
+    </div>
+    <div class="sbar"><span class="sum" id="saveMsg"></span><button class="primary" id="btnSave">Sačuvaj</button></div>
+  </section>
+</main>
+<div class="ed" id="ed" role="dialog" aria-modal="true" aria-labelledby="edTitle" hidden>
+  <div class="edh">
+    <button class="sm" id="edClose" title="Zatvori (Esc)" aria-label="Zatvori editor">✕</button>
+    <div class="et"><b id="edTitle"></b><span id="edSub"></span></div>
+    <span class="dirty" id="edDirty" aria-live="polite"></span>
+    <input type="search" id="edQ" placeholder="Traži u titlu…" aria-label="Traži u titlu">
+    <span class="hits" id="edHits"></span>
+    <button class="sm" id="edGl" aria-haspopup="dialog" aria-controls="edGlBox" title="Dodaj označenu reč u glosar memorije (označi tekst u titlu, pa klikni)">＋ Glosar</button>
+    <button class="primary" id="edSave" title="Sačuvaj (⌘S)" disabled>Sačuvaj</button>
+    <div class="card edgl" id="edGlBox" role="dialog" aria-label="Dodaj u glosar memorije" hidden></div>
+  </div>
+  <div class="edb">
+    <div class="edm">
+      <div class="edv" id="edV"></div>
+      <div class="note" id="edNote" hidden></div>
+      <div class="edf"><span id="edInfo"></span>
+        <span class="kb">Klik na red = skok na to mesto · <kbd>⌥↓</kbd>/<kbd>⌥↑</kbd> sledeći/prethodni · <kbd>⌥Space</kbd> pusti/pauza · <kbd>⌘S</kbd> sačuvaj · <kbd>Esc</kbd> zatvori</span>
+        <span>Svaka ispravljena linija se pamti u Memoriji kao par „pre → posle“ i popravlja buduće prevode i whisper transkripte. Termin koji mora uvek isto: označi ga i klikni „＋ Glosar“.</span></div>
+    </div>
+    <div class="edt" id="edT"></div>
+  </div>
+</div>
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script src="/static/plan.js"></script>
+<script>
+// ================================================================ helperi (globalni — koristi ih i static/toolbox.js)
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const api = async (path, body) => {
+  const r = await fetch(path, body === undefined ? {} : {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const j = await r.json().catch(() => ({error: "loš odgovor"}));
+  if (!r.ok || (j && j.error)) { const e = new Error((j && j.error) || r.statusText); e.status = r.status; throw e; }
+  return j;
+};
+const fmtB = b => !b ? "" : b > 1e9 ? (b / 1073741824).toFixed(2) + " GB" : b > 1048576 ? (b / 1048576).toFixed(0) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
+const fmtD = s => { if (!s) return ""; s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(x).padStart(2, "0"); };
+const fmtDate = d => d ? d.replace(/(\d{4})(\d\d)(\d\d)/, "$3.$2.$1.") : "";
+const opt = (v, l, sel) => `<option value="${esc(v)}"${sel ? " selected" : ""}>${esc(l)}</option>`;
+const LS = {  // samo udobnosti po pregledaču (poslednja kartica, filteri); sme da ne radi
+  get(k, d) { try { const v = localStorage.getItem("yta." + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("yta." + k, JSON.stringify(v)); } catch {} },
+};
+const clone = o => JSON.parse(JSON.stringify(o ?? null));
+const plural = (n, a, b, c) => { const d = n % 10, h = n % 100; return d === 1 && h !== 11 ? a : d >= 2 && d <= 4 && (h < 12 || h > 14) ? b : c; };
+const firstLine = s => String(s || "").split("\n").map(x => x.trim()).find(Boolean) || "";
+const mq = id => id ? `https://i.ytimg.com/vi/${id}/mqdefault.jpg` : "";
+const hl = el => { if (!el) return; el.classList.remove("hl"); void el.offsetWidth; el.classList.add("hl"); el.scrollIntoView({block: "nearest", behavior: "smooth"}); };
+const setVal = (el, v) => { if (el && [...el.options].some(o => o.value === String(v))) el.value = String(v); };
+const shortPath = p => { p = String(p || "").replace(/^\/Users\/[^/]+/, "~"); const s = p.split("/"); return s.length > 4 ? "…/" + s.slice(-2).join("/") : p; };
+
+let SET = {}, STATUS = {ollama: {models: []}};
+const VQ = {
+  vt: [["75","Vrlo visok (q75, veliki fajl)"],["65","Arhivski (q65, preporuka)"],["55","Dobar (q55)"],["45","Manji fajl (q45)"]],
+  sw: [["18","Vizuelno bez gubitka (CRF 18)"],["20","Arhivski (CRF 20, preporuka)"],["23","Dobar (CRF 23)"],["26","Manji fajl (CRF 26)"]],
+};
+
+const GEMMA = "gemma4:12b-it-qat";
+const localModel = () => SET.model && !/^gemini|^@cf\/|^sonnet$|^opus$|translategemma/.test(SET.model) ? SET.model : GEMMA;
+function modelOptionsHtml() {
+  const ms = STATUS.ollama.models || [], k = STATUS.keys || {}, g = localModel();
+  const loc = [...new Set([...ms.filter(m => !/translategemma/.test(m)), g].filter(Boolean))];
+  const nk = x => k[x] ? "" : " (nema ključa → lokalno)";
+  return '<optgroup label="Lokalno — besplatno i privatno">' +
+    opt(`synergy|${g}`, "Kvalitetno — TranslateGemma + Gemma (preporuka)") +
+    loc.map(m => opt(`ollama|${m}`, `Brzo — ${m}` + (ms.includes(m) ? "" : " (nije preuzet)"))).join("") +
+    opt("tg|translategemma:12b", "Samo TranslateGemma (grčki i drugi jezici)") +
+    '</optgroup><optgroup label="Besplatni cloud — samo javni sadržaj">' +
+    opt("gemini|gemini-3.5-flash-lite", "Gemini Flash-Lite" + nk("gemini")) + opt("gemini|gemini-3.8-flash", "Gemini Flash (bolji)" + nk("gemini")) +
+    opt("cloudflare|@cf/google/gemma-4-26b-a4b-it", "Cloudflare Gemma 4 26B" + nk("cloudflare")) +
+    '</optgroup><optgroup label="Claude CLI (pretplata)">' + opt("claude|sonnet", "Claude Sonnet") + opt("claude|opus", "Claude Opus") + "</optgroup>";
+}
+const modelName = p => { const e = (p && p.engine) || SET.engine, m = (p && p.model) || SET.model;
+  return {synergy: "Kvalitetno: TranslateGemma + Gemma", ollama: "Brzo: " + (m || GEMMA), tg: "TranslateGemma",
+          gemini: "Gemini " + String(m || "").replace("gemini-", ""), cloudflare: "Cloudflare Gemma 4", claude: "Claude " + (m || "")}[e] || (m || "?"); };
+const TGT_LBL = {lat: "srpski latinica", cyr: "srpski ćirilica", el: "grčki"};
+
+// ================================================================ toast
+function toast(msg, o = {}) {
+  const box = $("#toasts"), t = document.createElement("div");
+  t.className = "toast" + (o.cls ? " " + o.cls : "");
+  t.innerHTML = `<span>${esc(msg)}</span>${o.link ? `<a href="${esc(o.link[0])}">${esc(o.link[1])}</a>` : ""}<button class="tx" aria-label="Zatvori">✕</button>`;
+  box.append(t);
+  while (box.children.length > 3) box.firstElementChild.remove();
+  const kill = () => { t.classList.add("out"); setTimeout(() => t.remove(), 220); };
+  $(".tx", t).onclick = kill;
+  const a = $("a", t); if (a) a.addEventListener("click", e => { if (o.onLink) o.onLink(e); kill(); });
+  setTimeout(kill, o.ms || 5000);
+}
+const toastJobs = n => toast(`Dodato u red: ${n}`, {link: ["#red", "Prikaži red"]});
+
+// ================================================================ kartice (hash rute)
+const TABS = ["preuzmi", "red", "biblioteka", "memorija", "toolbox", "podesavanja"];
+const ALIAS = {secLinks: "preuzmi", secJobs: "red", secLib: "biblioteka", secArch: "biblioteka", secMem: "memorija", secTb: "toolbox", settings: "podesavanja"};
+let TAB = "";
+function route() {
+  let h = decodeURIComponent(location.hash.slice(1));
+  h = ALIAS[h] || h;
+  if (!TABS.includes(h)) {
+    h = LS.get("tab", "preuzmi");
+    if (!TABS.includes(h)) h = "preuzmi";
+    history.replaceState(null, "", "#" + h);
+  }
+  showTab(h);
+}
+function showTab(t) {
+  if (TAB === t) return;
+  const first = !TAB;
+  TAB = t;
+  $$("section.tab").forEach(s => s.hidden = s.dataset.tab !== t);
+  $$("#tabs a").forEach(a => { const on = a.dataset.tab === t; a.classList.toggle("on", on); on ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"); });
+  LS.set("tab", t);
+  if (!first) window.scrollTo(0, 0);
+  if (t === "red") { renderJobs(); refreshJobs(); }
+  if (t === "biblioteka") { if (libDirty) renderLib(); refreshLib(false); }
+  if (t === "memorija" && window.memRefresh) window.memRefresh();  // uvek sveze pri ulasku (static/memory.js)
+  if (t === "preuzmi" && first) setTimeout(() => $("#urls").focus(), 0);
+}
+const go = t => { if (location.hash !== "#" + t) location.hash = t; else showTab(t); };
+window.addEventListener("hashchange", route);
+function badge(sel, n, hot) { const b = $(sel); if (!b) return; b.hidden = !n; b.textContent = n; b.classList.toggle("hot", !!hot); }
+
+// ================================================================ obrada (zajednicki formular: Prilagodjeno, Biblioteka ⚙)
+function procFormHtml() {
+  return `
+  <div class="grid">
+    <div class="f"><label>Titl za obradu</label><select data-p="sub_source"></select></div>
+    <div class="f wl"><label>Jezik govora (whisper)</label><select data-p="whisper_lang" title="Za transkript: jezik koji se govori u snimku (automatski = iz YouTube podataka ili prepoznavanjem)">
+      ${(window.Plan ? Plan.WLANGS : [["", "automatski"]]).map(([v, l]) => opt(v, l)).join("")}</select></div>
+    <div class="f"><label>Prevod</label><select data-p="target">
+      ${opt("lat", "Srpski — latinica")}${opt("cyr", "Srpski — ćirilica")}${opt("el", "Grčki (Ελληνικά)")}${opt("none", "Bez prevoda (originalni titl)")}</select></div>
+    <div class="f"><label>Prevodilac</label><select data-p="model_full"></select></div>
+    <div class="f"><label>Lektura prevoda</label><select data-p="review">
+      ${opt("off", "Bez lekture (brže)")}${opt("on", "Drugi prolaz — lektura (~2× sporije)")}</select></div>
+    <div class="f"><label>Izlaz</label><select data-p="output">
+      ${opt("none", "Bez videa — samo prevod titla (ostaje u arhivi)")}${opt("srt", "SRT fajl pored videa")}
+      ${opt("soft", "MKV + meki titlovi (bez rekodiranja)")}${opt("burn", "Burn — titl upečen u video")}
+      ${opt("both", "Oba (burn + MKV)")}</select></div>
+    <div class="f vid"><label>Audio u izlazu</label><select data-p="audio_out"></select></div>
+    <div class="f vid"><label>Meki titlovi u izlazu</label><select data-p="subs_out">
+      ${opt("sr+orig", "Srpski + originalni")}${opt("sr", "Samo srpski")}${opt("sr+all", "Srpski + svi preuzeti")}</select></div>
+    <div class="f enc"><label>Enkoder (burn)</label><select data-p="encoder">
+      ${opt("hevc", "HEVC — VideoToolbox (HW, brzo)")}${opt("h264", "H.264 — VideoToolbox (najkompatibilnije)")}
+      ${opt("x265", "HEVC — x265 softverski (manji fajl, sporo)")}${opt("x264", "H.264 — x264 softverski")}</select></div>
+    <div class="f enc"><label>Kvalitet enkodiranja</label><select data-p="vq"></select></div>
+    <div class="f enc"><label>Izlazna rezolucija</label><select data-p="scale"></select></div>
+    <div class="f enc"><label>Audio kodek (burn)</label><select data-p="audio_enc">
+      ${opt("aac192", "AAC 192 kb/s (MP4)")}${opt("aac256", "AAC 256 kb/s (MP4)")}${opt("aac320", "AAC 320 kb/s (MP4)")}
+      ${opt("copy", "Kopiraj original bez gubitka (MKV)")}</select></div>
+    <div class="f always"><label>Izvor posle obrade</label>
+      <label class="chk"><input type="checkbox" data-p="keep_source"> zadrži preuzeti izvor (za kasniju obradu)</label></div>
+  </div>`;
+}
+// ctx: {subOpts:[[v,l]], audioOpts:[[v,l]], maxH, onChange}
+function initProcForm(root, ctx) {
+  const P = k => $(`[data-p="${k}"]`, root);
+  P("sub_source").innerHTML = ctx.subOpts.map(([v, l]) => opt(v, l)).join("");
+  P("audio_out").innerHTML = ctx.audioOpts.map(([v, l]) => opt(v, l)).join("");
+  P("model_full").innerHTML = modelOptionsHtml();
+  P("model_full").value = `${SET.engine}|${SET.model}`;
+  P("scale").innerHTML = opt("src", "Kao izvor") + [2160, 1440, 1080, 720, 480].filter(x => x < (ctx.maxH || 99999)).map(x => opt(x, x + "p")).join("");
+  P("output").value = SET.output || "none";
+  P("target").value = SET.script || "lat";
+  P("encoder").value = SET.encoder || "hevc";
+  P("keep_source").checked = SET.keep_original !== false;
+  const sync = () => {
+    const sw = ["x265", "x264"].includes(P("encoder").value), cur = P("vq").value;
+    const tbl = sw ? VQ.sw : VQ.vt;
+    P("vq").innerHTML = tbl.map(([v, l]) => opt(v, l)).join("");
+    P("vq").value = tbl.some(([v]) => v === cur) ? cur : (sw ? "20" : String(SET.quality || 65));
+    const out = P("output").value, burn = ["burn", "both"].includes(out), vid = ["burn", "both", "soft"].includes(out);
+    $$(".f.enc", root).forEach(f => { f.classList.toggle("dis", !burn); $$("select", f).forEach(s => s.disabled = !burn); });
+    $$(".f.vid", root).forEach(f => { f.classList.toggle("dis", !vid); $$("select", f).forEach(s => s.disabled = !vid); });
+    const noTr = P("target").value === "none" || P("sub_source").value === "none";
+    P("model_full").disabled = P("review").disabled = noTr;
+    const wl = ["auto-best", "whisper:run"].includes(P("sub_source").value);  // jezik govora vazi samo kad whisper moze da radi
+    P("whisper_lang").disabled = !wl; $(".f.wl", root).classList.toggle("dis", !wl);
+    if (ctx.onChange) ctx.onChange();
+  };
+  for (const k of ["encoder", "output", "target", "sub_source", "audio_out"]) P(k).addEventListener("change", sync);
+  sync();
+  return () => {
+    const o = {};
+    $$("[data-p]", root).forEach(el => o[el.dataset.p] = el.type === "checkbox" ? el.checked : el.value);
+    const [engine, model] = o.model_full.split("|"); delete o.model_full;
+    if (!o.whisper_lang || !["auto-best", "whisper:run"].includes(o.sub_source)) delete o.whisper_lang;
+    return {...o, engine, model};
+  };
+}
+function limitOutputs(root, noVideo) {
+  const O = $('[data-p="output"]', root); if (!O) return;
+  for (const o of O.options) o.disabled = noVideo && ["burn", "soft", "both"].includes(o.value);
+  if (O.selectedOptions[0] && O.selectedOptions[0].disabled) { O.value = "none"; O.dispatchEvent(new Event("change")); }
+}
+// postavi vrednosti obrade u formular (select zadrzava vrednost samo ako opcija postoji)
+function setProcForm(root, proc) {
+  if (!proc) return;
+  const P = k => $(`[data-p="${k}"]`, root);
+  if (proc.encoder) { setVal(P("encoder"), proc.encoder); P("encoder").dispatchEvent(new Event("change")); }
+  for (const [k, v] of Object.entries(proc)) {
+    const el = P(k); if (!el || k === "encoder") continue;
+    if (el.type === "checkbox") el.checked = !!v; else setVal(el, v);
+  }
+  if (proc.engine || proc.model) setVal(P("model_full"), `${proc.engine || SET.engine}|${proc.model || SET.model}`);
+  P("output").dispatchEvent(new Event("change"));
+}
+
+// ================================================================ podesavanja
+const numOpts = (id, max) => { $("#" + id).innerHTML = Array.from({length: max}, (_, i) => `<option>${i + 1}</option>`).join(""); };
+numOpts("s_parallel_downloads", 8); numOpts("s_fragments", 16); numOpts("s_parallel_encodes", 4); numOpts("s_parallel_translate", 4);
+const S_KEYS = ["browser","cookies_file","out_dir","parallel_downloads","fragments","parallel_encodes","parallel_translate","whisper_model","whisper_quality_langs","dl_audio","dl_subs","proc_when","recipe","script","cf_account"];
+async function loadSettings() {
+  SET = await api("/api/settings");
+  fillSettings();
+}
+function fillSettings() {
+  for (const k of S_KEYS) { const el = $("#s_" + k); if (el && SET[k] !== undefined && SET[k] !== null) setValAny(el, SET[k]); }
+  $("#s_keep_original").value = String(SET.keep_original !== false);
+  $("#s_auto_translate").value = String(SET.auto_translate !== false);
+  $("#s_whisper_vad").value = String(SET.whisper_vad !== false);
+  $("#s_whisper_prompt").value = String(SET.whisper_prompt !== false);
+  $("#s_mem_tr").value = String(SET.mem_tr !== false);
+  $("#s_mem_stt").value = String(SET.mem_stt !== false);
+  $("#s_auto_fetch").value = String(SET.auto_fetch !== false);
+  $("#s_embed_subs").value = String(SET.embed_subs !== false);
+  $("#s_model_full").innerHTML = modelOptionsHtml(); $("#s_model_full").value = `${SET.engine}|${SET.model}`;
+  $("#bTarget").value = SET.script === "cyr" ? "cyr" : "lat";
+  setDirty(false);
+}
+function setValAny(el, v) { if (el.tagName === "SELECT") setVal(el, v); else el.value = v; }
+function setDirty(d) { $("#saveMsg").textContent = d ? "Nesačuvane izmene" : ""; $("#saveMsg").classList.toggle("muted", !d); }
+$("#settings").addEventListener("change", e => { if (e.target.id !== "pullName") setDirty(true); });
+$("#settings").addEventListener("input", e => { if (e.target.matches("input[type=text]") && e.target.id !== "pullName") setDirty(true); });
+async function saveSettings() {
+  const [engine, model] = $("#s_model_full").value.split("|");
+  const body = {engine, model, keep_original: $("#s_keep_original").value === "true", auto_translate: $("#s_auto_translate").value === "true",
+                whisper_vad: $("#s_whisper_vad").value === "true", whisper_prompt: $("#s_whisper_prompt").value === "true", auto_fetch: $("#s_auto_fetch").value === "true",
+                mem_tr: $("#s_mem_tr").value === "true", mem_stt: $("#s_mem_stt").value === "true", embed_subs: $("#s_embed_subs").value === "true"};
+  for (const k of S_KEYS) body[k] = $("#s_" + k).value;
+  for (const k of ["parallel_downloads","fragments","parallel_encodes","parallel_translate"]) body[k] = +body[k];
+  const before = {recipe: SET.recipe, script: SET.script, dl_audio: SET.dl_audio, dl_subs: SET.dl_subs, keep_original: SET.keep_original !== false};
+  try {
+    SET = await api("/api/settings", body);
+    // stariji backend ne zna nove kljuceve -> zadrzi izbor bar u ovoj sesiji
+    if (SET.recipe === undefined) SET.recipe = body.recipe;
+    if (SET.auto_translate === undefined) SET.auto_translate = body.auto_translate;
+    if (SET.embed_subs === undefined) SET.embed_subs = body.embed_subs;
+    fillSettings();
+    $("#saveMsg").textContent = "Sačuvano ✓"; setTimeout(() => { if ($("#saveMsg").textContent === "Sačuvano ✓") $("#saveMsg").textContent = ""; }, 2500);
+    await loadRecipes();
+    // pocetne vrednosti "⚙ Sve opcije" promenjene -> zamenjuju zapamcen izbor iz forme (i u otvorenoj formi)
+    const chg = Object.keys(SET_KEEP).filter(k => (k === "keep_original" ? SET[k] !== false : SET[k]) !== before[k]);
+    if (chg.length) {
+      const kc = LS.get("plan_custom", null);
+      if (kc) { for (const k of chg) { const [g, f] = SET_KEEP[k]; if (kc[g]) delete kc[g][f]; } LS.set("plan_custom", kc); }
+      if (Plan.state().all && customReady) seedCustom(planSeed(true));
+    }
+    // podrazumevani izbor promenjen -> primeni ga odmah; promenjeno pismo -> jezik prevoda u planu
+    const patch = SET.recipe !== before.recipe && SET.recipe ? Plan.recipePatch(SET.recipe, {...planEnv(), plan_migrated: true}) : {};
+    if (SET.script !== before.script && ["lat", "cyr"].includes(SET.script)) patch.tr_target = SET.script;
+    if (Object.keys(patch).length) Plan.set(patch, "what" in patch ? "recipe" : "script"); else optsChanged();
+    loadStatus(); refreshLib(true);
+  } catch (e) { $("#saveMsg").textContent = e.message; }
+}
+$("#btnSave").onclick = saveSettings;
+$("#btnPull").onclick = () => api("/api/ollama/pull", {model: $("#pullName").value.trim()}).then(() => toast("Preuzimanje modela je pokrenuto")).catch(e => toast(e.message, {cls: "err"}));
+document.addEventListener("click", async e => {
+  const t = e.target.closest("[data-pick]"); if (!t) return;
+  const inp = $("#" + t.dataset.pick);
+  try { const r = await api("/api/choose-folder", {current: inp.value}); if (r.path) { inp.value = r.path; inp.dispatchEvent(new Event("input", {bubbles: true})); } }
+  catch (err) { toast(err.message, {cls: "err"}); }
+});
+
+// ================================================================ status
+let pillsHtml = "";
+async function loadStatus() {
+  try { STATUS = await api("/api/status"); }
+  catch { const h = '<span class="pill"><span class="dot err"></span>server ne odgovara</span>'; if (h !== pillsHtml) $("#pills").innerHTML = pillsHtml = h; return; }
+  STATUS.ollama = STATUS.ollama || {models: []};
+  const o = STATUS.ollama, L = STATUS.limits || {}, ms = o.models || [], keys = STATUS.keys || {};
+  const oll = ["ollama", "synergy", "tg"].includes(SET.engine || "synergy");
+  const haveModel = SET.engine === "synergy" ? ms.includes(localModel()) && !!STATUS.tg_ready : SET.engine === "tg" ? !!STATUS.tg_ready : ms.includes(SET.model);
+  const dot = !oll ? (["gemini", "cloudflare"].includes(SET.engine) && !keys[SET.engine] ? "warn" : "ok") : o.running ? (haveModel ? "ok" : "warn") : "err";
+  const extra = oll && !o.running ? (o.problem ? " · " + esc(o.problem) : ' · ne radi <button class="sm" id="btnOll">Pokreni</button>') : oll && !haveModel ? (SET.auto_fetch !== false ? " · modeli se preuzimaju pri prvom prevodu" : " · model nije preuzet") : "";
+  const h = `<span class="pill" title="Prevodilac"><span class="dot ${dot}"></span><span class="pl">Prevod:</span><b>${esc(modelName())}</b>${extra}</span>
+    <span class="pill opt" title="YouTube nalog (cookies)"><span class="pl">Nalog:</span><b>${esc(SET.cookies_file ? "cookies.txt" : SET.browser === "none" ? "bez naloga" : SET.browser || "?")}</b></span>
+    <span class="pill opt" title="Whisper — kad video nema titl"><span class="pl">Whisper:</span><b>${STATUS.whisper_cli ? "whisper.cpp" : "python"}</b>${STATUS.whisper_model_ready ? "" : '<span class="pl"> · model pri 1. upotrebi</span>'}</span>`;
+  if (h !== pillsHtml) {
+    $("#pills").innerHTML = pillsHtml = h;
+    const b = $("#btnOll"); if (b) b.onclick = () => api("/api/ollama/start", {}).then(loadStatus).catch(e => toast(e.message, {cls: "err"}));
+  }
+  const lim = (k, n) => L[k] ? `${n} ${L[k].used}/${L[k].n}` : "";
+  $("#limits").textContent = ["Zauzeto:", [lim("download", "preuzimanja"), lim("translate", "prevod"), lim("whisper", "whisper"), lim("encode", "enkodiranje")].filter(Boolean).join(" · ")].join(" ");
+  $("#pullStatus").textContent = o.pull && o.pull.model ? `${o.pull.model}: ${o.pull.status}` : "";
+  const ki = $("#keysInfo");
+  if (ki) ki.innerHTML = `Ključevi (Keychain): Gemini ${keys.gemini ? "✓" : "✗"} · Cloudflare ${keys.cloudflare ? "✓" : "✗"}${keys.gemini && keys.cloudflare ? "" :
+    ' — upis u Terminalu: <code>security add-generic-password -a "$USER" -s yt-arhiva-gemini -U -w</code> (Cloudflare: <code>-s yt-arhiva-cf-token</code>)'}`;
+  if ((STATUS.keys ? JSON.stringify(STATUS.keys) : "") !== loadStatus.ksig) { loadStatus.ksig = STATUS.keys ? JSON.stringify(STATUS.keys) : ""; loadStatus.sig = null; }
+  // lista modela je stigla -> osvezi padajuce menije prevodioca
+  const sig = ms.join(",");
+  if (sig !== loadStatus.sig) {
+    loadStatus.sig = sig;
+    for (const sel of [$("#s_model_full"), ...$$('#custom [data-p="model_full"]')]) { if (!sel) continue; const v = sel.value; sel.innerHTML = modelOptionsHtml(); setVal(sel, v || `${SET.engine}|${SET.model}`); }
+    Plan.render();  // red Prevod: isti spisak prevodilaca
+  }
+}
+
+// ================================================================ recepti (Podesavanja "Podrazumevani izbor"; /api/recipes ostaje)
+const ACONV_FULL = [["best", "Original bez rekodiranja (Opus/AAC)"], ["mp3", "MP3 320 kb/s"], ["mp3v0", "MP3 V0 (VBR, najbolji)"],
+                    ["m4a", "M4A AAC 256 kb/s"], ["opus", "Opus 160 kb/s"], ["flac", "FLAC (ne poboljšava izvor)"]];
+let RECIPES = [], OUTDIR = "", CO = null, readCustomProc = null, customReady = false, seeding = 0;
+
+function builtinRecipes() {  // isto kao GET /api/recipes (docs/ux-v2.md §7, plan-contract §B) — kad backend nema rutu
+  const tgt = SET.script === "cyr" ? "cyr" : "lat", on = SET.auto_translate !== false, t = on ? tgt : "none";
+  const vdl = {video_fmt: "auto:best", audio_fmt: "all", subs: "all"}, ks = on ? ["script", "engine"] : [];
+  return [
+    {id: "samo", icon: "⬇", label: "Samo preuzmi (ceo sadržaj)", desc: "Najbolji video + sve audio trake + svi titlovi, bez prevoda i rekodiranja.",
+     dl: {...vdl}, proc: null, knobs: ["quality"]},
+    {id: "arhiva", icon: "📦", label: "Arhiva", desc: "Najbolji video + sve audio trake + svi titlovi + srpski prevod (SRT u arhivi). Bez rekodiranja.",
+     dl: {...vdl}, proc: on ? {sub_source: "auto-best", target: tgt, output: "none", keep_source: true} : null, knobs: [...ks, "quality"]},
+    {id: "arhiva_video", icon: "🎬", label: "Arhiva + video sa titlom", desc: "Isto kao Arhiva + MP4 za gledanje (HEVC VideoToolbox, upečen srpski titl, originalni zvuk).",
+     dl: {...vdl}, proc: {sub_source: "auto-best", target: t, output: "burn", encoder: "hevc", vq: 65, scale: "src", audio_out: "orig",
+     audio_enc: "aac192", subs_out: "sr+orig", keep_source: true}, knobs: [...ks, "quality"]},
+    {id: "muzika", icon: "🎵", label: "Muzika / podkast", desc: "Samo audio (MP3 320 podrazumevano), omot i tagovi; bez titlova i prevoda.",
+     dl: {video_fmt: "audio", audio_fmt: "auto", audio_conv: "mp3", subs: "none"}, proc: null, knobs: ["audio_conv"]},
+    {id: "titlovi", icon: "💬", label: "Samo titlovi", desc: "Svi titlovi + srpski prevod kao SRT fajl, bez videa.",
+     dl: {video_fmt: "none", subs: "all"}, proc: {sub_source: "auto-best", target: t, output: "srt"}, knobs: ks},
+  ];
+}
+async function loadRecipes() {
+  let r = null;
+  try { r = await api("/api/recipes"); if (!Array.isArray(r)) r = r && r.recipes; } catch { r = null; }
+  RECIPES = (Array.isArray(r) && r.length ? r : builtinRecipes()).filter(x => x && x.id && x.dl);
+  if (!RECIPES.some(x => x.id === "samo")) RECIPES.unshift(builtinRecipes()[0]);  // stariji server: nov podrazumevani izbor
+  RECIPES.sort((a, b) => (b.id === "samo") - (a.id === "samo"));
+  const so = $("#s_recipe"), cur = SET.recipe || so.value || "samo";
+  so.innerHTML = RECIPES.map(x => opt(x.id, `${x.icon || ""} ${x.id === "samo" ? "Samo preuzmi (ceo sadržaj)" : x.label}`.trim())).join("") + opt("custom", "⚙ Sve opcije (prilagođeno)");
+  setVal(so, cur);
+}
+const outDir = () => OUTDIR || SET.out_dir || "";
+// SET -> okruzenje plana (static/plan.js)
+const planEnv = () => {
+  const e = SET.engine || "synergy";
+  return {engine: e, model: ["synergy", "ollama"].includes(e) ? localModel() : SET.model || "", encoder: SET.encoder || "hevc",
+    quality: SET.quality, script: SET.script, auto_translate: SET.auto_translate !== false, plan_migrated: SET.plan_migrated === true,
+    embed: SET.embed_subs !== false, keep_original: SET.keep_original !== false, presets: TBP, modelName, presetLabel: id => ((TBP || []).find(p => p.id === id) || {}).label || id};
+};
+// zajednicke opcije za sve stavke liste: {dl, proc, after}
+function commonOpts() {
+  const st = Plan.state(), env = planEnv();
+  let o;
+  if (st.all && customReady) {  // ⚙ Sve opcije: puna forma je izvor istine za dl/proc
+    const dl = {};
+    $$("#custom [data-d]").forEach(el => dl[el.dataset.d] = el.type === "checkbox" ? el.checked : el.value);
+    if (!dl.out_dir) delete dl.out_dir;
+    if (dl.video_fmt !== "audio") delete dl.audio_conv;
+    o = {dl, proc: $("#cWhen").checked && readCustomProc ? readCustomProc() : null};
+  } else {
+    o = Plan.toOpts(st, env);
+    if (OUTDIR) o.dl.out_dir = OUTDIR;
+  }
+  const af = Plan.afterOf(st, Plan.whatOf(o.dl), env);  // Transkoduj / Izvuci audio vaze i uz Sve opcije
+  if (af) o.after = af;
+  return o;
+}
+const co = () => CO || (CO = commonOpts());
+const describe = o => Plan.describe(o, {...planEnv(), tx: Plan.state().tx && Plan.whatOf(o.dl) !== "subs"});
+function renderKnobs() {  // 📁 folder za ovo preuzimanje (uz Sve opcije: polje u formi)
+  const h = [];
+  if (!Plan.state().all)
+    h.push(`<span class="knob">📁 <button class="lnk" id="btnOut" title="${esc(outDir())} — klik: drugi folder za ovo preuzimanje">${esc(shortPath(outDir()) || "folder")}</button>${OUTDIR ? ' <button class="lnk" id="btnOutReset" title="Vrati folder iz podešavanja">vrati</button>' : ""}</span>`);
+  $("#knobs").innerHTML = h.join("");
+}
+function renderSummary() { $("#rsum").textContent = describe(co()); }
+$("#knobs").addEventListener("click", async e => {
+  if (e.target.id === "btnOutReset") { OUTDIR = ""; renderKnobs(); optsChanged(); return; }
+  if (e.target.id !== "btnOut") return;
+  try { const r = await api("/api/choose-folder", {current: outDir()}); if (r.path) { OUTDIR = r.path === SET.out_dir ? "" : r.path; renderKnobs(); optsChanged(); } }
+  catch (err) { toast(err.message, {cls: "err"}); }
+});
+// "⚙ Sve opcije": otvaranje puni formu iz stanja (ili iz pocetnih vrednosti podesavanja), zatvaranje -> redovi.
+// Polja koja redovi ne pamte (audio trake, titlovi, lektura, izlaz, enkoder, kodek, zadrzi izvor): poslednji izbor
+// iz forme (localStorage plan_custom), inace pocetne vrednosti iz Podesavanja ("Prilagođeno", "Zadrži izvor").
+const CUSTOM_KEEP = {dl: ["audio_fmt", "subs"], proc: ["review", "audio_out", "subs_out", "encoder", "audio_enc", "keep_source"]};
+const SET_KEEP = {dl_audio: ["dl", "audio_fmt"], dl_subs: ["dl", "subs"], keep_original: ["proc", "keep_source"]};
+function rememberCustom(o) {
+  const k = LS.get("plan_custom", null) || {}, r = {dl: {...(k.dl || {})}, proc: {...(k.proc || {})}};
+  for (const [g, keys] of Object.entries(CUSTOM_KEEP)) {
+    const src = g === "dl" ? (Plan.whatOf(o.dl) === "full" ? o.dl : null) : o.proc;  // samo audio/titlovi: drugo znacenje
+    if (src) for (const x of keys) if (src[x] != null) r[g][x] = src[x];
+  }
+  LS.set("plan_custom", r);
+}
+const planSeed = keep => {
+  const o = Plan.toOpts(Plan.state(), planEnv());
+  o.dl.out_dir = OUTDIR || SET.out_dir || "";
+  if (keep) {  // otvaranje forme (ne brzi izbor): vrati i polja koja redovi ne pamte
+    const k = LS.get("plan_custom", null) || {};
+    const pick = (src, keys) => Object.fromEntries(keys.filter(x => src && src[x] != null).map(x => [x, src[x]]));
+    if (Plan.whatOf(o.dl) === "full")
+      Object.assign(o.dl, {audio_fmt: SET.dl_audio || "all", subs: SET.dl_subs || "all"}, pick(k.dl, CUSTOM_KEEP.dl));
+    if (o.proc) Object.assign(o.proc, {keep_source: SET.keep_original !== false}, pick(k.proc, CUSTOM_KEEP.proc));
+  }
+  return o;
+};
+function openAll(fromSettings) {
+  const fresh = !customReady;
+  ensureCustom();
+  if (!(fromSettings && fresh)) seedCustom(planSeed(true));
+  $("#custom").hidden = false;
+}
+function closeAll() {
+  const od = customReady ? $('#custom [data-d="out_dir"]').value.trim() : "";
+  if (od) OUTDIR = od === SET.out_dir ? "" : od;
+  $("#custom").hidden = true;
+}
+function planChanged(prev, next, why) {
+  if (next.all && !prev.all) openAll(why === "recipe");
+  else if (!next.all && prev.all) closeAll();
+  else if (next.all && ["quick", "recipe"].includes(why)) seedCustom(planSeed(why === "recipe"));
+  renderKnobs(); optsChanged();
+}
+function mountPlan() {
+  const kk = LS.get("knobs", {}) || {};  // dugmici recepata iz 3.1 -> pocetne vrednosti menija (jednom)
+  const r = Plan.mount({root: $("#planBox"), env: planEnv, presets: () => TBP, modelOptions: modelOptionsHtml,
+    what: () => Plan.whatOf(co().dl), changed: planChanged,
+    load: () => LS.get("plan", null), save: st => LS.set("plan", st),
+    initial: () => ({...Plan.planFromRecipe(SET.recipe, planEnv()), quality: kk.quality, aconv: kk.audio_conv, tr_engine: kk.engine})});
+  if (r.state.all) openAll(r.first);
+  renderKnobs();
+}
+// ---- Prilagodjeno (puni meniji; postojeca polja preuzimanja i obrade)
+function ensureCustom() {
+  if (customReady) return;
+  const root = $("#custom");
+  root.innerHTML = `
+    <fieldset><legend>Preuzimanje</legend><div class="grid">
+      <div class="f"><label>Video</label><select data-d="video_fmt">${[["auto:best", "Najbolji dostupan"], ...[2160, 1440, 1080, 720, 480, 360].map(h => [`auto:${h}`, `Najbolji do ${h}p`]),
+        ["audio", "Samo audio (muzika, podkast)"], ["none", "Bez videa (samo titlovi)"]].map(([v, l]) => opt(v, l)).join("")}</select></div>
+      <div class="f"><label>Audio trake</label><select data-d="audio_fmt">${opt("all", "Sve audio trake")}${opt("auto", "Samo originalna")}</select></div>
+      <div class="f aconv"><label>Format zvuka (samo audio)</label><select data-d="audio_conv">${ACONV_FULL.map(([v, l]) => opt(v, l)).join("")}</select></div>
+      <div class="f"><label>Titlovi (CC)</label><select data-d="subs">${opt("all", "Svi CC + auto original")}${opt("all+tr", "Svi CC + auto original + YouTube automatski prevodi")}${opt("auto", "Samo najbolji za prevod")}${opt("none", "Bez titlova")}</select>
+        <div class="hint subtr" hidden>⚠ YouTube automatski prevodi na sve jezike: mnogo fajlova, a YouTube ume da vrati 429 (previše zahteva).</div></div>
+      <div class="f wide"><label>Folder arhive</label><div class="row"><input type="text" data-d="out_dir" class="grow" placeholder="prazno = iz podešavanja"><button class="sm" type="button" data-cpick>Izaberi…</button></div></div>
+    </div><div class="hint">Tačan video format, audio traku i titl za prevod biraš po videu: ⚙ na redu u listi.</div></fieldset>
+    <fieldset><legend>Obrada <label class="chk"><input type="checkbox" id="cWhen"> transkript / prevod / video odmah posle preuzimanja</label></legend>
+      <div class="small muted whenoff">Samo preuzimanje u arhivu. Obrada kasnije: 📚 Biblioteka → izaberi → Prevedi / Video sa titlom.</div>
+      <div class="pform" hidden>${procFormHtml()}</div></fieldset>`;
+  readCustomProc = initProcForm($(".pform", root), {
+    subOpts: [["auto-best", "Automatski (ručni CC → auto → whisper)"], ["whisper:run", "Lokalni whisper (transkripcija zvuka)"], ["none", "Bez titla"]],
+    audioOpts: [["orig", "Originalna traka"], ["all", "Sve preuzete audio trake"]], maxH: 99999,
+    onChange: () => { if (customReady) optsChanged(); }});
+  $('[data-d="out_dir"]', root).value = OUTDIR || SET.out_dir || "";
+  seedCustom({dl: {video_fmt: "auto:best", audio_fmt: SET.dl_audio || "all", subs: SET.dl_subs || "all"}, proc: SET.proc_when === "now" ? {} : null});
+  root.addEventListener("change", () => { syncCustom(); optsChanged(); });
+  root.addEventListener("input", e => { if (e.target.dataset.d === "out_dir") optsChanged(); });
+  $("[data-cpick]", root).onclick = async () => {
+    const inp = $('[data-d="out_dir"]', root);
+    try { const r = await api("/api/choose-folder", {current: inp.value || SET.out_dir}); if (r.path) { inp.value = r.path; optsChanged(); } } catch (err) { toast(err.message, {cls: "err"}); }
+  };
+  customReady = true;
+  syncCustom();
+}
+function seedCustom(o) {
+  seeding++;  // punjenje forme ne vraca medjustanja u plan (optsChanged)
+  try { seedCustom1(o); } finally { seeding--; }
+}
+function seedCustom1(o) {
+  const D = k => $(`#custom [data-d="${k}"]`), d = o.dl || {};
+  setVal(D("video_fmt"), d.video_fmt && !String(d.video_fmt).startsWith("id:") ? d.video_fmt : "auto:best");
+  setVal(D("audio_fmt"), d.audio_fmt === "auto" ? "auto" : "all");
+  setVal(D("subs"), d.subs || "all");
+  setVal(D("audio_conv"), d.audio_conv || "best");
+  if (d.out_dir) D("out_dir").value = d.out_dir;
+  $("#cWhen").checked = !!o.proc;
+  if (o.proc) setProcForm($("#custom .pform"), {whisper_lang: "", ...o.proc});  // bez jezika = automatski, ne stari izbor
+  syncCustom();
+}
+function syncCustom() {
+  const D = k => $(`#custom [data-d="${k}"]`), v = D("video_fmt").value, audio = v === "audio";
+  $("#custom .aconv").hidden = !audio;
+  D("audio_conv").disabled = audio && D("audio_fmt").value === "all";
+  D("audio_conv").title = D("audio_conv").disabled ? "više audio traka ide u jedan MKV bez konverzije" : "";
+  $("#custom .subtr").hidden = D("subs").value !== "all+tr";
+  const w = $("#cWhen").checked;
+  $("#custom .pform").hidden = !w; $("#custom .whenoff").hidden = w;
+  limitOutputs($("#custom .pform"), audio || v === "none");
+}
+// plan / Sve opcije promenjeni -> sazetak, procene po redu, otvoreni detalji
+function optsChanged() {
+  CO = null;
+  if (Plan.state().all && customReady && !seeding) {  // forma -> redovi (koliko moze) + pamcenje ostalih polja forme
+    const o = commonOpts();
+    Plan.syncFrom(o); rememberCustom(o); CO = null;
+  }
+  Plan.render();
+  renderSummary();
+  for (const r of ROWS.values()) {
+    if (r.kind === "single" && r.p) { paintRow(r); if (r.detOpen) buildDet(r); }
+    else if (r.kind === "list" && r.p && r.eopen) for (const id of r.eopen) paintEntryDet(r, r.idx.get(id));
+  }
+  updateBar();
+}
+
+// ================================================================ Preuzmi: linkovi i probe
+const LN = {en:"English",sr:"Srpski",de:"Deutsch",es:"Español",it:"Italiano",fr:"Français",el:"Ελληνικά",pt:"Português",ru:"Русский",ja:"日本語",ko:"한국어",zh:"中文",hi:"हिन्दी",ar:"العربية",tr:"Türkçe",pl:"Polski",nl:"Nederlands",id:"Indonesia",und:"nepoznat"};
+const ln = c => LN[(c || "und").split("-")[0]] || c;
+// uloga audio trake (manifest.audio[].role; stariji manifest / probe: original + variant)
+const ROLE = {original: "original", dub: "dub", default: "podrazumevana", descriptive: "opisna (za slabovide)"};
+const roleOf = a => a.role ? (ROLE[a.role] || a.role) : a.original ? "original" : (a.variant === "dub" ? "dub" : "");
+const isOrig = a => a.role ? a.role === "original" : !!a.original;
+const audioLbl = a => [a.lang && a.lang !== "und" ? ln(a.lang) : "Audio", roleOf(a),
+  [a.codec || a.acodec, a.abr ? a.abr + " kb/s" : "", a.channels > 2 ? a.channels + "ch" : ""].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
+const vcRank = c => ({av01: 3, vp09: 2, vp9: 2, avc1: 1}[c] || 0);  // redosled kao yt-dlp podrazumevano
+const ytId = s => (String(s).match(/(?:v=|youtu\.be\/|shorts\/|live\/|embed\/)([A-Za-z0-9_-]{11})/) || [])[1] || (/^[A-Za-z0-9_-]{11}$/.test(s) ? s : null);
+const isListUrl = u => {
+  const l = String(u).toLowerCase();
+  if (l.includes("list=") && !l.includes("v=") && !l.includes("youtu.be/")) return true;
+  if (l.includes("/playlist")) return true;
+  return /youtube\.com\/(@[^/?#]+|channel\/[^/?#]+|c\/[^/?#]+|user\/[^/?#]+)(\/(videos|shorts|streams|podcasts|releases|featured))?\/?(\?|#|$)/.test(l);
+};
+const listIdOf = u => (String(u).match(/[?&]list=([^&#]+)/) || [])[1] || null;
+function keyOf(u) {
+  if (isListUrl(u)) { const l = listIdOf(u); return l ? "l:" + l : "u:" + u.toLowerCase().replace(/^https?:\/\/(www\.|m\.)?/, "").replace(/[?#].*$/, "").replace(/\/+$/, ""); }
+  const id = ytId(u);
+  return id ? "v:" + id : "u:" + u;
+}
+function parseLinks(text) {
+  const ok = [], bad = [];
+  for (let t of String(text || "").split(/[\s,;<>"'|]+/)) {
+    t = t.trim().replace(/[)\].]+$/, "");
+    if (!t) continue;
+    if (/^https?:\/\/\S+\.\S+/i.test(t)) ok.push(t);
+    else if (/^((www|m|music)\.)?(youtube\.com|youtu\.be)\//i.test(t)) ok.push("https://" + t);
+    else if (/^@[\w.-]{2,}$/.test(t)) ok.push("https://www.youtube.com/" + t);
+    else if (/^[A-Za-z0-9_-]{11}$/.test(t) && (/[0-9_-]/.test(t) || ((t.match(/[A-Z]/g) || []).length > 1 && (t.match(/[a-z]/g) || []).length > 1)))
+      ok.push("https://www.youtube.com/watch?v=" + t);
+    else bad.push(t);
+  }
+  return {ok: [...new Set(ok)], bad};
+}
+function haveText(h) {  // obican tekst (escape pri upotrebi)
+  if (!h) return "";
+  const v = h.video || {};
+  return [h.media ? (h.kind === "audio" ? "samo audio" : `izvor ${v.height || "?"}p ${(v.codec || "").toUpperCase()}${v.premium ? " ★" : ""}`) : "izvor nije sačuvan",
+          h.audio ? `${h.audio} audio` : "", h.subs ? `${h.subs} titlova` : "",
+          h.tr ? `${h.tr} ${plural(h.tr, "prevod", "prevoda", "prevoda")}` + (h.sr && h.sr.length ? ` (${h.sr.map(x => x === "cyr" ? "ćir" : "lat").join("+")})` : "") : "",
+          (h.outputs || []).length ? `${h.outputs.length} izlaza` : "", h.size ? fmtB(h.size) : ""].filter(Boolean).join(" · ");
+}
+const TR_SHORT = {translated: "prevedeno", transcript: "transkript bez prevoda", none: "bez titla"};
+const haveShort = h => [h.kind === "audio" ? "samo audio" : `${(h.video || {}).height || "?"}p`, TR_SHORT[Plan.trInfo(h).state]].join(" · ");
+function vfLabel(v) {
+  const parts = [`${v.height}p${v.fps > 30 ? v.fps : ""}`, (v.vcodec || "").toUpperCase(), v.dr];
+  if (v.mbps) parts.push(v.mbps + " Mb/s");
+  if (v.size) parts.push("~" + fmtB(v.size));
+  let s = parts.join(" · ");
+  if (v.premium) s = "★ PREMIUM · " + s;
+  if (v.has_audio) s += " · (sa zvukom)";
+  return `${s}  [${v.id}${v.proto && v.proto.includes("m3u8") ? " hls" : ""}]`;
+}
+function afLabel(a) {
+  const p = [a.lang || "audio", a.original ? "ORIGINAL" : (a.note || "").replace(/,.*$/, ""), a.acodec, a.abr ? a.abr + " kb/s" : "", a.ch ? a.ch + "ch" : ""];
+  if (a.drc) p.push("DRC");
+  if (a.size) p.push(fmtB(a.size));
+  return p.filter(Boolean).join(" · ") + `  [${a.id}]`;
+}
+
+// ---- probe red: najvise 4 istovremeno (50 nalepljenih linkova ostaje glatko)
+const PQ = {q: [], active: 0, max: 4};
+function pump() {
+  while (PQ.active < PQ.max && PQ.q.length) {
+    const job = PQ.q.shift();
+    PQ.active++;
+    job().catch(() => {}).finally(() => { PQ.active--; pump(); });
+  }
+}
+function enqueueProbe(row) {
+  row.state = "queued"; row.err = "";
+  paintRow(row);
+  PQ.q.push(async () => {
+    if (row.removed) return;
+    row.state = "probing"; paintRow(row);
+    try {
+      const p = await api("/api/probe", {url: row.url, ...(row.extra || {})});
+      if (!row.removed) onProbed(row, p);
+    } catch (e) {
+      if (row.removed) return;
+      row.state = "error"; row.err = e.message; paintRow(row);
+    }
+    updateBar();
+  });
+  pump();
+}
+
+// ---- lista "Spremno za preuzimanje"
+const ROWS = new Map();  // kljuc (v:ID / l:LISTA / u:URL) -> red
+const RALIAS = new Map();  // prvobitni kljuc linka -> red (posle probe red dobija pravi kljuc)
+function addLinks(urls, extra) {
+  let added = 0, dup = 0, last = null;
+  for (const u of urls) {
+    const key = extra && extra.playlist ? "l:" + (listIdOf(u) || u) : keyOf(u);
+    const al = RALIAS.get(key), ex = ROWS.get(key) || (al && !al.removed ? al : null);
+    if (ex) { hl(ex.el); dup++; continue; }
+    const kind = extra && extra.playlist || isListUrl(u) ? "list" : "single";
+    const row = {key, url: u, kind, state: "queued", checked: true, ov: {}, p: null, extra, subfolder: true};
+    ROWS.set(key, row);
+    mountRow(row);
+    enqueueProbe(row);
+    added++; last = row;
+  }
+  updateBar();
+  if (added === 1 && last) last.el.scrollIntoView({block: "nearest", behavior: "smooth"});
+  return {added, dup};
+}
+function mountRow(row) {
+  const el = document.createElement("div");
+  el.dataset.key = row.key;
+  if (row.kind === "list") el.className = "grp";
+  else { el.className = "ri"; el.innerHTML = '<div class="r"></div><div class="rdet" hidden></div>'; }
+  row.el = el;
+  $("#rows").appendChild(el);
+}
+function removeRow(row) {
+  row.removed = true;
+  if (ROWS.get(row.key) === row) ROWS.delete(row.key);
+  if (row.el) row.el.remove();
+}
+function rekey(row, key) {
+  if (key === row.key) return true;
+  const ex = ROWS.get(key);
+  if (ex && ex !== row) { removeRow(row); hl(ex.el); return false; }
+  if (ROWS.get(row.key) === row) ROWS.delete(row.key);
+  RALIAS.set(row.key, row);  // isti link (@kanal, youtu.be/…) nalepljen ponovo -> duplikat bez nove probe
+  row.key = key; row.el.dataset.key = key; ROWS.set(key, row);
+  return true;
+}
+function onProbed(row, p) {
+  if (p.kind === "playlist") {
+    if (!rekey(row, "l:" + (p.id || listIdOf(p.url) || row.url))) return;
+    if (row.kind !== "list") {  // link je bio kanal/plejlista -> red postaje grupa
+      row.kind = "list"; row.el.className = "grp"; row.el.innerHTML = "";
+    }
+    row.p = p; row.state = "ready";
+    row.sel = p.entries.map(e => !(e.have && e.have.media));
+    paintGroup(row);
+    return;
+  }
+  if (!rekey(row, "v:" + p.id)) return;
+  if (row.kind === "list") {  // izgledao kao lista, a vratio jedan video
+    row.kind = "single"; row.el.className = "ri"; row.el.innerHTML = '<div class="r"></div><div class="rdet" hidden></div>';
+  }
+  row.p = p; row.state = "ready";
+  row.checked = !(p.archive && p.archive.media);  // vec imas -> podrazumevano odcekirano
+  paintRow(row);
+}
+function statusHtml(row) {
+  if (row.state === "queued") return '<span class="stt">čeka proveru…</span>';
+  if (row.state === "probing") return '<span class="stt spin">proveravam…</span>';
+  if (row.state === "error") return `<span class="err1" title="${esc(row.err)}">✕ ${esc(firstLine(row.err))}</span><button class="lnk" data-a="retry">ponovi</button>`;
+  return "";
+}
+function pickVf(p, v) {
+  if (!v || v === "none" || v === "audio") return null;
+  if (v.startsWith("id:")) return p.video_formats.find(x => "id:" + x.id === v) || null;
+  const lim = v === "auto:best" ? 1e9 : +v.split(":")[1];
+  // auto: yt-dlp bira najvisu rezoluciju pa najveci bitrate -> isto i u proceni
+  return p.video_formats.filter(x => !x.has_audio && x.height <= lim)
+    .sort((x, y) => y.height - x.height || y.fps - x.fps || (y.hdr - x.hdr) || vcRank(y.vcodec) - vcRank(x.vcodec) || (y.mbps || 0) - (x.mbps || 0))[0] || null;
+}
+function effDl(row, C) { const ov = row.ov || {}; return {v: ov.video_fmt || C.dl.video_fmt || "auto:best", a: ov.audio_fmt || C.dl.audio_fmt || "auto"}; }
+function estSize(row, C) {
+  const p = row.p; if (!p || p.live_status === "is_live" || p.live_status === "is_upcoming") return 0;
+  const {v, a} = effDl(row, C), g = p.audio_groups || [];
+  if (v === "none") return 0;
+  const extra = a === "all" ? g.slice(1).reduce((s, x) => s + (x.size || 0), 0) : 0;
+  if (v === "audio") return ((g[0] && g[0].size) || 0) + extra;
+  const vf = pickVf(p, v);
+  return vf && vf.size ? vf.size + extra : 0;
+}
+const hasOv = row => Object.keys(row.ov || {}).length > 0;
+// znacke iz probe (pojedinacan video i stavka plejliste posle provere)
+function probeBadges(p) {
+  const B = [], s = p.subs || {manual: [], auto_orig: []}, g = p.audio_groups || [], h = (p.heights || [])[0];
+  if (p.live_status === "is_live") B.push('<span class="b live">LIVE</span>');
+  else if (p.live_status === "is_upcoming") B.push('<span class="b warn">ZAKAZAN</span>');
+  if (h) B.push(`<span class="b" title="${p.premium_formats ? "Premium formati" : "najveća rezolucija"}">${h >= 2160 ? "4K" : esc(h) + "p"}${p.premium_formats ? "★" : ""}</span>`);
+  if (p.hdr) B.push('<span class="b">HDR</span>');
+  if (g.length > 1) B.push(`<span class="b" title="${esc(g.map(x => x.lang + (x.original ? "★" : "")).join(", "))}">${g.length} audio</span>`);
+  const nm = (s.manual || []).length;
+  if (nm) B.push(`<span class="b" title="${esc(s.manual.map(x => x.key).join(", "))}">${nm} CC</span>`);
+  else if ((s.auto_orig || []).length) B.push('<span class="b plain" title="samo automatski titl">auto CC</span>');
+  else if (p.live_status !== "is_live") B.push('<span class="b warn" title="Nema titla — prevod ide preko whisper-a">bez CC</span>');
+  if (s.has_sr) B.push('<span class="b ok">SR CC</span>');
+  return B;
+}
+// detalji iz probe: najveci kvalitet, audio trake, titlovi (za ⚙ pojedinacnog videa i stavke plejliste)
+function probeInfoHtml(p) {
+  const chip = (t, cls = "", title = "") => `<span class="b ${cls}"${title ? ` title="${esc(title)}"` : ""}>${esc(t)}</span>`;
+  const vf = p.video_formats || [], top = (vf.length && pickVf(p, "auto:best")) || vf[0], g = p.audio_groups || [], s = p.subs || {manual: [], auto_orig: []};
+  const q = top ? [`${top.height}p${top.fps > 30 ? top.fps : ""}`, (top.vcodec || "").toUpperCase(), top.dr && top.dr !== "SDR" ? top.dr : "", top.premium ? "★ Premium" : ""].filter(Boolean).join(" ") : "";
+  const man = s.manual || [], auto = s.auto_orig || [];
+  return `<div class="pinfo">
+    <div class="chips"><span class="muted">Najveći kvalitet:</span>${q ? chip(q, top.premium ? "ok" : "") : '<span class="muted">nema video formata</span>'}${p.hdr ? chip("HDR") : ""}${p.premium_formats && !(top && top.premium) ? chip("Premium ★", "ok") : ""}<span class="muted">${esc([vf.length ? vf.length + " video formata" : "", fmtD(p.duration), p.live_status === "is_live" ? "uživo" : ""].filter(Boolean).join(" · "))}</span></div>
+    <div class="chips"><span class="muted">Audio:</span>${g.length ? g.map(a => chip([ln(a.lang), roleOf(a), a.acodec, a.abr ? a.abr + " kb/s" : ""].filter(Boolean).join(" · "), isOrig(a) ? "ok" : "plain", a.lang)).join("") : '<span class="muted">—</span>'}</div>
+    <div class="chips"><span class="muted">Titlovi:</span>${man.map(x => chip("CC " + (x.name || x.key), /^(sr|sh)\b/.test(x.key) ? "ok" : "", x.key)).join("")}${auto.map(k => chip("auto " + ln(String(k).replace(/-orig$/, "")), "plain", k)).join("")}${man.length || auto.length ? "" : '<span class="muted">nema — prevod ide preko whisper-a</span>'}</div>
+  </div>`;
+}
+function singleHtml(row) {
+  const p = row.p, id = p ? p.id : ytId(row.url), th = mq(id) || (p && p.thumbnail) || "", ready = row.state === "ready";
+  const title = p ? p.title : row.url, meta = [];
+  let B = [];
+  if (p) {
+    if (p.channel) meta.push(esc(p.channel));
+    if (p.duration) meta.push(fmtD(p.duration));
+    B = probeBadges(p);
+    const a = p.archive;
+    if (a) B.push(a.media ? `<span class="b ok" title="${esc(haveText(a))}">✓ imaš · ${esc(haveShort(a))}</span>` : `<span class="b warn" title="${esc(haveText(a))}">delimično u biblioteci</span>`);
+    const sz = estSize(row, co());
+    if (sz) B.push(`<span title="procena veličine">~${fmtB(sz)}</span>`);
+  }
+  const acts = [];
+  if (p && p.in_list) acts.push('<button class="sm" data-a="list" title="Učitaj celu plejlistu kojoj link pripada">📃<span class="lbl"> cela plejlista</span></button>');
+  if (p) acts.push(`<button class="sm gear${hasOv(row) ? " on" : ""}" data-a="det" aria-expanded="${!!row.detOpen}" title="Detalji za ovaj video: tačan format, audio, titl za prevod${hasOv(row) ? " (izmenjeno)" : ""}">⚙</button>`);
+  acts.push('<button class="sm x" data-a="rm" title="Ukloni sa liste" aria-label="Ukloni">✕</button>');
+  return `<input type="checkbox" class="rc"${row.checked && ready ? " checked" : ""}${ready ? "" : " disabled"} aria-label="Izaberi">
+    ${th ? `<img class="rt" src="${esc(th)}" alt="" loading="lazy">` : '<span class="rt noimg">▶</span>'}
+    <div class="rm"><div class="rtl" title="${esc(title)}">${esc(title)}</div>
+      <div class="rsub">${meta.length ? `<span>${meta.join(" · ")}</span>` : ""}${B.join("")}${statusHtml(row)}</div></div>
+    <div class="ra">${acts.join("")}</div>`;
+}
+function paintRow(row) {
+  if (row.removed || !row.el) return;
+  if (row.kind === "list") return paintGroup(row);
+  const r = $(".r", row.el);
+  r.innerHTML = singleHtml(row);
+  r.classList.toggle("sel", row.state === "ready" && row.checked);
+}
+
+// ---- detalji jednog videa (per-item override)
+function buildDet(row) {
+  const det = $(".rdet", row.el);
+  row.ov = row.ov || {};
+  det.innerHTML = detHtml(row.p, row.ov);
+  fillDet(det, row);
+}
+function fillDet(det, obj) {  // obj: {p, ov} (red pojedinacnog videa ili stavka plejliste)
+  for (const el of $$("select[data-o]", det)) el.value = obj.ov[el.dataset.o] || "";
+  detEst(obj, det);
+}
+function detHtml(p, ov) {
+  const a = p.archive, C = co(), g = p.audio_groups || [], nAll = (p.sub_tracks || []).length;
+  p.heights = p.heights || []; p.video_formats = p.video_formats || []; p.sub_tracks = p.sub_tracks || []; p.subs = p.subs || {manual: [], auto_orig: []};
+  const dv = C.dl.video_fmt || "auto:best", da = C.dl.audio_fmt || "auto", ds = C.dl.subs || "auto";
+  const vIn = dv === "audio" ? "samo audio" : dv === "none" ? "bez videa" : dv === "auto:best" ? "najbolji dostupan" : dv.startsWith("auto:") ? "do " + dv.slice(5) + "p" : dv;
+  let v = opt("", `Kao gore — ${vIn}`) + '<optgroup label="Automatski">' + opt("auto:best", "Najbolji dostupan") + p.heights.map(h => opt(`auto:${h}`, `Najbolji do ${h}p`)).join("") + "</optgroup>";
+  if (p.video_formats.length) v += '<optgroup label="Tačan format">' + p.video_formats.map(x => opt(`id:${x.id}`, vfLabel(x))).join("") + "</optgroup>";
+  v += '<optgroup label="Bez videa">' + opt("audio", "Samo audio (bez videa) — muzika, podkast") + opt("none", "Ne preuzimaj ni video ni audio (samo titlovi)") + "</optgroup>";
+  let au = opt("", `Kao gore — ${da === "all" ? "sve audio trake" : "originalna traka"}`) + opt("auto", "Automatski — originalna traka");
+  if (g.length > 1) au += opt("all", `Sve audio trake (${g.length}: ${g.map(x => ln(x.lang) + (isOrig(x) ? " ★orig" : roleOf(x) ? " " + roleOf(x) : "")).join(", ")})`);
+  const byLang = {};
+  for (const x of p.audio_formats || []) (byLang[x.lang || "?"] ||= []).push(x);
+  for (const [lang, xs] of Object.entries(byLang)) au += `<optgroup label="Tačno: ${esc(lang)}">` + xs.map(x => opt(`id:${x.id}`, afLabel(x))).join("") + "</optgroup>";
+  let su = opt("", `Kao gore — ${ds === "all" ? "svi titlovi" : ds === "all+tr" ? "svi titlovi + YT automatski prevodi" : ds === "none" ? "bez titlova" : "najbolji za prevod"}`) + opt("auto", "Automatski — samo najbolji za prevod");
+  if (nAll > 1) su += opt("all", `Svi titlovi (${nAll}: ${p.subs.manual.length} ručnih CC${p.subs.auto_orig.length ? " + auto original" : ""})`);
+  if (nAll) su += '<optgroup label="Samo jedan">' + p.sub_tracks.map(t => opt(t.value, t.label)).join("") + "</optgroup>";
+  su += opt("none", "Bez titlova");
+  const ss = opt("", "Kao gore — automatski (ručni CC → auto → whisper)") + p.sub_tracks.map(t => opt(t.value, t.label)).join("")
+    + opt("whisper:run", "Lokalni whisper (transkripcija zvuka)") + opt("none", "Bez titla");
+  let ao = opt("", "Kao gore — originalna traka");
+  if (g.length > 1) { ao += opt("all", "Sve preuzete audio trake"); for (const x of g) if (!x.original) ao += opt(`fid:${x.id}`, `${ln(x.lang)} (${x.lang})${roleOf(x) ? " · " + roleOf(x) : ""}`); }
+  const procOn = !!C.proc, vidOut = procOn && ["burn", "soft", "both"].includes(C.proc.output);
+  return `${probeInfoHtml(p)}
+    ${a ? `<div class="have${a.media ? "" : " part"}"><span><b>${a.media ? "U biblioteci već imaš:" : "U biblioteci delimično:"}</b> ${esc(haveText(a))}${a.copies > 1 ? ` · ${a.copies} kopije` : ""}</span>
+      ${trBadgeFor(a, a.folder, !!a.media)}
+      <span class="row"><button class="sm" data-a="show">Prikaži u biblioteci</button><button class="sm" data-a="open">Otvori folder</button></span></div>` : ""}
+    <div class="grid">
+      <div class="f wide"><label>Video format</label><select data-o="video_fmt">${v}</select></div>
+      <div class="f"><label>Audio trake</label><select data-o="audio_fmt">${au}</select></div>
+      <div class="f"><label>Titlovi (CC) u arhivu</label><select data-o="subs">${su}</select></div>
+      <div class="f${procOn ? "" : " dis"}" title="${procOn ? "" : "Izbor gore nema transkript, prevod ni video sa titlom"}"><label>Titl za prevod</label><select data-o="sub_source"${procOn ? "" : " disabled"}>${ss}</select></div>
+      <div class="f${vidOut ? "" : " dis"}" title="${vidOut ? "" : "Važi samo uz Video sa titlom"}"><label>Audio u videu sa titlom</label><select data-o="audio_out"${vidOut ? "" : " disabled"}>${ao}</select></div>
+      ${a && a.media ? `<div class="f"><label>Već preuzeto</label><label class="chk"><input type="checkbox" data-o="force"${ov.force ? " checked" : ""}> preuzmi ponovo (novi izvor pored starog)</label></div>` : ""}
+    </div>
+    ${p.sub_note ? `<div class="note">${esc(p.sub_note)}</div>` : ""}
+    <div class="actions"><span class="est"></span><button class="sm" data-a="reset">Vrati na izbor gore</button><button class="sm" data-a="close">Zatvori</button></div>`;
+}
+function detEst(row, det) {
+  const e = det && $(".est", det); if (!e) return;
+  const p = row.p, C = co(), {v, a} = effDl(row, C), parts = [];
+  if (v === "audio") parts.push("samo audio");
+  else if (v === "none") parts.push("bez videa");
+  else { const vf = pickVf(p, v); parts.push(vf ? `video ≈ ${vf.height}p${vf.fps > 30 ? vf.fps : ""} ${(vf.vcodec || "").toUpperCase()}${vf.premium ? " ★" : ""}${vf.mbps ? " · " + vf.mbps + " Mb/s" : ""}` : "video: najbolji dostupan"); }
+  const na = (p.audio_groups || []).length;
+  parts.push(a === "all" && na > 1 ? `${na} audio trake` : a === "auto" || a === "all" ? "originalni audio" : "izabrani audio");
+  const sz = estSize(row, C); if (sz) parts.push("~" + fmtB(sz));
+  if (["audio", "none"].includes(v) && C.proc && ["burn", "soft", "both"].includes(C.proc.output)) parts.push("⚠ bez videa → samo titl (SRT u arhivi)");
+  e.textContent = parts.join(" · ");
+}
+function toggleDet(row, on) {
+  const det = $(".rdet", row.el);
+  row.detOpen = on === undefined ? !row.detOpen : on;
+  if (row.detOpen) buildDet(row);
+  det.hidden = !row.detOpen;
+  paintRow(row);
+}
+// per-item opcije za /api/jobs/batch (items[i].opts; backend ih duboko spaja preko zajednickih)
+function itemOpts(row, C) {
+  const ov = row.ov || {}, dl = {}, pr = {};
+  for (const k of ["video_fmt", "audio_fmt", "subs"]) if (ov[k]) dl[k] = ov[k];
+  if (ov.force) dl.force = true;
+  if (C.proc) {
+    if (ov.sub_source) pr.sub_source = ov.sub_source;
+    const vidOut = ["burn", "soft", "both"].includes(C.proc.output);
+    if (ov.audio_out && vidOut) {
+      pr.audio_out = ov.audio_out;
+      // izlaz trazi vise audio traka -> preuzmi ih
+      if ((ov.audio_out === "all" || ov.audio_out.startsWith("fid:")) && (dl.audio_fmt || C.dl.audio_fmt || "auto") === "auto") dl.audio_fmt = "all";
+    }
+    const v = dl.video_fmt || C.dl.video_fmt;
+    if (["audio", "none"].includes(v) && vidOut) pr.output = "none";
+  }
+  const o = {};
+  if (Object.keys(dl).length) o.dl = dl;
+  if (Object.keys(pr).length) o.proc = pr;
+  return Object.keys(o).length ? o : null;
+}
+
+// ---- grupa: plejlista / kanal (ravna lista, do ~2000 redova; probe stavke tek na klik ili "Proveri sve")
+const EP = new Map();  // ID videa -> {st: probing|ready|error, p, err, prom} — kes u memoriji, ponovni klik ne pravi novi zahtev
+const EQ = {q: [], active: 0, max: 3};
+function entryState(e) {
+  const s = EP.get(e.id);
+  if (!s) return "";
+  if (s.st === "probing") return '<span class="stt spin">proveravam…</span>';
+  if (s.st === "error") return `<span class="err1" title="${esc(s.err)}">✕ ${esc(firstLine(s.err))}</span>`;
+  return probeBadges(s.p).join("");
+}
+function entryHtml(row, e, i, on) {
+  const have = !!(e.have && e.have.media), open = row.eopen.has(e.id), s = EP.get(e.id), dur = e.duration || (s && s.p && s.p.duration);
+  return `<div class="pr${have ? " dim" : ""}${open ? " open" : ""}" data-i="${i}"><input type="checkbox"${on ? " checked" : ""} aria-label="Izaberi"><img loading="lazy" src="${esc(e.thumbnail || mq(e.id))}" alt="">`
+    + `<span class="t"><span class="tt" title="${esc(e.title)}">${esc(e.title)}</span><small>${esc([fmtD(dur), e.tab].filter(Boolean).join(" · "))}${e.live_status === "is_live" ? " · ● LIVE" : ""}<span class="pb">${entryState(e)}</span></small></span>`
+    + entryBadge(e, have)
+    + `<button type="button" class="sm gear${row.eov.has(e.id) ? " on" : ""}" data-a="edet" aria-expanded="${open}" title="Detalji: formati, audio trake, titlovi${row.eov.has(e.id) ? " (izmenjeno)" : ""}" aria-label="Detalji">⚙</button></div>`;
+}
+// stanje stavke prema prethodnom snimku plejliste (probe: state have|missing|new)
+function entryBadge(e, have) {
+  if (have) return `<span class="b ok" title="${esc(haveText(e.have) + " · " + Plan.trText(Plan.trInfo(e.have)).text)}">✓ imaš</span>`;
+  if (e.state === "new") return `<span class="b new" title="Nova u plejlisti od prošle provere${e.have ? " · delimično u biblioteci" : ""}">novo</span>`;
+  if (e.have) return `<span class="b warn" title="${esc(haveText(e.have))}">delimično</span>`;
+  if (e.state === "missing") return '<span class="b plain" title="Nije u biblioteci">nedostaje</span>';
+  return "<span></span>";
+}
+const fmtWhen = v => {  // epoch (s/ms) ili ISO -> "30.09.2026. 17:05"
+  if (!v) return "";
+  const d = typeof v === "number" ? new Date(v < 1e12 ? v * 1000 : v) : new Date(v);
+  if (isNaN(d)) return String(v);
+  const p2 = x => String(x).padStart(2, "0");
+  return `${p2(d.getDate())}.${p2(d.getMonth() + 1)}.${d.getFullYear()}. ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+};
+function removedHtml(rem) {
+  if (!Array.isArray(rem) || !rem.length) return "";
+  return `<details class="gnote"><summary>Uklonjeno sa YouTube-a: ${rem.length}</summary><ul>${rem.slice(0, 300).map(r =>
+    `<li>${esc(r.title || r.id)}${r.last_seen ? ` <span class="small">· poslednji put viđeno ${esc(fmtWhen(r.last_seen))}</span>` : ""}</li>`).join("")}${rem.length > 300 ? `<li>… još ${rem.length - 300}</li>` : ""}</ul></details>`;
+}
+function paintEntry(row, i) {  // samo znacke/stanje/⚙ (checkbox i slika ostaju)
+  const el = row.prs[i], e = row.p.entries[i]; if (!el) return;
+  const ov = row.eov.has(e.id), open = row.eopen.has(e.id), g = $("button.gear", el);
+  $(".pb", el).innerHTML = entryState(e);
+  el.classList.toggle("open", open);
+  g.classList.toggle("on", ov); g.setAttribute("aria-expanded", String(open));
+  g.title = "Detalji: formati, audio trake, titlovi" + (ov ? " (izmenjeno)" : "");
+}
+function entryObj(row, e) {
+  const s = EP.get(e.id);
+  return {p: s && s.p, ov: row.eov.get(e.id) || {}};
+}
+function paintEntryDet(row, i) {
+  const pr = row.prs[i], e = row.p.entries[i]; if (!pr) return;
+  let d = pr.nextElementSibling;
+  if (d && !d.classList.contains("prdet")) d = null;
+  if (!row.eopen.has(e.id)) { if (d) d.remove(); return; }
+  if (!d) { d = document.createElement("div"); d.className = "prdet"; pr.after(d); }
+  d.dataset.id = e.id; d.hidden = pr.hidden;
+  const s = EP.get(e.id);
+  if (!s || s.st === "probing") { d.innerHTML = '<span class="stt spin">proveravam formate, audio trake i titlove…</span>'; return; }
+  if (s.st === "error") { d.innerHTML = `<div class="err">${esc(s.err)}</div><div class="actions"><button class="sm" data-a="eretry">Proveri ponovo</button><button class="sm" data-a="close">Zatvori</button></div>`; return; }
+  const o = entryObj(row, e);
+  d.innerHTML = detHtml(o.p, o.ov);
+  fillDet(d, o);
+}
+function probeEntry(e) {
+  let s = EP.get(e.id);
+  if (s && s.st !== "error") return s.prom;
+  s = {st: "probing", p: null, err: ""};
+  EP.set(e.id, s);
+  s.prom = api("/api/probe", {url: e.url}).then(p => {
+    if (!p || p.kind === "playlist" || !p.id) throw new Error("nije pojedinačan video");
+    s.p = p; s.st = "ready";
+  }).catch(x => { s.st = "error"; s.err = x.message || "greška"; }).then(() => entryChanged(e.id));
+  entryChanged(e.id);
+  return s.prom;
+}
+function entryChanged(id) {
+  for (const row of ROWS.values()) {
+    if (row.kind !== "list" || !row.p || !row.idx || row.removed) continue;
+    const i = row.idx.get(id); if (i === undefined) continue;
+    paintEntry(row, i);
+    if (row.eopen.has(id)) paintEntryDet(row, i);
+  }
+  updateBar();
+}
+function toggleEntry(row, i) {
+  const e = row.p.entries[i]; if (!e) return;
+  if (row.eopen.has(e.id)) row.eopen.delete(e.id);
+  else { row.eopen.add(e.id); probeEntry(e); }
+  paintEntry(row, i); paintEntryDet(row, i);
+}
+// "Proveri sve": probe izabranih (ili svih) stavki u pozadini, najvise 3 istovremeno
+function checkLabel(row) { const n = row.sel.filter(Boolean).length; return n && n < row.sel.length ? `Proveri izabrane (${n})` : "Proveri sve"; }
+function paintChk(row) {
+  const b = $('button[data-a="chk"]', row.el), t = $(".chkp", row.el), c = row.chk; if (!b) return;
+  if (c && c.run) { b.textContent = "Stani"; b.title = "Zaustavi proveru (započete se završavaju)"; t.innerHTML = `<span class="spin">provereno ${c.done}/${c.total}</span>`; }
+  else { b.textContent = checkLabel(row); b.title = "Proveri formate, audio trake i titlove (najviše 3 istovremeno); nije uslov za preuzimanje"; t.textContent = c ? `provereno ${c.done}/${c.total}${c.done >= c.total ? " ✓" : ""}` : ""; }
+}
+function checkAll(row) {
+  if (row.chk && row.chk.run) { EQ.q = EQ.q.filter(([r]) => r !== row); row.chk.run = false; paintChk(row); return; }
+  const n = row.sel.filter(Boolean).length, some = n && n < row.sel.length;
+  const list = row.p.entries.filter((e, i) => !some || row.sel[i]);
+  const todo = list.filter(e => { const s = EP.get(e.id); return !s || s.st !== "ready"; });
+  row.chk = {run: todo.length > 0, total: list.length, done: list.length - todo.length};
+  for (const e of todo) EQ.q.push([row, e, row.chk]);
+  paintChk(row); pumpE();
+}
+function pumpE() {
+  while (EQ.active < EQ.max && EQ.q.length) {
+    const [row, e, c] = EQ.q.shift();
+    if (row.removed || row.chk !== c || !c.run) continue;
+    EQ.active++;
+    probeEntry(e).then(() => {
+      EQ.active--;
+      if (row.chk === c && !row.removed) { c.done = Math.min(c.total, c.done + 1); if (c.done >= c.total) c.run = false; paintChk(row); }
+      pumpE();
+    });
+  }
+}
+function paintGroup(row) {
+  const p = row.p, el = row.el;
+  if (!p) {
+    el.innerHTML = `<div class="gh"><span class="gi" aria-hidden="true">📃</span><div class="rm"><div class="rtl" title="${esc(row.url)}">${esc(row.url)}</div>
+      <div class="rsub"><span>plejlista / kanal</span>${row.state === "probing" ? '<span class="stt spin">učitavam listu (kanal može potrajati)…</span>' : statusHtml(row)}</div></div>
+      <div class="ra"><button class="sm x" data-a="rm" title="Ukloni sa liste" aria-label="Ukloni">✕</button></div></div>`;
+    return;
+  }
+  const tabs = (p.tabs || []).map(t => `<span class="b plain"${t.error ? ` title="${esc(t.error)}"` : ""}>${esc(t.name)}: ${esc(t.count)}${t.error ? " ⚠" : ""}</span>`).join("");
+  const n = p.entries.length;
+  row.eov = row.eov || new Map(); row.eopen = row.eopen || new Set();
+  row.idx = new Map(p.entries.map((e, i) => [e.id, i]));
+  for (const id of [...row.eopen]) if (!row.idx.has(id)) row.eopen.delete(id);
+  for (const id of [...row.eov.keys()]) if (!row.idx.has(id)) row.eov.delete(id);
+  el.innerHTML = `<div class="gh">
+      <button class="sm tog" data-a="tog" aria-expanded="${!row.collapsed}" title="Sklopi / rasklopi">${row.collapsed ? "▶" : "▼"}</button>
+      <div class="rm"><div class="rtl" title="${esc(p.title)}">📃 ${esc(p.title)}</div>
+        <div class="rsub"><span>${esc([p.uploader, n + " " + plural(n, "stavka", "stavke", "stavki")].filter(Boolean).join(" · "))}</span>
+          <span class="b ${p.have_count ? "ok" : "plain"}">u biblioteci ${esc(p.have_count || 0)}/${esc(p.count)}</span>${p.new_count ? `<span class="b new" title="Nove stavke od prošle provere plejliste">nove ${esc(p.new_count)}</span>` : ""}${Array.isArray(p.removed) && p.removed.length ? `<span class="b warn" title="Bile su u plejlisti pri prošloj proveri, sada ih nema">uklonjeno ${p.removed.length}</span>` : ""}${tabs}<span class="cnt"></span></div></div>
+      <div class="ra"><button class="sm x" data-a="rm" title="Ukloni plejlistu sa liste" aria-label="Ukloni">✕</button></div></div>
+    <div class="gbody"${row.collapsed ? " hidden" : ""}>
+      <div class="gtools"><span class="seg"><button data-s="all">Sve</button><button data-s="none">Ništa</button><button data-s="new" title="Samo oni kojih nema u biblioteci">Samo novi</button>${p.new_count ? `<button data-s="fresh" title="Samo stavke nove od prošle provere plejliste">Nove (${esc(p.new_count)})</button>` : ""}</span>
+        <input type="search" class="plf" placeholder="Filter po naslovu…" aria-label="Filter po naslovu" value="${esc(row.q || "")}">
+        <label class="chk" title="Stavke idu u podfolder sa imenom plejliste"><input type="checkbox" class="gsub"${row.subfolder !== false ? " checked" : ""}> podfolder „${esc(String(p.title || "").length > 40 ? String(p.title).slice(0, 40) + "…" : p.title || "")}“</label>
+        ${n ? '<button class="sm" data-a="chk"></button><span class="chkp"></span>' : ""}</div>
+      ${removedHtml(p.removed)}
+      <div class="gl">${n ? p.entries.map((e, i) => entryHtml(row, e, i, row.sel[i])).join("") : '<div class="empty">Prazna plejlista.</div>'}</div></div>`;
+  row.prs = $$(".pr", el);
+  row.lt = p.entries.map(e => String(e.title || "").toLowerCase());
+  for (const id of row.eopen) paintEntryDet(row, row.idx.get(id));
+  if (row.q) filterGroup(row, row.q);
+  groupCount(row);
+}
+function groupCount(row) {
+  const n = row.sel ? row.sel.filter(Boolean).length : 0, c = $(".cnt", row.el);
+  if (c) c.textContent = `izabrano ${n} od ${row.p.entries.length}`;
+  paintChk(row);
+}
+function filterGroup(row, q) {
+  q = String(q || "").trim().toLowerCase(); row.q = q;
+  row.prs.forEach((el, i) => {
+    const h = !!q && !row.lt[i].includes(q); if (el.hidden !== h) el.hidden = h;
+    const d = el.nextElementSibling; if (d && d.classList.contains("prdet") && d.hidden !== h) d.hidden = h;
+  });
+}
+function selectGroup(row, s) {
+  row.p.entries.forEach((e, i) => {
+    const el = row.prs[i]; if (el.hidden) return;
+    row.sel[i] = s === "all" || (s === "new" && !(e.have && e.have.media)) || (s === "fresh" && e.state === "new");
+    el.firstElementChild.checked = row.sel[i];
+  });
+  groupCount(row);
+}
+
+// ---- dogadjaji liste
+$("#rows").addEventListener("click", e => {
+  const el = e.target.closest("[data-key]"), row = el && ROWS.get(el.dataset.key); if (!row) return;
+  const pd = e.target.closest(".prdet");
+  if (pd) {  // detalji stavke plejliste
+    const b = e.target.closest("button[data-a]"), i = row.idx && row.idx.get(pd.dataset.id); if (!b || i === undefined) return;
+    const en = row.p.entries[i], s = EP.get(en.id), a = b.dataset.a;
+    if (a === "close") toggleEntry(row, i);
+    else if (a === "eretry") probeEntry(en);
+    else if (a === "reset") { row.eov.delete(en.id); paintEntry(row, i); paintEntryDet(row, i); updateBar(); }
+    else if (a === "show" && s && s.p) showInLib(s.p.id);
+    else if (a === "open" && s && s.p && s.p.archive) api("/api/open-path", {path: s.p.archive.folder}).catch(x => toast(x.message, {cls: "err"}));
+    return;
+  }
+  const gl = e.target.closest(".pr");
+  if (gl) {  // checkbox = izbor (shift = opseg); klik na red ili ⚙ = detalji + probe te stavke
+    if (e.target.tagName === "INPUT") { lastShift = e.shiftKey; return; }
+    if (!e.target.closest("button") && String(getSelection() || "")) return;
+    toggleEntry(row, +gl.dataset.i);
+    return;
+  }
+  const b = e.target.closest("[data-a],[data-s]");
+  if (!b) {  // klik po redu = cekiraj
+    const r = e.target.closest(".ri > .r");
+    if (!r || e.target.closest("input,select,button,a,label") || String(getSelection() || "")) return;
+    const cb = $(".rc", r); if (!cb || cb.disabled) return;
+    cb.checked = !cb.checked; row.checked = cb.checked; r.classList.toggle("sel", cb.checked); updateBar();
+    return;
+  }
+  if (b.dataset.s) { selectGroup(row, b.dataset.s); updateBar(); return; }
+  const a = b.dataset.a;
+  if (a === "rm") { removeRow(row); updateBar(); }
+  else if (a === "retry") enqueueProbe(row);
+  else if (a === "det") toggleDet(row);
+  else if (a === "close") toggleDet(row, false);
+  else if (a === "reset") { row.ov = {}; buildDet(row); paintRow(row); updateBar(); }
+  else if (a === "show") showInLib(row.p.id);
+  else if (a === "open") api("/api/open-path", {path: row.p.archive.folder}).catch(x => toast(x.message, {cls: "err"}));
+  else if (a === "list") { const r = addLinks([row.p.url], {playlist: true}); if (r.added) toast("Učitavam celu plejlistu…"); }
+  else if (a === "chk") checkAll(row);
+  else if (a === "tog") {
+    row.collapsed = !row.collapsed;
+    $(".gbody", row.el).hidden = row.collapsed; b.textContent = row.collapsed ? "▶" : "▼"; b.setAttribute("aria-expanded", String(!row.collapsed));
+  }
+});
+let lastShift = false;
+$("#rows").addEventListener("change", e => {
+  const t = e.target, el = t.closest("[data-key]"), row = el && ROWS.get(el.dataset.key); if (!row) return;
+  if (t.classList.contains("rc")) { row.checked = t.checked; t.closest(".r").classList.toggle("sel", t.checked); updateBar(); return; }
+  if (t.dataset.o) {
+    const val = t.type === "checkbox" ? t.checked : t.value, pd = t.closest(".prdet");
+    if (pd) {  // per-item izbor za stavku plejliste
+      const i = row.idx && row.idx.get(pd.dataset.id); if (i === undefined) return;
+      const id = pd.dataset.id, ov = row.eov.get(id) || {};
+      if (val) ov[t.dataset.o] = val; else delete ov[t.dataset.o];
+      if (Object.keys(ov).length) row.eov.set(id, ov); else row.eov.delete(id);
+      paintEntry(row, i); detEst(entryObj(row, row.p.entries[i]), pd); updateBar();
+      return;
+    }
+    if (val) row.ov[t.dataset.o] = val; else delete row.ov[t.dataset.o];
+    paintRow(row); detEst(row, $(".rdet", row.el)); updateBar();
+    return;
+  }
+  if (t.classList.contains("gsub")) { row.subfolder = t.checked; return; }
+  const pr = t.closest(".pr");
+  if (pr && row.sel) {
+    const i = +pr.dataset.i;
+    if (lastShift && row.lastI != null && row.lastI !== i) {  // shift+klik = opseg
+      const [a, b] = [Math.min(row.lastI, i), Math.max(row.lastI, i)];
+      for (let j = a; j <= b; j++) if (!row.prs[j].hidden) { row.sel[j] = t.checked; row.prs[j].firstElementChild.checked = t.checked; }
+    }
+    row.sel[i] = t.checked; row.lastI = i; lastShift = false;
+    groupCount(row); updateBar();
+  }
+});
+let fT = 0;
+$("#rows").addEventListener("input", e => {
+  if (!e.target.classList.contains("plf")) return;
+  const row = ROWS.get(e.target.closest("[data-key]").dataset.key); if (!row) return;
+  clearTimeout(fT); fT = setTimeout(() => filterGroup(row, e.target.value), 120);
+});
+$("#dlAll").addEventListener("click", e => {
+  const s = e.target.closest("[data-all]"); if (!s) return;
+  const m = s.dataset.all;
+  for (const row of ROWS.values()) {
+    if (row.state !== "ready") continue;
+    if (row.kind === "list") selectGroup(row, m);
+    else { row.checked = m === "all" || (m === "new" && !(row.p.archive && row.p.archive.media)); paintRow(row); }
+  }
+  updateBar();
+});
+
+// ---- izbor + slanje
+function collect() {
+  const C = co(), seen = new Set(), singles = [], groups = [];
+  let probing = 0, size = 0;
+  for (const row of ROWS.values()) {
+    if (row.state === "queued" || row.state === "probing") { probing++; continue; }
+    if (row.state !== "ready" || row.kind !== "single" || !row.checked || seen.has(row.p.id)) continue;
+    seen.add(row.p.id); singles.push(row); size += estSize(row, C);
+  }
+  let unk = 0;
+  for (const row of ROWS.values()) {
+    if (row.kind !== "list" || row.state !== "ready") continue;
+    const items = [];
+    row.p.entries.forEach((e, i) => {
+      if (!row.sel[i] || seen.has(e.id)) return;
+      seen.add(e.id); items.push(e);
+      const s = EP.get(e.id), z = s && s.p ? estSize({p: s.p, ov: row.eov.get(e.id) || {}}, C) : 0;
+      if (z) size += z; else unk++;
+    });
+    if (items.length) groups.push([row, items]);
+  }
+  return {C, singles, groups, probing, size, unk, n: singles.length + groups.reduce((a, [, it]) => a + it.length, 0)};
+}
+function recipeLabel() { const st = Plan.state(); return Plan.shortLabel(st, Plan.whatOf(co().dl), st.all); }
+function updateBar() {
+  const {n, probing, size, unk} = collect();
+  $("#btnGo").textContent = `Preuzmi (${n})`;
+  $("#btnGo").disabled = !n || SENDING;
+  $("#dlSum").innerHTML = [`<b>${n} ${plural(n, "stavka", "stavke", "stavki")}</b>`, `izbor: ${esc(recipeLabel())}`,
+    size ? `≈ ${fmtB(size)}${unk ? ` + ${unk} neproverenih` : ""}` : "", probing ? `<span class="spin">${probing} se proverava</span>` : ""].filter(Boolean).join(" · ");
+  $("#dlBar").hidden = !ROWS.size;
+  $("#dlEmpty").hidden = !!ROWS.size;
+  $("#dlAll").hidden = !ROWS.size;
+}
+let SENDING = false, INFLIGHT = 0;
+const MINE = new Set();
+const slim = e => ({url: e.url, title: e.title, thumbnail: e.thumbnail, id: e.id, live_status: e.live_status});
+async function submitAll() {
+  const {C, singles, groups, n} = collect();
+  if (!n || SENDING) return;
+  SENDING = true; INFLIGHT++; $("#btnGo").disabled = true; $("#btnGo").textContent = "Šaljem…";
+  const calls = [];
+  if (singles.length) calls.push(["s", singles, null, api("/api/jobs/batch", {opts: C, items: singles.map(r => {
+    const it = slim(r.p), o = itemOpts(r, C); if (o) it.opts = o; return it; })})]);
+  for (const [row, items] of groups) {
+    const o = clone(C); o.dl.subfolder = row.subfolder !== false;
+    const its = items.map(e => {  // per-item izbori iz detalja stavke -> items[i].opts
+      const it = slim(e), ov = row.eov && row.eov.get(e.id), io = ov ? itemOpts({ov}, o) : null;
+      if (io) it.opts = io;
+      return it;
+    });
+    calls.push(["g", row, items, api("/api/jobs/batch", {opts: o, items: its, playlist: {id: row.p.id, title: row.p.title}})]);
+  }
+  let ok = 0; const errs = [];
+  for (const [kind, what, items, pr] of calls) {
+    try {
+      const r = await pr;
+      (r.jobs || []).forEach(id => MINE.add(id)); ok += (r.jobs || []).length;
+      if (kind === "s") what.forEach(removeRow);
+      else removeEntries(what, items);
+    } catch (e) { errs.push(e.message); }
+  }
+  SENDING = false; INFLIGHT--;
+  updateBar();
+  if (ok) toastJobs(ok);
+  if (errs.length) toast("Greška: " + firstLine(errs[0]), {cls: "err", ms: 9000});
+  refreshJobs();
+}
+function removeEntries(row, items) {  // poslate stavke nestaju; ostale (neizabrane) ostaju u grupi
+  const sent = new Set(items.map(e => e.id)), keep = [], sel = [];
+  row.p.entries.forEach((e, i) => { if (!sent.has(e.id)) { keep.push(e); sel.push(false); } });
+  if (!keep.length) { removeRow(row); return; }
+  row.p = {...row.p, entries: keep}; row.sel = sel; row.lastI = null;
+  if (row.chk && !row.chk.run) row.chk = null;
+  paintGroup(row);
+}
+$("#btnGo").onclick = submitAll;
+$("#btnClear").onclick = () => {
+  if (ROWS.size > 5 && !confirm(`Ukloniti svih ${ROWS.size} redova sa liste?`)) return;
+  for (const row of [...ROWS.values()]) removeRow(row);
+  PQ.q.length = 0; EQ.q.length = 0;
+  updateBar();
+};
+
+// ---- polje za linkove
+const ta = $("#urls");
+const phMq = matchMedia("(max-width: 640px)");
+const setPh = () => { ta.placeholder = phMq.matches ? "Nalepi YouTube link(ove)…" : "Nalepi link — video, plejlista ili kanal (može više odjednom)"; };
+setPh(); (phMq.addEventListener ? phMq.addEventListener("change", setPh) : phMq.addListener(setPh));
+const autosize = () => { ta.style.height = "auto"; const h = ta.scrollHeight + 2; ta.style.height = Math.min(168, Math.max(42, h)) + "px"; ta.style.overflowY = h > 168 ? "auto" : "hidden"; };
+function addMsg(t) { $("#addMsg").textContent = t; clearTimeout(addMsg.t); if (t) addMsg.t = setTimeout(() => $("#addMsg").textContent = "", 6000); }
+function addFromText(text, keepBad) {
+  const {ok, bad} = parseLinks(text);
+  const r = ok.length ? addLinks(ok) : {added: 0, dup: 0};
+  const m = [];
+  if (r.added) m.push(`Dodato ${r.added}`);
+  if (r.dup) m.push(`${r.dup} već na listi`);
+  if (bad.length) m.push(`nije link: ${bad.slice(0, 3).join(", ")}${bad.length > 3 ? "…" : ""}`);
+  addMsg(m.join(" · "));
+  if (keepBad) { ta.value = bad.join(" "); autosize(); }
+  return ok.length;
+}
+ta.addEventListener("input", autosize);
+ta.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.isComposing) { e.preventDefault(); addFromText(ta.value, true); }
+  if (e.key === "Escape") { ta.value = ""; autosize(); }
+});
+ta.addEventListener("paste", e => {
+  const t = (e.clipboardData || window.clipboardData).getData("text");
+  if (!parseLinks(t).ok.length) return;  // nije link -> obicno lepljenje
+  e.preventDefault();
+  addFromText((ta.value ? ta.value + " " : "") + t, true);
+});
+$("#btnAdd").onclick = () => { addFromText(ta.value, true); ta.focus(); };
+document.addEventListener("paste", e => {  // ⌘V bilo gde na kartici Preuzmi
+  if (TAB !== "preuzmi" || e.target.closest("input,textarea,select,[contenteditable]")) return;
+  const t = (e.clipboardData || window.clipboardData).getData("text");
+  if (parseLinks(t).ok.length) { e.preventDefault(); addFromText(t, false); }
+});
+
+// ================================================================ bedz stanja prevoda/transkripta (Preuzmi, Red, Biblioteka) — static/plan.js
+const TRP = new Map();  // folder -> {ids, t}: posao pokrenut iz bedza (Prevedi / Transkribuj) jos traje
+function trPending(f) {
+  const q = TRP.get(f); if (!q) return false;
+  const busy = q.ids.some(id => { const j = JOBS.find(x => x.id === id); return j ? ["queued", "running"].includes(j.state) : Date.now() - q.t < 15000; });
+  if (!busy) TRP.delete(f);
+  return busy;
+}
+// jezik prevoda za "Prevedi": Biblioteka -> izbor u traci; inace red Prevod u planu
+const trTarget = () => TAB === "biblioteka" ? $("#bTarget").value : Plan.state().tr_target;
+function trBadgeFor(it, folder, src) {
+  return Plan.trBadge(Plan.trInfo(it), {folder, src, pending: !!folder && trPending(folder), tgt: TGT_LBL[trTarget()] || "srpski"});
+}
+const oldBatch = e => !!e && (e.status === 404 || (e.status === 400 && /nepoznata akcija/i.test(e.message || "")));
+async function trQuick(b) {  // jedan klik na bedzu -> /api/library/batch za tu stavku
+  const f = b.dataset.f, act = b.dataset.trb, params = act === "translate" ? {target: trTarget()} : {};
+  if (!f || b.disabled || !["translate", "transcribe"].includes(act)) return;
+  b.disabled = true; INFLIGHT++;
+  try {
+    let r;
+    try { r = await api("/api/library/batch", {folders: [f], action: act, params}); }
+    catch (e) { if (!oldBatch(e)) throw e; r = await libBatchLocal([f], act, params); }
+    const ids = r.jobs || [], sk = r.skipped || [];
+    ids.forEach(id => MINE.add(id));
+    if (ids.length) {
+      TRP.set(f, {ids, t: Date.now()});
+      toast(act === "translate" ? `Prevod (${TGT_LBL[params.target] || params.target}) je u redu` : "Transkript (whisper) je u redu", {link: ["#red", "Prikaži red"], ms: 6000});
+    } else toast("Preskočeno: " + (sk.length ? sk[0].reason : "posao nije dodat"), {cls: "err", ms: 7000});
+  } catch (e) { toast(oldApi(e) ? "Ova akcija traži noviju verziju servera." : "Greška: " + firstLine(e.message), {cls: "err", ms: 8000}); }
+  finally { INFLIGHT--; b.disabled = false; }
+  trRepaint(f); refreshJobs();
+}
+function trRepaint(f) {  // bedz za folder f: "u redu…" umesto dugmeta
+  const n = LIBN.get(f);
+  if (n) { n._sig = ""; if (TAB === "biblioteka") renderLib(); else libDirty = true; }
+  for (const r of ROWS.values()) if (r.kind === "single" && r.detOpen && r.p && r.p.archive && r.p.archive.folder === f) buildDet(r);
+  for (const r of ROWS.values()) if (r.kind === "list" && r.p && r.eopen) for (const id of r.eopen) { const s = EP.get(id); if (s && s.p && s.p.archive && s.p.archive.folder === f) paintEntryDet(r, r.idx.get(id)); }
+}
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-trb]"); if (b) { e.preventDefault(); trQuick(b); } });
+
+// ================================================================ Red poslova
+const STN = {download: "Preuzimanje", subs: "Titl", translate: "Prevod", output: "Izlaz"};
+const STN_TC = {download: "Ulaz", subs: "Titl", translate: "Prevod", output: "Transkod"};
+const STS = {pending: "", waiting: "čeka", running: "radi", done: "✓", skipped: "—", error: "greška", cancelled: "otkazano"};
+const STATE = {queued: "u redu", running: "radi", done: "gotovo", error: "greška", cancelled: "otkazano"};
+const JW = {download: {download: 6, subs: 1, translate: 3, output: 2}, process: {subs: 1, translate: 4, output: 3}, transcode: {download: .3, subs: 1, translate: 2, output: 6}};
+const JN = new Map(), OPEN = new Set(), KNOWN = new Set();
+let JOBS = [], JF = LS.get("jf", "all"), jobsInit = false, jobsBusy = false, lastStates = {};
+const jcat = j => ["running", "queued"].includes(j.state) ? "act" : j.state === "error" ? "err" : "done";
+function overall(j) {  // jedna traka napretka iz faza
+  if (j.state === "done") return 100;
+  const W = JW[j.kind] || JW.download, noProc = j.kind === "download" && !(j.opts || {}).proc;
+  let tot = 0, got = 0;
+  for (const [k, s] of Object.entries(j.stages || {})) {
+    if (s.status === "skipped" || (noProc && (k === "translate" || k === "output"))) continue;
+    const w = W[k] ?? 1; tot += w;
+    got += w * (s.status === "done" ? 1 : s.status === "running" ? Math.min(1, (s.pct || 0) / 100) : 0);
+  }
+  return tot ? 100 * got / tot : 0;
+}
+function phaseText(j) {
+  const names = j.kind === "transcode" ? STN_TC : STN, st = Object.entries(j.stages || {});
+  if (j.state === "error") return "Greška: " + firstLine(j.error);
+  if (j.state === "cancelled") return "Otkazano";
+  if (j.state === "done") {
+    const outs = j.outputs || [], S = j.stages || {}, dl = S.download, sb = S.subs, tr = S.translate;
+    const extra = outs.length ? outs : [dl && dl.status === "done" && dl.info, tr && tr.status === "done" ? "SR prevod ✓" : sb && sb.status === "skipped" && sb.info];
+    return ["Gotovo", ...extra].filter(Boolean).join(" · ");
+  }
+  const run = st.find(([, s]) => s.status === "running") || st.find(([, s]) => s.status === "waiting");
+  if (!run) return j.state === "queued" ? "U redu — čeka slobodan slot" : "Radi…";
+  const [k, s] = run, info = s.info || "", pct = s.pct == null ? null : Math.round(s.pct);
+  if (s.status === "waiting") return `${names[k]} · ${info || "čeka slot"}`;
+  if (k === "download" && j.kind !== "transcode") {
+    if (info.startsWith("●")) return "Snimanje uživo · " + info.slice(1).trim();
+    const sp = (info.match(/([\d.,]+\s*[KMGT]?i?B\/s)/) || [])[1], eta = (info.match(/ETA\s+([\d:]+)/) || [])[1];
+    return pct == null ? `Preuzimanje · ${info}` : [`Preuzimanje ${pct}%`, sp, eta && "ETA " + eta].filter(Boolean).join(" · ");
+  }
+  if (k === "translate") { const m = info.match(/batch (\d+)\/(\d+)/); return m ? `Prevod ${m[1]}/${m[2]}` : `Prevod${pct ? " " + pct + "%" : ""} · ${info}`; }
+  if (k === "output") {
+    const lbl = /^burn/i.test(info) ? "Burn" : j.kind === "transcode" ? "Transkod" : /MKV/.test(info) ? "MKV" : "Izlaz";
+    const sp = (info.match(/·\s*([\d.]+x)\s*$/) || [])[1];
+    return [`${lbl}${pct != null ? " " + pct + "%" : ""}`, sp].filter(Boolean).join(" · ");
+  }
+  if (k === "subs" && /whisper/i.test(info)) return `Whisper${pct ? " " + pct + "%" : ""} · ${info.replace(/^whisper(\.cpp)?:?\s*/i, "")}`;
+  return `${names[k]}${pct ? " " + pct + "%" : ""}${info ? " · " + info : ""}`;
+}
+function jobBtns(j) {
+  const running = ["running", "queued"].includes(j.state), dls = (j.stages || {}).download || {};
+  const live = ["is_live", "is_upcoming"].includes(j.live) && ["running", "waiting"].includes(dls.status), b = [];
+  if (running && live) b.push('<button class="sm" data-act="stop" title="Zaustavi snimanje, zadrži snimljeno i nastavi obradu">■ Zaustavi snimanje</button>');
+  b.push(running ? '<button class="sm danger" data-act="cancel">Otkaži</button>' : '<button class="sm" data-act="retry">Ponovi</button>');
+  if (j.folder) b.push('<button class="sm" data-act="open" title="Otvori folder">📂<span class="lbl"> Folder</span></button>');
+  b.push(`<button class="sm${OPEN.has(j.id) ? " gear on" : ""}" data-act="det" aria-expanded="${OPEN.has(j.id)}">Detalji</button>`);
+  if (!running) b.push('<button class="sm x" data-act="remove" title="Ukloni iz liste" aria-label="Ukloni">✕</button>');
+  return b.join("");
+}
+const OUTN = {none: "SRT u arhivi", srt: "SRT fajl", soft: "MKV + meki titl", burn: "burn MP4", both: "burn + MKV"};
+function jobSumm(j) {
+  const d = (j.opts || {}).dl || {}, pr = (j.opts || {}).proc, summ = [];
+  if (j.kind === "transcode") { const sp = (j.opts || {}).spec || {};
+    summ.push("toolbox", sp.vcodec, sp.vcodec && !["copy", "none"].includes(sp.vcodec) ? "q" + sp.vq : "", sp.scale && sp.scale !== "src" ? sp.scale + "p" : "",
+              sp.acodec, sp.container, sp.translate && sp.translate !== "off" ? "prevod sr-" + sp.translate : "", sp.sub_mode === "burn" && sp.sub_src && sp.sub_src !== "none" ? "burn" : ""); }
+  else if (j.kind === "process") summ.push("obrada iz biblioteke");
+  else summ.push(d.video_fmt === "none" ? "bez videa" : d.video_fmt === "audio" ? "samo audio " + (d.audio_conv || "best") : (d.video_fmt || "auto"),
+                 d.audio_fmt === "all" ? "sve audio trake" : "", d.subs === "all" ? "svi titlovi" : "", (j.opts || {})._playlist ? "📃 " + (j.opts._playlist.title || "") : "");
+  if (pr && j.kind !== "transcode") summ.push(pr.target === "none" ? "bez prevoda" : "sr-" + pr.target, OUTN[pr.output || "none"] || pr.output, ["burn", "both"].includes(pr.output) ? `${pr.encoder || ""} q${pr.vq || ""}${pr.scale && pr.scale !== "src" ? " " + pr.scale + "p" : ""}` : "", pr.target !== "none" ? pr.model : "");
+  else if (j.kind === "download") summ.push("obrada kasnije");
+  const af = (j.opts || {}).after || {};
+  if (af.toolbox) summ.push(`posle: Toolbox ${af.toolbox.preset}${af.toolbox.sub && af.toolbox.sub !== "none" ? " + " + (af.toolbox.sub === "burn" ? "upečen" : "meki") + " titl" : ""}`);
+  if (af.audio) summ.push("posle: audio " + String(af.audio.preset || "").replace("audio_", "").toUpperCase());
+  return summ.filter(Boolean).join(" · ");
+}
+function jobDetHtml(j) {
+  const st = Object.entries(j.stages || {}).map(([k, s]) => {
+    const ind = s.status === "running" && (s.pct === null || s.pct === undefined), pct = s.status === "done" ? 100 : (s.pct || 0);
+    return `<div class="st ${esc(s.status)}"><div class="n"><span>${esc((j.kind === "transcode" ? STN_TC : STN)[k] || k)}</span><span>${esc(STS[s.status] || "")}${s.status === "running" && !ind ? " " + Math.round(pct) + "%" : ""}</span></div>
+      <div class="i" title="${esc(s.info)}">${esc(s.info) || "&nbsp;"}</div><div class="bar ${ind ? "ind" : ""}"><i style="width:${pct}%"></i></div></div>`;
+  }).join("");
+  return `<div class="small muted">${esc(jobSumm(j))}</div><div class="stages">${st}</div>
+    ${j.error ? `<div class="err">${esc(j.error)}</div>` : ""}
+    ${j.outputs && j.outputs.length ? `<div class="outs">Izlazi: ${j.outputs.map(esc).join(" · ")}</div>` : ""}
+    ${j.folder ? `<div class="outs">${esc(j.folder)}</div>` : ""}`;
+}
+// zavrsen posao: stanje prevoda/transkripta stavke + poslovi pokrenuti posle preuzimanja (opts.after)
+function jobExtraHtml(j) {
+  const h = [];
+  if (j.state === "done" && j.kind !== "transcode" && j.folder) { const it = LIBM.get(j.folder); if (it) h.push(trBadgeFor(it, it.folder, !!it.source)); }
+  const aj = Array.isArray(j.after_jobs) ? j.after_jobs : [];
+  if (aj.length) h.push('<span class="small muted">posle:</span>' + aj.map(id => {
+    const x = JOBS.find(q => q.id === id), t = x ? String(x.title || "").split(" · ").pop() : "posao " + id;
+    return `<button type="button" class="lnk" data-jump="${esc(id)}" title="Prikaži posao ${esc(id)}">${x && x.kind === "transcode" ? "🛠 " : ""}${esc(t)}${x ? " · " + esc(STATE[x.state] || x.state) : ""}</button>`;
+  }).join(""));
+  const sk = Array.isArray(j.after_skipped) ? j.after_skipped : [];  // korak posle preuzimanja nije pokrenut
+  for (const x of sk) h.push(`<span class="b warn" title="${esc(x.reason)}">⚠ ${esc(x.label || x.step)} preskočen: ${esc(x.reason)}</span>`);
+  return h.join("");
+}
+function jumpJob(id) {
+  const j = JOBS.find(x => x.id === id);
+  if (!j) return toast("Posao više nije u listi.");
+  if (JF !== "all" && jcat(j) !== JF) { JF = "all"; LS.set("jf", JF); }
+  renderJobs();
+  const n = JN.get(id); if (n) { hl(n); const b = $("[data-act]", n); if (b) b.focus({preventScroll: true}); }
+}
+const JOB_SKEL = '<div class="r jrow"><span class="rtw"></span><div class="rm"><div class="rtl"></div><div class="pbar"><i></i></div><div class="rsub"><span class="phase"></span><span class="jx"></span></div></div><div class="ra jb"></div></div><div class="rdet jdet" hidden><div class="jd"></div><pre class="log"></pre></div>';
+function paintJob(n, j) {
+  const s = n._s;
+  const th = j.vid ? mq(j.vid) : (j.thumb || "");
+  const thH = th ? `<img class="rt" src="${esc(th)}" alt="" loading="lazy">` : `<span class="rt noimg">${j.kind === "transcode" ? "🛠" : "▶"}</span>`;
+  if (s.th !== thH) { s.th = thH; $(".rtw", n).innerHTML = thH; }
+  const kb = {download: "PREUZIMANJE", process: "OBRADA", transcode: "TOOLBOX"}[j.kind] || String(j.kind || "").toUpperCase();
+  const head = `<span class="state ${esc(j.state)}">${esc(STATE[j.state] || j.state)}</span><span class="b plain">${esc(kb)}</span>${j.live === "is_live" ? '<span class="b live">LIVE</span>' : ""}<span title="${esc(j.title)}">${esc(j.title)}</span>`;
+  if (s.head !== head) { s.head = head; $(".rtl", n).innerHTML = head; }
+  if (s.state !== j.state) { s.state = j.state; n.className = "jr " + j.state; }
+  const pct = overall(j).toFixed(1);
+  if (s.pct !== pct) { s.pct = pct; $(".pbar > i", n).style.width = pct + "%"; }
+  const ph = phaseText(j);
+  if (s.ph !== ph) { s.ph = ph; const e = $(".phase", n); e.textContent = ph; e.title = ph; e.classList.toggle("err1", j.state === "error"); }
+  const jx = jobExtraHtml(j);
+  if (s.jx !== jx) { s.jx = jx; $(".jx", n).innerHTML = jx; }
+  const bt = jobBtns(j);
+  if (s.bt !== bt) { s.bt = bt; $(".jb", n).innerHTML = bt; }
+  const open = OPEN.has(j.id), det = $(".jdet", n);
+  det.hidden = !open;
+  if (open) { const dh = jobDetHtml(j); if (s.dh !== dh) { s.dh = dh; $(".jd", det).innerHTML = dh; } }
+}
+function renderJobs() {
+  const box = $("#jobs"), cnt = {all: JOBS.length, act: 0, done: 0, err: 0};
+  for (const j of JOBS) cnt[jcat(j)]++;
+  $$("#jf [data-f]").forEach(b => { b.classList.toggle("on", b.dataset.f === JF); $("b", b).textContent = cnt[b.dataset.f] ? " " + cnt[b.dataset.f] : ""; });
+  const shown = JOBS.filter(j => JF === "all" || jcat(j) === JF);
+  if (!shown.length) {
+    for (const n of JN.values()) n.remove();
+    JN.clear();
+    box.innerHTML = `<div class="empty">${JOBS.length ? "Nema poslova u ovom filteru." : 'Nema poslova. Dodaj linkove u <a href="#preuzmi">⤓ Preuzmi</a>.'}</div>`;
+    return;
+  }
+  $$(":scope > .empty", box).forEach(e => e.remove());
+  const keep = new Set(shown.map(j => j.id));
+  for (const [id, n] of JN) if (!keep.has(id)) { n.remove(); JN.delete(id); }
+  let prev = null;
+  for (const j of shown) {
+    let n = JN.get(j.id);
+    if (!n) { n = document.createElement("div"); n.className = "jr"; n.dataset.id = j.id; n.innerHTML = JOB_SKEL; n._s = {}; JN.set(j.id, n); }
+    paintJob(n, j);
+    if (prev ? prev.nextElementSibling !== n : box.firstElementChild !== n) { if (prev) prev.after(n); else box.prepend(n); }
+    prev = n;
+  }
+}
+async function refreshJobs() {
+  if (jobsBusy) return;
+  jobsBusy = true;
+  try {
+    let jobs; try { jobs = await api("/api/jobs"); } catch { return; }
+    if (!Array.isArray(jobs)) return;
+    JOBS = jobs;
+    let foreign = 0, fin = false;
+    for (const j of jobs) {
+      if (!KNOWN.has(j.id)) { KNOWN.add(j.id); if (jobsInit && !INFLIGHT && !MINE.has(j.id)) foreign++; }
+      const s = lastStates[j.id];
+      if (s && s !== j.state && !["running", "queued"].includes(j.state)) fin = true;
+      lastStates[j.id] = j.state;
+    }
+    jobsInit = true;
+    if (foreign) toastJobs(foreign);  // npr. posao iz Toolbox-a
+    if (fin) refreshLib(true);
+    const act = jobs.filter(j => ["running", "queued"].includes(j.state)).length;
+    badge("#bdgRed", act, act > 0);
+    document.title = act ? `(${act}) YT Arhiva` : "YT Arhiva";
+    if (TAB !== "red") return;
+    renderJobs();
+    for (const id of OPEN) {
+      const n = JN.get(id); if (!n) continue;
+      api(`/api/jobs/${id}/log`).then(r => {
+        const pre = $("pre.log", n), t = (r.log || []).join("\n");
+        if (pre.textContent === t) return;
+        const stick = pre.scrollHeight - pre.scrollTop - pre.clientHeight < 20;
+        pre.textContent = t;
+        if (stick) pre.scrollTop = pre.scrollHeight;
+      }).catch(() => {});
+    }
+  } finally { jobsBusy = false; }
+}
+$("#jobs").addEventListener("click", async e => {
+  const jb = e.target.closest("[data-jump]"); if (jb) { jumpJob(jb.dataset.jump); return; }
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const id = b.closest(".jr").dataset.id, act = b.dataset.act;
+  if (act === "det") {
+    OPEN.has(id) ? OPEN.delete(id) : OPEN.add(id);
+    const j = JOBS.find(x => x.id === id), n = JN.get(id);
+    if (j && n) paintJob(n, j);
+    if (OPEN.has(id)) refreshJobs();
+    return;
+  }
+  if (act === "cancel" && !confirm("Otkazati posao?")) return;
+  b.disabled = true;
+  try { await api(`/api/jobs/${id}/${act}`, {}); } catch (err) { toast(err.message, {cls: "err"}); }
+  refreshJobs();
+});
+$("#jf").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (!b) return; JF = b.dataset.f; LS.set("jf", JF); renderJobs(); });
+$("#btnClearDone").onclick = async () => {
+  let jobs; try { jobs = await api("/api/jobs"); } catch (e) { return toast(e.message, {cls: "err"}); }
+  const done = jobs.filter(j => ["done", "cancelled"].includes(j.state));
+  await Promise.all(done.map(j => api(`/api/jobs/${j.id}/remove`, {}).catch(() => {})));
+  if (done.length) toast(`Uklonjeno ${done.length} ${plural(done.length, "završen posao", "završena posla", "završenih poslova")}`);
+  refreshJobs();
+};
+
+// ================================================================ Biblioteka (katalog)
+const LIBN = new Map(), LSEL = new Set(), LOPEN = new Set();
+let LIBM = new Map();  // folder -> stavka (Red: stanje prevoda zavrsenog posla)
+let LIB = [], libSig = "", libShown = [], libDirty = true, libBusy = false, lastLibI = -1;
+let LVIEW = "items";  // Biblioteka: "items" (stavke) ili "pl" (plejliste)
+const srOf = it => Array.isArray(it.sr) ? it.sr : [...new Set((it.subs || []).filter(s => s.kind === "sr").map(s => /ćirilica|cyr/i.test([s.name, s.key, s.file].join(" ")) ? "cyr" : "lat"))];
+const hasVideo = it => typeof it.has_video === "boolean" ? it.has_video : it.kind === "video";
+async function refreshLib(force) {
+  if (libBusy) return;
+  libBusy = true;
+  try {
+    let items; try { items = await api("/api/library"); } catch { return; }
+    if (!Array.isArray(items)) return;
+    const sig = JSON.stringify(items);
+    if (!force && sig === libSig) return;
+    if (sig !== libSig) {
+      const all = new Set(items.map(i => i.folder));
+      for (const f of [...LSEL]) if (!all.has(f)) LSEL.delete(f);
+    }
+    libSig = sig; LIB = items; libDirty = true;
+    LIBM = new Map(items.map(i => [i.folder, i]));
+    badge("#bdgLib", items.length, false);
+    if (TAB === "biblioteka") renderLib();
+  } finally { libBusy = false; }
+}
+function libRowHtml(it) {
+  const th = it.thumb_local ? `/api/thumb?f=${encodeURIComponent(it.folder)}` : (mq(it.id) || it.thumbnail || "");
+  const v = it.video || {}, B = [];
+  B.push(!it.source ? '<span class="b warn">bez izvora</span>' : it.kind === "audio"
+    ? `<span class="b ok">🎵 ${esc(it.source.split(".").pop().toUpperCase())}</span>`
+    : `<span class="b ok" title="izvor">${esc(v.height || "?")}p ${esc((v.codec || "").toUpperCase())}${v.premium ? " ★" : ""}</span>`);
+  if ((it.audio || []).length > 1) B.push(`<span class="b" title="${esc(it.audio.map(a => a.lang + (roleOf(a) ? " " + roleOf(a) : "")).join(", "))}">${it.audio.length} audio</span>`);
+  const cc = (it.subs || []).filter(s => s.kind !== "sr" && s.kind !== "tr");
+  if (cc.length) B.push(`<span class="b" title="${esc(cc.map(s => s.lang + (s.kind === "auto" ? " auto" : s.kind === "whisper" ? " whisper" : "")).join(", "))}">${cc.length} CC</span>`);
+  B.push(trBadgeFor(it, it.folder, !!it.source));  // stanje: prevedeno / transkript bez prevoda / nema titla (+ jedan klik)
+  if ((it.outputs || []).length) B.push(`<span class="b plain" title="${esc(it.outputs.join("\n"))}">izlazi ${it.outputs.length}</span>`);
+  if (it.size) B.push(`<span>${fmtB(it.size)}</span>`);
+  const meta = [it.channel, fmtD(it.duration), fmtDate(it.upload_date)].filter(Boolean).join(" · ");
+  return `<input type="checkbox" class="lc"${LSEL.has(it.folder) ? " checked" : ""} aria-label="Izaberi">
+    ${th ? `<img class="rt" src="${esc(th)}" alt="" loading="lazy">` : '<span class="rt noimg">▶</span>'}
+    <div class="rm"><div class="rtl" title="${esc(it.title)}">${esc(it.title || it.folder.split("/").pop())}</div>
+      <div class="rsub">${meta ? `<span>${esc(meta)}</span>` : ""}${B.join("")}</div></div>
+    <div class="ra"><button class="sm gear${LOPEN.has(it.folder) ? " on" : ""}" data-l="det" title="Detalji i obrada za ovu stavku" aria-expanded="${LOPEN.has(it.folder)}">⚙</button><button class="sm" data-l="open" title="Otvori folder">📂<span class="lbl"> Folder</span></button></div>`;
+}
+function renderLib() {
+  libDirty = false;
+  const items = LIB, box = $("#lib");
+  const raw = $("#libFilter").value.trim(), f = raw.toLowerCase(), fid = ytId(raw);
+  const kind = $("#libKind").value, pl = $("#libPl").value, sr = $("#libSr").value, sort = $("#libSort").value;
+  const pls = new Map(); items.forEach(i => (i.playlists || []).forEach(x => pls.set(x.id, x.title)));
+  const plSig = JSON.stringify([...pls]);
+  if (plSig !== renderLib.plSig) {
+    renderLib.plSig = plSig;
+    $("#libPl").innerHTML = opt("", "Sve plejliste") + [...pls].map(([id, t]) => opt(id, t || id)).join("");
+    $("#libPl").value = pls.has(pl) ? pl : "";
+  }
+  const plNow = $("#libPl").value;
+  let shown = items.filter(i => (!f || (fid ? i.id === fid : [i.title, i.channel, i.id, i.url].join(" ").toLowerCase().includes(f)))
+    && (!kind || i.kind === kind) && (!plNow || (i.playlists || []).some(x => x.id === plNow))
+    && (!sr || (["yes", "no"].includes(sr) ? (sr === "yes") === (srOf(i).length > 0) : trStateOf(i) === sr)));
+  const cmp = {new: (a, b) => (b.updated || 0) - (a.updated || 0), title: (a, b) => (a.title || "").localeCompare(b.title || "", "sr"),
+               size: (a, b) => (b.size || 0) - (a.size || 0), date: (a, b) => (b.upload_date || "").localeCompare(a.upload_date || "")}[sort] || (() => 0);
+  shown = shown.sort(cmp);
+  libShown = shown;
+  const tot = items.reduce((a, i) => (a.size += i.size || 0, a[i.kind] = (a[i.kind] || 0) + 1, a.sr += srOf(i).length ? 1 : 0, a["t_" + trStateOf(i)]++, a), {size: 0, sr: 0, t_translated: 0, t_transcript: 0, t_none: 0});
+  $("#libStats").textContent = `${items.length} ${plural(items.length, "stavka", "stavke", "stavki")} · ${tot.video || 0} video · ${tot.audio || 0} audio${tot.none ? ` · ${tot.none} bez izvora` : ""} · ${tot.sr} sa SR prevodom`
+    + ` · prevedeno ${tot.t_translated} · samo transkript ${tot.t_transcript} · bez titla ${tot.t_none} · ${fmtB(tot.size) || "0 KB"}${shown.length !== items.length ? ` — prikazano ${shown.length}` : ""}`;
+  if (!shown.length) {
+    for (const n of LIBN.values()) n.remove();
+    LIBN.clear();
+    box.innerHTML = `<div class="empty">${items.length ? "Nema poklapanja." : "Biblioteka je prazna — preuzmi nešto u ⤓ Preuzmi."}</div>`;
+    updateLibBar();
+    return;
+  }
+  $$(":scope > .empty", box).forEach(e => e.remove());
+  if (!LIBN.size) {  // prvi prikaz: jedan HTML string (brzo i za hiljade stavki)
+    box.innerHTML = shown.map(it => `<div class="li"><div class="r">${libRowHtml(it)}</div><div class="rdet" hidden></div></div>`).join("");
+    [...box.children].forEach((n, i) => { const it = shown[i]; n._it = it; n._sig = libRowSig(it); LIBN.set(it.folder, n); });
+  } else {
+    const keep = new Set(shown.map(i => i.folder));
+    for (const [k, n] of LIBN) if (!keep.has(k)) { n.remove(); LIBN.delete(k); }
+    let prev = null;
+    for (const it of shown) {
+      let n = LIBN.get(it.folder);
+      const sig = libRowSig(it);
+      if (!n) { n = document.createElement("div"); n.className = "li"; n.innerHTML = '<div class="r"></div><div class="rdet" hidden></div>'; LIBN.set(it.folder, n); }
+      n._it = it;
+      if (n._sig !== sig) { n._sig = sig; $(".r", n).innerHTML = libRowHtml(it); if (LOPEN.has(it.folder)) paintLibDet(n); }
+      if (prev ? prev.nextElementSibling !== n : box.firstElementChild !== n) { if (prev) prev.after(n); else box.prepend(n); }
+      prev = n;
+    }
+  }
+  for (const n of LIBN.values()) {
+    const on = LSEL.has(n._it.folder), cb = $(".lc", n);
+    if (cb.checked !== on) cb.checked = on;
+    $(".r", n).classList.toggle("sel", on);
+  }
+  updateLibBar();
+}
+const libRowSig = it => JSON.stringify(it) + (TRP.has(it.folder) && trPending(it.folder) ? "|u redu" : "");
+const TRST = new WeakMap();  // stavka -> stanje (filter/statistika za hiljade stavki)
+const trStateOf = it => { let v = TRST.get(it); if (!v) { v = Plan.trInfo(it).state; TRST.set(it, v); } return v; };
+const libSigOf = it => JSON.stringify([(it.subs || []).map(s => s.key), (it.audio || []).map(a => a.role || a.variant || ""), !!it.source]);
+function paintLibDet(n) {
+  const it = n._it, det = $(".rdet", n), open = LOPEN.has(it.folder);
+  det.hidden = !open;
+  if (!open) return;
+  if (!det._built) {
+    det.innerHTML = `<div class="ldet"><div class="info"></div>
+      <div class="row"><span class="edw"></span><button class="sm" data-l="open">Otvori folder</button><button class="sm" data-l="totb" title="Dodaj izvor u Toolbox (transkoder)">U Toolbox</button><span class="yt"></span></div>
+      <fieldset class="lform"><legend>Obradi ovu stavku</legend><div class="pform"></div>
+        <div class="actions"><span class="est"></span><button class="sm" data-l="close">Zatvori</button><button class="primary sm" data-l="go">Pokreni obradu</button></div></fieldset></div>`;
+    det._built = true;
+  }
+  const chip = (t, cls = "", title = "") => `<span class="b ${cls}"${title ? ` title="${esc(title)}"` : ""}>${esc(t)}</span>`;
+  $(".info", det).innerHTML = `<div class="path">${esc(it.folder)}${it.source ? " / " + esc(it.source) : ""}</div>
+    ${(it.playlists || []).length ? `<div class="chips">${it.playlists.map(x => chip("📃 " + (x.title || x.id), "plain")).join("")}</div>` : ""}
+    <div class="chips"><span class="muted">Stanje:</span>${trBadgeFor(it, it.folder, !!it.source)}</div>
+    ${(it.audio || []).length ? `<div class="chips"><span class="muted">Audio:</span>${it.audio.map(a => chip(audioLbl(a), isOrig(a) ? "ok" : "", a.label || a.title || "")).join("")}</div>` : ""}
+    <div class="chips"><span class="muted">Titlovi:</span>${(it.subs || []).length ? it.subs.map(s => chip((s.kind === "sr" ? "SR " + (/ćirilica|cyr/i.test(s.name + s.key) ? "ćir" : "lat") : s.kind === "tr" ? String(s.lang || "?").toUpperCase() + " prevod" : s.lang + (s.kind === "auto" ? " auto" : s.kind === "whisper" ? " whisper" : "")) + (/:lektura:/.test(s.key || "") ? " · lektura" : ""), s.kind === "sr" || s.kind === "tr" ? "ok" : s.kind === "manual" ? "" : "plain", `${s.name || ""} · ${s.file}`)).join("") : '<span class="muted">nema</span>'}</div>
+    ${(it.outputs || []).length ? `<div class="outs">Izlazi: ${it.outputs.map(esc).join(" · ")}</div>` : ""}`;
+  $(".yt", det).innerHTML = /^https?:\/\//i.test(it.url || "") ? `<a href="${esc(it.url)}" target="_blank" rel="noopener">YouTube ↗</a>` : "";
+  const ch = subChoices(it), esig = JSON.stringify(ch.map(x => x.file));
+  if (det._esig !== esig) {  // izbor titla za editor: prevodi prvi (najnoviji gore), pa originalni
+    det._esig = esig;
+    $(".edw", det).innerHTML = !ch.length ? "" : (ch.length > 1 ? `<select class="edsel" aria-label="Titl za uređivanje">${ch.map(x => opt(x.file, subLbl(x))).join("")}</select>` : "")
+      + `<button class="sm" data-l="edit" title="Uredi titl${ch.length === 1 ? ": " + esc(subLbl(ch[0])) : ""} — pregled uz video, ispravke idu u Memoriju">✎ Uredi titl</button>`;
+  }
+  if (det._form !== libSigOf(it)) buildLibForm(n);
+}
+function buildLibForm(n) {
+  const it = n._it, det = $(".rdet", n);
+  det._form = libSigOf(it);
+  $(".pform", det).innerHTML = procFormHtml();
+  const subOpts = [["auto-best", "Automatski (najbolji dostupan)"]];
+  for (const s of it.subs || []) subOpts.push([s.key, `${s.name} · ${s.count} titlova${s.kind === "sr" ? " (već preveden)" : ""}`]);
+  if (it.source) subOpts.push(["whisper:run", "Lokalni whisper — nova transkripcija"]);
+  subOpts.push(["none", "Bez titla"]);
+  const audioOpts = [["orig", "Originalna traka"]];
+  if ((it.audio || []).length > 1) { audioOpts.push(["all", `Sve audio trake (${it.audio.length})`]); for (const a of it.audio) audioOpts.push([`idx:${a.index}`, audioLbl(a)]); }
+  n._read = initProcForm($(".pform", det), {subOpts, audioOpts, maxH: (it.video || {}).height || 1080, onChange: () => {
+    const o = $('[data-p="output"]', det).value, needSrc = ["burn", "soft", "both"].includes(o) || $('[data-p="sub_source"]', det).value === "whisper:run";
+    $(".lform .est", det).textContent = needSrc && !n._it.source ? "⚠ izvor nije u biblioteci — izaberi „SRT“ ili „Bez videa“" : "";
+  }});
+  limitOutputs($(".pform", det), it.kind === "audio");
+}
+function updateLibBar() {
+  const n = LSEL.size;
+  $("#libBar").hidden = !n || LVIEW === "pl";
+  $("#libSelN").textContent = `Izabrano ${n}`;
+  const shownSel = libShown.filter(i => LSEL.has(i.folder)).length, all = $("#libAll");
+  all.checked = !!libShown.length && shownSel === libShown.length;
+  all.indeterminate = shownSel > 0 && shownSel < libShown.length;
+  if (!n) closePops();
+}
+function setLibSel(it, on) {
+  on ? LSEL.add(it.folder) : LSEL.delete(it.folder);
+  const node = LIBN.get(it.folder);
+  if (node) { $(".lc", node).checked = on; $(".r", node).classList.toggle("sel", on); }
+}
+$("#lib").addEventListener("click", async e => {
+  const n = e.target.closest(".li"); if (!n) return;
+  const it = n._it, b = e.target.closest("[data-l]");
+  if (b) {
+    const a = b.dataset.l;
+    if (a === "det" || a === "close") {
+      if (a === "det" && !LOPEN.has(it.folder)) LOPEN.add(it.folder); else LOPEN.delete(it.folder);
+      $(".r", n).innerHTML = libRowHtml(it); paintLibDet(n);
+    } else if (a === "open") api("/api/open-path", {path: it.folder}).catch(x => toast(x.message, {cls: "err"}));
+    else if (a === "edit") {
+      const sel = $(".edsel", n), ch = subChoices(it), f = sel ? sel.value : ch[0] && ch[0].file;
+      if (f) openEditor(it, f, b);
+    } else if (a === "totb") {
+      if (!it.source) return toast("Izvorni fajl nije u biblioteci.", {cls: "err"});
+      if (window.tbAddPath) { go("toolbox"); window.tbAddPath(it.folder + "/" + it.source); }
+    } else if (a === "go") {
+      b.disabled = true; INFLIGHT++;
+      try { const j = await api("/api/process", {folder: it.folder, proc: n._read()}); if (j && j.id) MINE.add(j.id); toastJobs(1); refreshJobs(); }
+      catch (x) { toast(x.message, {cls: "err"}); }
+      finally { b.disabled = false; INFLIGHT--; }
+    }
+    return;
+  }
+  if (e.target.closest(".rdet")) return;
+  const r = e.target.closest(".r"); if (!r) return;
+  const cb = $(".lc", n), direct = e.target === cb;
+  if (!direct && (e.target.closest("a,input,select,button,label") || String(getSelection() || ""))) return;
+  const want = direct ? cb.checked : !LSEL.has(it.folder), i = libShown.indexOf(it);
+  if (e.shiftKey && lastLibI >= 0 && i >= 0) { const [a, z] = [Math.min(lastLibI, i), Math.max(lastLibI, i)]; for (let k = a; k <= z; k++) setLibSel(libShown[k], want); }
+  else setLibSel(it, want);
+  lastLibI = i;
+  updateLibBar();
+});
+$("#libAll").addEventListener("change", e => { for (const it of libShown) setLibSel(it, e.target.checked); updateLibBar(); });
+let lT = 0;
+$("#libFilter").addEventListener("input", () => { clearTimeout(lT); lT = setTimeout(() => { lastLibI = -1; renderLib(); }, 120); });
+for (const id of ["libKind", "libPl", "libSr", "libSort"]) $("#" + id).addEventListener("change", () => { lastLibI = -1; LS.set("lib." + id, $("#" + id).value); renderLib(); });
+$("#btnLibRefresh").onclick = () => { refreshLib(true); if (LVIEW === "pl") loadPlaylists(); };
+$("#btnOpenOut").onclick = () => api("/api/open-out", {path: SET.out_dir}).catch(e => toast(e.message, {cls: "err"}));
+function showInLib(id) {
+  if (LVIEW !== "items") setLibView("items");
+  $("#libFilter").value = id; $("#libKind").value = ""; $("#libPl").value = ""; $("#libSr").value = "";
+  lastLibI = -1; libDirty = true; go("biblioteka"); renderLib();
+}
+
+// ---- batch akcije nad izabranim stavkama biblioteke
+let TBP = null, TCSUB = "none";
+async function tbPresets() {
+  if (TBP) return TBP;
+  try { const r = await api("/api/tb/presets"); TBP = (Array.isArray(r) ? r : r.presets || []).filter(p => p && p.id); } catch { return []; }
+  return TBP;
+}
+function closePops() { $$("#libBar .pop").forEach(p => p.hidden = true); }
+function latestSr(it, target) {
+  const s = (it.subs || []).filter(x => target === "el" ? x.kind === "tr" && x.lang === "el"
+    : x.kind === "sr" && (/ćirilica|cyr/i.test([x.name, x.key, x.file].join(" ")) ? "cyr" : "lat") === target);
+  return s[s.length - 1] || null; }
+// rezervni put kad backend jos nema /api/library/batch: isti rezultat preko postojecih ruta
+async function libBatchLocal(folders, action, params) {
+  const by = new Map(LIB.map(i => [i.folder, i])), jobs = [], skipped = [];
+  if (["lektura", "audio_copy"].includes(action))  // nema zamene preko starih ruta
+    return {jobs, skipped: folders.map(f => ({folder: f, reason: "server ne podržava ovu akciju (potrebna novija verzija)"}))};
+  if (action === "open") {
+    const opened = [];
+    for (const f of folders) { if (opened.length >= 5) { skipped.push({folder: f, reason: "najviše 5 foldera odjednom"}); continue; } try { await api("/api/open-path", {path: f}); opened.push(f); } catch (e) { skipped.push({folder: f, reason: e.message}); } }
+    return {jobs, skipped, opened};
+  }
+  const presets = action === "toolbox" || action === "audio" ? await tbPresets() : [];
+  for (const f of folders) {
+    const it = by.get(f);
+    if (!it) { skipped.push({folder: f, reason: "nije u biblioteci"}); continue; }
+    try {
+      let j;
+      if (action === "transcribe") {  // stariji server bez akcije transcribe: obrada samo whisper, bez prevoda
+        if (!it.source) { skipped.push({folder: f, reason: "nema izvora zvuka"}); continue; }
+        if (!params.force && (it.subs || []).some(x => x.kind === "whisper")) { skipped.push({folder: f, reason: "već ima whisper transkript"}); continue; }
+        j = await api("/api/process", {folder: f, proc: {sub_source: "whisper:run", ...(params.lang ? {whisper_lang: params.lang} : {}), target: "none", output: "none", keep_source: true}});
+      } else if (action === "translate") {
+        if (srOf(it).includes(params.target)) { skipped.push({folder: f, reason: "već ima srpski prevod"}); continue; }
+        if (it.sr_cc || (it.subs || []).some(x => x.kind === "manual" && /^(sr|sh)\b/.test(x.lang || ""))) { skipped.push({folder: f, reason: "već ima srpski titl sa YouTube-a"}); continue; }
+        j = await api("/api/process", {folder: f, proc: {sub_source: "auto-best", target: params.target, output: "none", keep_source: true}});
+      } else if (action === "video") {
+        if (!hasVideo(it)) { skipped.push({folder: f, reason: "nema videa"}); continue; }
+        const have = latestSr(it, params.target);  // postojeci prevod se koristi direktno
+        j = await api("/api/process", {folder: f, proc: {sub_source: have ? have.key : "auto-best", target: params.target, output: params.output, keep_source: true}});
+      } else {
+        if (!it.source || (action === "toolbox" && !hasVideo(it) && params.sub !== "none")) { skipped.push({folder: f, reason: it.source ? "nema videa" : "nema izvora"}); continue; }
+        const ps = presets.find(p => p.id === params.preset);
+        if (!ps) { skipped.push({folder: f, reason: "nepoznat preset"}); continue; }
+        const spec = {...ps.spec, out_dir: f, suffix: "." + ps.id};
+        if (action === "toolbox" && params.sub && params.sub !== "none") {
+          const s = latestSr(it, params.target);
+          if (!s) { skipped.push({folder: f, reason: "nema srpskog prevoda — prvo Prevedi"}); continue; }
+          Object.assign(spec, {sub_src: "file", sub_file: f + "/" + s.file, translate: "off", sub_mode: params.sub});
+        }
+        j = await api("/api/tb/jobs", {path: f + "/" + it.source, spec});
+      }
+      if (j && j.id) jobs.push(j.id);
+    } catch (e) { skipped.push({folder: f, reason: firstLine(e.message)}); }
+  }
+  return {jobs, skipped};
+}
+async function libBatch(action, params = {}) {
+  const folders = [...LSEL]; if (!folders.length) return;
+  closePops(); INFLIGHT++;
+  const bar = $("#libBar"); $$("button", bar).forEach(b => b.disabled = true);
+  try {
+    let r;
+    try { r = await api("/api/library/batch", {folders, action, params}); }
+    catch (e) { if (!oldBatch(e)) throw e; r = await libBatchLocal(folders, action, params); }
+    (r.jobs || []).forEach(id => MINE.add(id));
+    const sk = r.skipped || [], why = {};
+    for (const s of sk) why[s.reason] = (why[s.reason] || 0) + 1;
+    const reasons = Object.entries(why).map(([k, v]) => (Object.keys(why).length > 1 || v > 1 ? v + "× " : "") + k).join("; ");
+    if (action === "open") {
+      const n = (r.opened || []).length || Math.min(5, folders.length - sk.length);
+      toast(`Otvoreno ${n} ${plural(n, "folder", "foldera", "foldera")}${sk.length ? ` · preskočeno ${sk.length} (${reasons})` : ""}`);
+    } else {
+      const n = (r.jobs || []).length, skf = new Set(sk.map(x => x.folder));
+      const nw = ["translate", "video"].includes(action) ? folders.filter(f => { const it = LIB.find(i => i.folder === f); return it && !skf.has(f) && !(it.subs || []).some(x => x.kind !== "sr"); }).length : 0;
+      toast(`Dodato ${n} ${plural(n, "posao", "posla", "poslova")}${nw ? ` (${nw} bez titla → whisper)` : ""}${sk.length ? `, preskočeno ${sk.length} (${reasons})` : ""}`, n ? {link: ["#red", "Prikaži red"], ms: 7000} : {cls: sk.length ? "err" : "", ms: 7000});
+    }
+  } catch (e) { toast("Greška: " + firstLine(e.message), {cls: "err", ms: 8000}); }
+  finally { INFLIGHT--; $$("button", bar).forEach(b => b.disabled = false); syncTc(); }
+  refreshJobs();
+}
+function syncTc() {
+  const p = (TBP || []).find(x => x.id === $("#tcPreset").value), sp = (p && p.spec) || {};
+  $("#tcDesc").textContent = p ? p.desc || "" : "";
+  $$("#tcSub [data-v]").forEach(b => b.classList.toggle("on", b.dataset.v === TCSUB));
+  let err = "";
+  if (TCSUB !== "none" && ["m4a", "mp3", "flac"].includes(sp.container)) err = "Audio preset ne nosi titl — izaberi „ne“.";
+  else if (TCSUB === "burn" && ["copy", "none"].includes(sp.vcodec)) err = "Upečen titl traži rekodiranje videa — izaberi preset sa enkoderom (npr. Arhiva ili Apple).";
+  $("#tcNote").textContent = err; $("#tcNote").hidden = !err;
+  $('#popTc [data-b="tcgo"]').disabled = !!err || !p;
+  const scr = TGT_LBL[$("#bTarget").value] || "srpski";
+  $("#tcInfo").textContent = TCSUB === "none" ? "Izlaz ide u folder stavke (sufiks = ime preseta)." : `Koristi srpski prevod (${scr}) iz biblioteke; stavke bez prevoda se preskaču.`;
+}
+async function openTc() {
+  const pop = $("#popTc"), was = !pop.hidden;
+  closePops(); if (was) return;
+  pop.hidden = false;
+  const ps = await tbPresets(), sel = $("#tcPreset");
+  if (!sel.options.length) {
+    const vid = ps.filter(p => !String(p.id).startsWith("audio_")), aud = ps.filter(p => String(p.id).startsWith("audio_"));
+    sel.innerHTML = (vid.length ? '<optgroup label="Video">' + vid.map(p => opt(p.id, p.label)).join("") + "</optgroup>" : "")
+      + (aud.length ? '<optgroup label="Samo audio">' + aud.map(p => opt(p.id, p.label)).join("") + "</optgroup>" : "");
+    setVal(sel, LS.get("tcPreset", "arhiva"));
+  }
+  syncTc();
+  sel.focus();
+}
+$("#libBar").addEventListener("click", e => {
+  const b = e.target.closest("[data-b]"); if (!b) return;
+  const a = b.dataset.b, target = $("#bTarget").value;
+  if (a === "translate") libBatch("translate", {target});
+  else if (a === "transcribe") libBatch("transcribe", {});
+  else if (a === "burn") libBatch("video", {output: "burn", target});
+  else if (a === "soft") libBatch("video", {output: "soft", target});
+  else if (a === "open") libBatch("open", {});
+  else if (a === "tc") openTc();
+  else if (a === "lk") { const pop = $("#popLk"), was = !pop.hidden; closePops(); pop.hidden = was; if (!was) syncLk(); }
+  else if (a === "lkgo") { const [engine, model] = LKENG.split("|"); LS.set("lkEng", LKENG);
+    libBatch("lektura", {target, engine, model, ...($("#lkForce").checked ? {force: true} : {})}); }
+  else if (a === "acopy") libBatch("audio_copy", {});
+  else if (a === "audio") { const pop = $("#popAu"), was = !pop.hidden; closePops(); pop.hidden = was; }
+  else if (a === "au") libBatch("audio", {preset: b.dataset.v});
+  else if (a === "tcgo") { LS.set("tcPreset", $("#tcPreset").value); libBatch("toolbox", {preset: $("#tcPreset").value, sub: TCSUB, target}); }
+  else if (a === "close") closePops();
+  else if (a === "none") { for (const f of [...LSEL]) { const it = LIB.find(i => i.folder === f); if (it) setLibSel(it, false); else LSEL.delete(f); } updateLibBar(); }
+});
+$("#tcSub").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) { TCSUB = b.dataset.v; syncTc(); } });
+$("#tcPreset").addEventListener("change", syncTc);
+$("#bTarget").addEventListener("change", () => { syncTc(); syncLk(); });
+// ---- lektura (Claude / Gemini) postojeceg prevoda
+let LKENG = LS.get("lkEng", "claude|sonnet");
+function syncLk() {
+  if (!$$("#lkEng [data-v]").some(b => b.dataset.v === LKENG)) LKENG = "claude|sonnet";
+  $$("#lkEng [data-v]").forEach(b => b.classList.toggle("on", b.dataset.v === LKENG));
+  const gem = LKENG.startsWith("gemini"), noKey = gem && STATUS.keys && !STATUS.keys.gemini;
+  $("#lkNote").textContent = noKey ? "Nema Gemini ključa u Keychain-u — upis je opisan u ⚙ Podešavanja → Prevod." : "";
+  $("#lkNote").hidden = !noKey;
+  $('#popLk [data-b="lkgo"]').disabled = !!noKey;
+  const tl = TGT_LBL[$("#bTarget").value] || "srpski", who = gem ? "Gemini" : "Claude";
+  $("#lkInfo").textContent = `Uzima najnoviji prevod (${tl}) i njegov izvor; ispravlja gramatiku, rod i padež, značenje i imena, uz što manje izmena. `
+    + `Rezultat je nov titl „… — ${who} lektura“, stari ostaje. ${gem ? "Gemini: samo za javni sadržaj." : "Claude ide preko tvoje pretplate (claude CLI)."}`;
+}
+$("#lkEng").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) { LKENG = b.dataset.v; syncLk(); } });
+document.addEventListener("click", e => { if (!e.target.closest("#libBar")) closePops(); });
+
+// ================================================================ v3: rute koje stariji server nema -> 404 "not found"
+const oldApi = e => !!e && e.status === 404 && /^not found$/i.test(e.message || "");
+const nOf = v => Array.isArray(v) ? v.length : +v || 0;
+
+// ================================================================ Biblioteka: plejliste (C)
+let PLS = null, plBusy = false;
+const PLNEW = new Map();  // id -> new_count iz poslednjeg "Osveži" (lista ga mozda nema)
+const PLQ = new Map();  // id -> {ids, t} poslovi vec poslati "Preuzmi nedostajuće" (missing ostaje isti dok se ne preuzme)
+function setLibView(v) {
+  LVIEW = v === "pl" ? "pl" : "items"; LS.set("libView", LVIEW);
+  $$("#libView [data-v]").forEach(b => { const on = b.dataset.v === LVIEW; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
+  $("#libCard").classList.toggle("plmode", LVIEW === "pl");
+  $("#plBox").hidden = LVIEW !== "pl";
+  closePops(); updateLibBar();
+  if (LVIEW === "pl") loadPlaylists();
+}
+$("#libView").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b && b.dataset.v !== LVIEW) setLibView(b.dataset.v); });
+async function loadPlaylists() {
+  if (plBusy) return;
+  plBusy = true;
+  const box = $("#plBox");
+  if (!PLS) box.innerHTML = '<div class="empty"><span class="spin">učitavam plejliste…</span></div>';
+  try {
+    const r = await api("/api/playlists");
+    PLS = (Array.isArray(r) ? r : (r && r.playlists) || []).filter(x => x && x.id);
+    renderPlaylists();
+  } catch (e) {
+    PLS = null;
+    box.innerHTML = `<div class="empty">${oldApi(e) ? "Pregled plejlista traži noviju verziju servera." : "Plejliste nisu učitane: " + esc(firstLine(e.message))}</div>`;
+  } finally { plBusy = false; }
+}
+function plRowHtml(p) {
+  const miss = nOf(p.missing), rem = nOf(p.removed), nw = nOf(p.new ?? p.new_count ?? PLNEW.get(p.id)), have = nOf(p.have), cnt = nOf(p.count);
+  const meta = [p.uploader, `${cnt} ${plural(cnt, "stavka", "stavke", "stavki")}`, p.fetched_at ? "provereno " + fmtWhen(p.fetched_at) : ""].filter(Boolean).join(" · ");
+  const remT = Array.isArray(p.removed) ? ": " + p.removed.slice(0, 15).map(x => x.title || x.id).join(", ") : "";
+  return `<div class="plr" data-id="${esc(p.id)}">
+    <div class="rm"><div class="rtl" data-pa="show" title="Prikaži stavke ove plejliste u biblioteci">📃 ${esc(p.title || p.id)}</div>
+      <div class="rsub"><span>${esc(meta)}</span><span class="b ${have ? "ok" : "plain"}">imaš ${have}</span><span class="b ${miss ? "warn" : "plain"}">nedostaje ${miss}</span>${rem ? `<span class="b warn" title="${esc("Bile su u plejlisti, sada ih nema na YouTube-u" + remT)}">uklonjeno sa YouTube-a ${rem}</span>` : ""}${nw ? `<span class="b new" title="Nove od prethodne provere">nove ${nw}</span>` : ""}</div></div>
+    <div class="ra"><button class="sm" data-pa="refresh" title="Ponovo proveri plejlistu na YouTube-u (nove i uklonjene stavke)">↻ Osveži</button><button class="sm${miss ? " primary" : ""}" data-pa="missing"${miss ? "" : " disabled"} title="Preuzmi sve što nedostaje trenutnim izborom (⤓ Preuzmi)">⤓ Preuzmi nedostajuće${miss ? ` (${miss})` : ""}</button><button class="sm" data-pa="album" title="Samo-audio stavke: tagovi albuma bez rekodiranja + .m3u8 plejlista po redosledu">💿 Napravi album</button></div></div>`;
+}
+function renderPlaylists() {
+  $("#plBox").innerHTML = PLS && PLS.length ? PLS.map(plRowHtml).join("")
+    : '<div class="empty">Još nema snimljenih plejlista — nalepi link plejliste ili kanala u ⤓ Preuzmi; posle provere se ovde vidi šta imaš, šta nedostaje i šta je uklonjeno.</div>';
+}
+$("#plBox").addEventListener("click", async e => {
+  const b = e.target.closest("[data-pa]"), row = e.target.closest(".plr"); if (!b || !row || b.disabled) return;
+  const p = (PLS || []).find(x => String(x.id) === row.dataset.id); if (!p) return;
+  const a = b.dataset.pa, name = `„${p.title || p.id}“`;
+  if (a === "show") {
+    if (![...$("#libPl").options].some(o => o.value === String(p.id))) return toast(`Nijedna stavka plejliste ${name} još nije u biblioteci.`);
+    setLibView("items");
+    $("#libFilter").value = ""; $("#libKind").value = ""; $("#libSr").value = ""; $("#libPl").value = p.id;
+    lastLibI = -1; renderLib(); return;
+  }
+  const q = a === "missing" && PLQ.get(p.id);  // posao koji Red jos nije prikazao racuna se kao aktivan (par sekundi)
+  const busyQ = q ? q.ids.filter(id => { const j = JOBS.find(x => x.id === id); return j ? ["queued", "running"].includes(j.state) : Date.now() - q.t < 15000; }).length : 0;
+  if (busyQ && !confirm(`Nedostajuće iz ${name} su već u redu (${busyQ} ${plural(busyQ, "posao", "posla", "poslova")} još radi). Dodati ih ponovo?`)) return;
+  if (a === "missing" && !busyQ && nOf(p.missing) > 10 && !confirm(`Preuzeti ${nOf(p.missing)} stavki koje nedostaju iz ${name} (izbor: ${recipeLabel()})?`)) return;
+  if (a === "album" && !confirm(`Napraviti album od ${name}?\n\nSamo-audio stavke dobijaju tagove (album, broj numere, izvođač) bez rekodiranja i pravi se .m3u8 plejlista po redosledu.`)) return;
+  const btns = $$("button", row), label = b.innerHTML;
+  btns.forEach(x => x.disabled = true); b.innerHTML = '<span class="spin">radim…</span>';
+  let reload = true;
+  try {
+    if (a === "refresh") {
+      if (!p.url) throw new Error("plejlista nema sačuvan link");
+      const r = await api("/api/probe", {url: p.url, playlist: true});
+      const nw = +r.new_count || (r.entries || []).filter(x => x.state === "new").length, rem = nOf(r.removed);
+      PLNEW.set(p.id, nw);
+      const cnt = nOf(r.count ?? r.entries);
+      toast(`Osveženo ${name}: ${cnt} ${plural(cnt, "stavka", "stavke", "stavki")}${nw ? ` · nove ${nw}` : ""}${rem ? ` · uklonjeno sa YouTube-a ${rem}` : ""}`, {ms: 7000});
+    } else if (a === "missing") {
+      const o = clone(co()); o.dl = o.dl || {}; o.dl.subfolder = true;
+      INFLIGHT++;
+      try {
+        const r = await api(`/api/playlists/${encodeURIComponent(p.id)}/missing`, {opts: o});
+        const ids = r.jobs || []; ids.forEach(id => MINE.add(id)); PLQ.set(p.id, {ids, t: Date.now()});
+        if (ids.length) toastJobs(ids.length); else toast("Ništa ne nedostaje — sve je već u biblioteci.");
+      } finally { INFLIGHT--; }
+      refreshJobs();
+    } else if (a === "album") {
+      const r = await api(`/api/playlists/${encodeURIComponent(p.id)}/album`, {m3u: true, tags: true});
+      const sk = (r.skipped || []).length, t = +r.tagged || 0;
+      toast(`Album: ${t} ${plural(t, "numera tagovana", "numere tagovane", "numera tagovano")}${sk ? ` · preskočeno ${sk}` : ""}${r.m3u ? " · " + shortPath(r.m3u) : ""}`, {ms: 8000, cls: t || r.m3u ? "" : "err"});
+      refreshLib(true);
+    }
+  } catch (x) {
+    reload = false;
+    toast(oldApi(x) ? "Ova akcija traži noviju verziju servera." : "Greška: " + firstLine(x.message), {cls: "err", ms: 8000});
+  } finally {
+    b.innerHTML = label; btns.forEach(x => x.disabled = false);
+    if (a === "missing" && !nOf(p.missing)) b.disabled = true;
+    if (reload) loadPlaylists();
+  }
+});
+
+// ================================================================ Biblioteka: zdravlje kataloga (D)
+let HEALTH = null, hBusy = false;
+const hHead = inner => `<div class="hh"><b>Zdravlje kataloga</b>${inner}<span class="grow"></span>${HEALTH ? '<button class="sm" data-h="again">Proveri ponovo</button>' : ""}<button class="sm x" data-h="close" aria-label="Zatvori proveru">✕</button></div>`;
+function setHealthBtn(on) { const b = $("#btnHealth"); b.classList.toggle("on", on); b.setAttribute("aria-expanded", String(on)); }
+async function openHealth(reload) {
+  const box = $("#healthBox");
+  if (!reload && !box.hidden) { box.hidden = true; setHealthBtn(false); return; }
+  box.hidden = false; setHealthBtn(true);
+  if (hBusy) return;
+  hBusy = true; HEALTH = null;
+  box.innerHTML = hHead('<span class="spin small muted">proveravam izvore, titlove i izlaze…</span>');
+  try { HEALTH = await api("/api/health"); renderHealth(); }
+  catch (e) { box.innerHTML = hHead(`<span class="small muted">${oldApi(e) ? "Provera traži noviju verziju servera." : esc(firstLine(e.message))}</span>`); }
+  finally { hBusy = false; }
+}
+function renderHealth() {
+  const h = HEALTH || {}, items = h.items || [], orph = h.orphans || [];
+  const sum = [h.checked_at ? "provereno " + fmtWhen(h.checked_at) : "",
+    items.length ? `${items.length} ${plural(items.length, "stavka ima", "stavke imaju", "stavki ima")} problem` : "sve stavke su u redu ✓",
+    orph.length ? `${orph.length} ${plural(orph.length, "folder", "foldera", "foldera")} bez indeksa` : ""].filter(Boolean).join(" · ");
+  const list = items.length ? `<ul>${items.map(x => `<li data-f="${esc(x.folder)}"><span class="tt" title="${esc(x.folder)}">${esc(x.title || String(x.folder || "").split("/").pop())}</span>${(x.issues || []).map(i => `<span class="b warn">${esc(i)}</span>`).join("")}<button class="lnk" data-h="show">prikaži</button><button class="lnk" data-h="open">folder</button></li>`).join("")}</ul>` : "";
+  const orl = orph.length ? `<div class="hh"><b>Folderi bez indeksa</b><span class="small muted">imaju [ID] u imenu, ali nemaju .yta/manifest.json — zato se ne vide u biblioteci</span><span class="grow"></span><button class="sm primary" data-h="rebuild">Obnovi indeks (${orph.length})</button></div>
+    <ul>${orph.map(o => `<li data-f="${esc(o.folder)}"><span class="path">${esc(shortPath(o.folder))}</span>${o.id ? `<span class="b plain">${esc(o.id)}</span>` : ""}<button class="lnk" data-h="open">folder</button></li>`).join("")}</ul>` : "";
+  $("#healthBox").innerHTML = hHead(`<span class="small muted">${esc(sum)}</span>`) + list + orl;
+}
+$("#btnHealth").onclick = () => openHealth(false);
+$("#healthBox").addEventListener("click", async e => {
+  const b = e.target.closest("[data-h]"); if (!b) return;
+  const a = b.dataset.h, li = b.closest("[data-f]"), f = li ? li.dataset.f : "";
+  if (a === "close") { $("#healthBox").hidden = true; setHealthBtn(false); }
+  else if (a === "again") openHealth(true);
+  else if (a === "open") api("/api/open-path", {path: f}).catch(x => toast(x.message, {cls: "err"}));
+  else if (a === "show") {
+    const it = LIB.find(i => i.folder === f);
+    if (it && it.id) showInLib(it.id);
+    else { if (LVIEW !== "items") setLibView("items"); $("#libFilter").value = (it && it.title) || $(".tt", li).textContent; lastLibI = -1; renderLib(); }
+  } else if (a === "rebuild") {
+    b.disabled = true;
+    try {
+      const r = await api("/api/health/rebuild", {}), n = +r.rebuilt || 0, er = r.errors || [];
+      toast(`Indeks obnovljen: ${n} ${plural(n, "folder", "foldera", "foldera")} ${plural(n, "vraćen", "vraćena", "vraćeno")} u biblioteku`
+        + (er.length ? ` · ${er.length} nije uspelo (${firstLine(er[0].error)})` : ""), {ms: er.length ? 10000 : 7000, cls: er.length && !n ? "err" : ""});
+      refreshLib(true); openHealth(true);
+    } catch (x) { b.disabled = false; toast(oldApi(x) ? "Obnova indeksa traži noviju verziju servera." : "Greška: " + firstLine(x.message), {cls: "err", ms: 8000}); }
+  }
+});
+
+// ================================================================ editor titla + ispravke za obuku (A)
+const ED = {open: false, dirty: new Set()};
+const TRK = ["sr", "tr"];
+function subChoices(it) {  // prevodi prvi (najnoviji gore), pa originalni titlovi
+  const subs = (it.subs || []).filter(s => s && s.file);
+  return [...subs.filter(s => TRK.includes(s.kind)).reverse(), ...subs.filter(s => !TRK.includes(s.kind))];
+}
+const subLbl = s => (s.name || s.key || s.file) + (s.count ? " · " + nTitl(+s.count) : "");
+const toSec = v => {  // backend salje start/end u ms (int); tekst "00:01:02,345" -> sekunde
+  if (typeof v === "number") return v / 1000;
+  const p = String(v || "").trim().replace(",", ".").split(":").map(Number);
+  return p.some(isNaN) ? 0 : p.reduce((a, x) => a * 60 + x, 0);
+};
+const tLbl = v => { const t = Math.max(0, toSec(v)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), x = (t % 60).toFixed(1).padStart(4, "0");
+  return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + x; };
+const FSZ = !!(window.CSS && CSS.supports && CSS.supports("field-sizing", "content"));
+const rowsFor = t => Math.min(6, Math.max(1, String(t || "").split("\n").length));
+const cueText = t => String(t || "").split("\n").map(x => x.trim()).filter(Boolean).join("\n");  // kao server (_cue_in)
+const nTitl = n => `${n} ${plural(n, "titl", "titla", "titlova")}`;
+const AUDEXT = /\.(mp3|m4a|aac|opus|ogg|oga|flac|wav|mka|weba)$/i;
+function alignSrc(cues, src) {  // ugovor: isti broj titlova -> po indeksu; inace po vremenu (preklapanje)
+  if (!Array.isArray(src) || !src.length) return null;
+  if (src.length === cues.length) return src.map(x => String((x && x.text) ?? ""));
+  const out = []; let j = 0;
+  for (const c of cues) {
+    const a = toSec(c.start), b = toSec(c.end), parts = [];
+    while (j < src.length && toSec(src[j].end) <= a) j++;
+    for (let x = j; x < src.length && toSec(src[x].start) < b; x++) parts.push(src[x].text || "");
+    out.push(parts.join("\n"));
+  }
+  return out;
+}
+function edNote(t) { $("#edNote").textContent = t; $("#edNote").hidden = !t; }
+async function openEditor(it, file, opener) {
+  if (ED.open || ED.loading) return;
+  ED.loading = true;
+  let r;
+  try { r = await api(`/api/subs?f=${encodeURIComponent(it.folder)}&file=${encodeURIComponent(file)}`); }
+  catch (e) { toast(oldApi(e) ? "Editor titla traži noviju verziju servera." : "Titl nije učitan: " + firstLine(e.message), {cls: "err", ms: 8000}); return; }
+  finally { ED.loading = false; }
+  const cues = Array.isArray(r && r.cues) ? r.cues : [];
+  if (!cues.length) return toast("Titl je prazan ili nije pročitan.", {cls: "err"});
+  const ent = r.entry || (it.subs || []).find(s => s.file === file) || {};
+  Object.assign(ED, {open: true, it, file, opener, entry: ent, cues, src: alignSrc(cues, r.src), text: cues.map(c => String(c.text ?? "")),
+    cur: -1, lastType: 0, saving: false, dirty: new Set(), st: cues.map(c => toSec(c.start)), en: cues.map(c => toSec(c.end))});
+  ED.base = [...ED.text];
+  const hasSrc = !!ED.src, se = r.src_entry || {};
+  $("#edTitle").textContent = it.title || String(it.folder).split("/").pop();
+  $("#edSub").textContent = [ent.name || file, nTitl(cues.length), hasSrc ? "original: " + (se.name || se.lang || "izvor") : "bez originala za poređenje"].join(" · ");
+  const T = $("#edT");
+  T.classList.toggle("nosrc", !hasSrc);
+  T.lang = ent.lang === "sr" ? (/:cyr:|cyr/.test(ent.key || ent.file || "") ? "sr-Cyrl" : "sr-Latn") : (ent.lang || "");
+  // "\n" posle <textarea> parser odbacuje -> vodeci prelom u tekstu ostaje sacuvan
+  T.innerHTML = `<div class="crh"><span>Vreme</span><span class="hs">Original${se.lang ? " (" + esc(se.lang) + ")" : ""}</span><span>${TRK.includes(ent.kind) ? "Prevod" : "Tekst"}</span></div>`
+    + cues.map((c, k) => `<div class="cr" data-k="${k}"><span class="ct" title="${esc(tLbl(c.start) + " → " + tLbl(c.end))}">${esc(tLbl(c.start))}</span>${hasSrc ? `<div class="co">${esc(ED.src[k])}</div>` : ""}<textarea class="cx" rows="${rowsFor(ED.text[k])}" aria-label="Titl ${k + 1}" placeholder="prazno = titl se briše pri čuvanju">\n${esc(ED.text[k])}</textarea></div>`).join("");
+  ED.rows = $$(".cr", T);
+  ED.hay = ED.src ? ED.src.map(x => x.toLowerCase()) : null;
+  const V = $("#edV");
+  V.innerHTML = ""; V.hidden = false; V.className = "edv"; edNote(""); ED.media = null;
+  if (r.media) {
+    const aud = AUDEXT.test(r.media) || it.kind === "audio", m = document.createElement(aud ? "audio" : "video");
+    m.controls = true; m.preload = "metadata"; m.playsInline = true;
+    m.src = `/api/media?f=${encodeURIComponent(it.folder)}&file=${encodeURIComponent(r.media)}`;
+    m.addEventListener("error", () => { if (ED.media !== m) return; V.hidden = true;
+      edNote("Pregled nije dostupan — pregledač ne može da pusti ovaj izvor (npr. MKV sa HEVC/AV1 ili AC-3 zvukom). Uređivanje radi normalno."); });
+    m.addEventListener("loadedmetadata", () => { if (ED.media !== m) return;
+      if (!aud && m.videoWidth === 0) edNote("Slika se ne prikazuje (kodek nije podržan u pregledaču) — zvuk radi.");
+      if (ED.cur >= 0 && !m.currentTime) { try { m.currentTime = ED.st[ED.cur] + 0.01; } catch {} } });  // red izabran pre ucitavanja
+    m.addEventListener("timeupdate", edTick); m.addEventListener("seeked", edTick);
+    const cap = document.createElement("div"); cap.className = "edcap"; cap.id = "edCap"; cap.setAttribute("aria-hidden", "true");
+    V.classList.toggle("aud", aud); V.append(m, cap);
+    ED.media = m;
+  } else { V.hidden = true; edNote("Izvor (video/audio) nije u biblioteci — uređivanje bez pregleda."); }
+  $("#edQ").value = ""; $("#edHits").textContent = "";
+  updateDirty(); paintCap();
+  $("#ed").hidden = false; document.body.classList.add("edopen");
+  for (const x of [$("header"), $("main")]) x.inert = true;
+  T.scrollTop = 0;
+  const f = $(".cx", T); if (f) f.focus({preventScroll: true});
+}
+function curAt(t) {  // titl koji se trenutno prikazuje (binarna pretraga po pocetku)
+  let lo = 0, hi = ED.st.length - 1, k = -1;
+  while (lo <= hi) { const mid = (lo + hi) >> 1; if (ED.st[mid] <= t + 0.001) { k = mid; lo = mid + 1; } else hi = mid - 1; }
+  return k >= 0 && t < ED.en[k] ? k : -1;
+}
+function edTick() {
+  if (!ED.open || !ED.media) return;
+  const k = curAt(ED.media.currentTime);
+  if (k !== ED.cur) setCur(k, !ED.media.paused && Date.now() - ED.lastType > 2500);
+}
+function rowIntoView(el, center) {
+  const T = $("#edT"), r = el.getBoundingClientRect(), b = T.getBoundingClientRect(), top = b.top + (FSZ && innerWidth > 760 ? 30 : 0);
+  if (r.top >= top && r.bottom <= b.bottom) return;
+  T.scrollTop += center ? r.top - b.top - (b.height - r.height) / 2 : r.top < top ? r.top - top - 6 : r.bottom - b.bottom + 6;
+}
+function setCur(k, follow) {
+  const old = ED.rows[ED.cur]; if (old) old.classList.remove("cur");
+  ED.cur = k;
+  const el = ED.rows[k];
+  if (el) { el.classList.add("cur"); if (follow && !el.hidden) rowIntoView(el, true); }
+  paintCap();
+}
+function paintCap() {
+  const c = $("#edCap"), k = ED.cur;
+  if (c) c.textContent = k >= 0 ? ED.text[k] : "";
+  $("#edInfo").textContent = k >= 0 ? `Titl ${k + 1}/${ED.cues.length} · ${tLbl(ED.cues[k].start)} → ${tLbl(ED.cues[k].end)}` : nTitl(ED.cues.length);
+}
+function edSeek(k) {
+  if (k < 0 || k >= ED.cues.length) return;
+  const m = ED.media;
+  if (m && m.readyState > 0) { try { m.currentTime = ED.st[k] + 0.01; } catch {} }
+  setCur(k, false);
+}
+function updateDirty() {
+  const n = ED.dirty.size;
+  $("#edDirty").textContent = n ? `● ${n} ${plural(n, "nesačuvana izmena", "nesačuvane izmene", "nesačuvanih izmena")}` : "";
+  $("#edSave").disabled = !n || ED.saving;
+}
+$("#edT").addEventListener("focusin", e => {
+  const r = e.target.classList && e.target.classList.contains("cx") && e.target.closest(".cr");
+  if (r && +r.dataset.k !== ED.cur) edSeek(+r.dataset.k);
+});
+$("#edT").addEventListener("click", e => {  // klik na vreme / original = skok (i ponovo na isti titl)
+  const r = e.target.closest(".cr"); if (!r || e.target.tagName === "TEXTAREA" || String(getSelection() || "")) return;
+  edSeek(+r.dataset.k);
+});
+$("#edT").addEventListener("input", e => {
+  const t = e.target; if (!t.classList.contains("cx")) return;
+  const r = t.closest(".cr"), k = +r.dataset.k, ch = t.value !== ED.base[k];
+  ED.text[k] = t.value; ED.lastType = Date.now();
+  if (ch !== ED.dirty.has(k)) { if (ch) ED.dirty.add(k); else ED.dirty.delete(k); r.classList.toggle("chg", ch); updateDirty(); }
+  if (!FSZ) { const n = rowsFor(t.value); if (t.rows !== n) t.rows = n; }
+  if (k === ED.cur) paintCap();
+});
+let edQT = 0;
+function edFilter() {
+  const q = $("#edQ").value.trim().toLowerCase(); let n = 0;
+  ED.rows.forEach((el, k) => {
+    const hit = !q || ED.text[k].toLowerCase().includes(q) || (!!ED.hay && ED.hay[k].includes(q));
+    if (el.hidden === hit) el.hidden = !hit;
+    if (hit) n++;
+  });
+  $("#edHits").textContent = q ? `${n} ${plural(n, "pogodak", "pogotka", "pogodaka")}` : "";
+}
+$("#edQ").addEventListener("input", () => { clearTimeout(edQT); edQT = setTimeout(edFilter, 120); });
+$("#edQ").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); clearTimeout(edQT); edFilter(); edMove(e.shiftKey ? -1 : 1); } });
+function edMove(d) {
+  const a = document.activeElement, r = a && a.closest && a.closest("#edT .cr");
+  const k = r ? +r.dataset.k : ED.cur;
+  for (let x = k + d; x >= 0 && x < ED.rows.length; x += d) {
+    if (ED.rows[x].hidden) continue;
+    const t = $(".cx", ED.rows[x]);
+    t.focus({preventScroll: true});  // focusin -> skok na taj titl
+    try { t.setSelectionRange(t.value.length, t.value.length); } catch {}
+    rowIntoView(ED.rows[x], false);
+    return;
+  }
+}
+async function edSave() {
+  if (!ED.open || ED.saving) return;
+  if (!ED.dirty.size) return toast("Nema izmena za čuvanje.");
+  ED.saving = true; updateDirty();
+  const btn = $("#edSave"), n0 = ED.dirty.size, sent = [...ED.text], it = ED.it;
+  btn.textContent = "Čuvam…";
+  try {
+    const cues = ED.cues;
+    const r = await api("/api/subs/save", {folder: it.folder, file: ED.file,
+      cues: cues.map((c, k) => ({i: c.i === undefined ? k : c.i, start: c.start, end: c.end, text: sent[k]}))});
+    // server brise prazne titlove -> i = indeks u NOVOM fajlu (inace sledece cuvanje poredi pogresne linije)
+    let n1 = 0;
+    cues.forEach((c, k) => { c.i = cueText(sent[k]) ? n1++ : null; });
+    if (ED.open && ED.it === it) {  // izmene kucane dok je cuvanje trajalo ostaju nesacuvane
+      ED.base = sent; ED.dirty = new Set();
+      ED.text.forEach((t, k) => { const ch = t !== sent[k]; if (ch) ED.dirty.add(k); if (ED.rows[k].classList.contains("chg") !== ch) ED.rows[k].classList.toggle("chg", ch); });
+    }
+    let tot = null, st = null;
+    try { st = await api("/api/corrections/stats"); if (st && st.total != null) tot = +st.total; } catch {}
+    const n = r && r.changed != null ? +r.changed : n0;
+    // memory.js dodaje broj aktivnih pravila (memory.rules_active iz odgovora cuvanja)
+    toast(window.memSaveToastText ? window.memSaveToastText(n, tot, r, st)
+      : `Sačuvano · ${n} ${plural(n, "ispravka", "ispravke", "ispravki")}${tot != null ? ` (ukupno za obuku: ${tot})` : ""}`,
+      {ms: 7000, link: ["#memorija", "Memorija"], onLink: edLeave});
+    refreshLib(true);
+  } catch (e) {
+    toast(oldApi(e) ? "Čuvanje traži noviju verziju servera." : "Nije sačuvano: " + firstLine(e.message), {cls: "err", ms: 9000});
+  } finally { ED.saving = false; btn.textContent = "Sačuvaj"; if (ED.open) updateDirty(); }
+}
+function edClose() {
+  if (!ED.open) return;
+  const n = ED.dirty.size;
+  if (n && !confirm(`Imaš ${n} ${plural(n, "nesačuvanu izmenu", "nesačuvane izmene", "nesačuvanih izmena")}. Zatvoriti bez čuvanja?`)) return;
+  if (window.memGlossaryClose) window.memGlossaryClose();
+  const m = ED.media;
+  if (m) { m.pause(); m.removeAttribute("src"); try { m.load(); } catch {} }
+  Object.assign(ED, {open: false, media: null, rows: [], dirty: new Set(), lastTa: null});
+  $("#ed").hidden = true; $("#edT").innerHTML = ""; $("#edV").innerHTML = "";
+  document.body.classList.remove("edopen");
+  for (const x of [$("header"), $("main")]) x.inert = false;
+  if (ED.opener && ED.opener.isConnected) ED.opener.focus({preventScroll: true});
+}
+$("#edClose").onclick = edClose;
+$("#edSave").onclick = edSave;
+// link iz toasta ("Memorija") dok je editor otvoren: prvo zatvori editor (pita za nesacuvano), inace ostani
+const edLeave = e => { if (!ED.open) return; edClose(); if (ED.open) e.preventDefault(); };
+// ＋ Glosar: oznaceni tekst u editoru — prevod/tekst (textarea) ili kolona originala
+$("#edT").addEventListener("focusout", e => { if (e.target.classList && e.target.classList.contains("cx")) ED.lastTa = e.target; });
+function edSelection() {
+  const a = document.activeElement, sel = t => t.value.slice(t.selectionStart, t.selectionEnd);
+  if (a && a.classList && a.classList.contains("cx") && a.selectionEnd > a.selectionStart) return {where: "tgt", text: sel(a)};
+  const s = getSelection(), nd = s && s.rangeCount ? s.anchorNode : null, el = nd && (nd.nodeType === 1 ? nd : nd.parentElement);
+  if (el && el.closest && el.closest("#edT .co") && String(s).trim()) return {where: "src", text: String(s)};
+  // poslednja napustena textarea cuva oznaku i posle blur-a; ne vazi ako je kursor sada u drugom titlu
+  const t = ED.lastTa;
+  if (t && t.isConnected && !(a && a.classList && a.classList.contains("cx")) && t.selectionEnd > t.selectionStart)
+    return {where: "tgt", text: sel(t)};
+  return {where: "", text: ""};
+}
+$("#edGl").addEventListener("mousedown", e => e.preventDefault());  // klik ne sme da skine oznaku u titlu
+$("#edGl").onclick = () => {
+  if (!ED.open) return;
+  if (!window.memGlossaryPop) return toast("memory.js nije učitan — osveži stranu.", {cls: "err"});
+  window.memGlossaryPop({...edSelection(), entry: ED.entry, channel: (ED.it && ED.it.channel) || "", pick: edSelection, onLink: edLeave});
+  ED.lastTa = null;  // iskoriscena oznaka: sledeci klik bez nove oznake zatvara formu (ne puni je ponovo)
+};
+document.addEventListener("keydown", e => {
+  if (!ED.open) return;
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") { e.preventDefault(); edSave(); return; }
+  if (e.key === "Escape") {
+    e.preventDefault();
+    if (window.memGlossaryClose && window.memGlossaryClose()) return;  // prvo mini forma glosara
+    if (e.target.id === "edQ" && e.target.value) { e.target.value = ""; edFilter(); return; }
+    edClose(); return;
+  }
+  if (e.altKey && (e.key === "ArrowDown" || e.key === "ArrowUp")) { e.preventDefault(); edMove(e.key === "ArrowDown" ? 1 : -1); return; }
+  if (e.altKey && e.code === "Space" && ED.media) { e.preventDefault(); const m = ED.media; if (m.paused) m.play().catch(() => {}); else m.pause(); }
+});
+window.addEventListener("beforeunload", e => { if (ED.open && ED.dirty.size) { e.preventDefault(); e.returnValue = ""; } });
+
+// ================================================================ tastatura
+document.addEventListener("keydown", e => {
+  if (ED.open) return;  // editor titla ima svoje precice
+  const typing = e.target.closest && e.target.closest("input,textarea,select,[contenteditable]");
+  if (e.key === "Escape") { closePops(); return; }
+  if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && TAB === "preuzmi") { e.preventDefault(); submitAll(); return; }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s" && TAB === "podesavanja") { e.preventDefault(); saveSettings(); return; }
+  if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (/^[1-9]$/.test(e.key) && TABS[+e.key - 1]) { e.preventDefault(); go(TABS[+e.key - 1]); }
+  else if (e.key === "/") { const t = TAB === "biblioteka" ? $("#libFilter") : TAB === "preuzmi" ? ta : TAB === "memorija" ? $("#memQ") : null; if (t) { e.preventDefault(); t.focus(); } }
+});
+
+// ================================================================ start
+(async () => {
+  for (const id of ["libKind", "libSr", "libSort"]) setVal($("#" + id), LS.get("lib." + id, $("#" + id).value));
+  if (LS.get("libView", "items") === "pl") setLibView("pl");
+  route();
+  try { await loadSettings(); } catch (e) { toast("Podešavanja nisu učitana: " + e.message, {cls: "err", ms: 9000}); }
+  await loadRecipes();
+  mountPlan(); optsChanged();
+  await loadStatus();
+  refreshJobs(); refreshLib(true);
+  tbPresets().then(() => optsChanged());  // red Transkoduj: spisak Toolbox preseta
+  if (window.initToolbox) window.initToolbox(); else $("#tb").innerHTML = '<div class="empty">toolbox.js nije učitan</div>';
+  if (!window.memRefresh) $("#mem").innerHTML = '<div class="card"><div class="empty">memory.js nije učitan</div></div>';
+  else if (TAB === "memorija" && !$("#mem")._m) window.memRefresh();  // memory.js se sam osvezi ako je kartica vec otvorena
+  let tick = 0;
+  setInterval(() => {  // Red: svake sekunde kad je vidljiv, inace ređe
+    tick++;
+    if (TAB === "red" || (!document.hidden && tick % 3 === 0) || tick % 10 === 0) refreshJobs();
+    if (tick % 5 === 0) loadStatus();
+    if ((TAB === "biblioteka" && tick % 5 === 0) || tick % 30 === 0) refreshLib(false);
+  }, 1000);
+})();
+</script>
+<script src="/static/toolbox.js"></script>
+<script src="/static/memory.js"></script>
+</body>
+</html>

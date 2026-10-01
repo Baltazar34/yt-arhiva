@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>YT Arhiva — uputstvo</title>
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#fff;--panel2:#f1f3f6;--line:#e2e5ea;--text:#16181d;--muted:#5b6474;
+  --acc:#2563eb;--acc-soft:#eaf0ff;--ok:#15803d;--warn:#b45309;--err:#dc2626;
+  --chip:#eef2ff;--chip-t:#3730a3;--code:#f1f3f6;--shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e1014;--panel:#161920;--panel2:#1d212a;--line:#2a2f3a;--text:#e7e9ee;--muted:#9aa3b2;
+  --acc:#60a5fa;--acc-soft:#1a2644;--ok:#22c55e;--warn:#f59e0b;--err:#f87171;--chip:#1e2540;--chip-t:#c7d2fe;--code:#1d212a;--shadow:none;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+a{color:var(--acc)}
+.page{max-width:1180px;margin:0 auto;padding:24px 20px 60px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:32px;align-items:start}
+header.top{grid-column:1/-1;border-bottom:1px solid var(--line);padding-bottom:16px}
+header.top h1{margin:0 0 4px;font-size:30px;letter-spacing:-.01em}
+header.top p{margin:0;color:var(--muted)}
+.ver{display:inline-block;font-size:13px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--chip);color:var(--chip-t);vertical-align:middle;margin-left:6px}
+nav.toc{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+nav.toc b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+nav.toc ol{margin:0;padding-left:28px}
+nav.toc li{margin:3px 0}
+nav.toc a{text-decoration:none;color:var(--text)}
+nav.toc a:hover{color:var(--acc);text-decoration:underline}
+main{min-width:0;max-width:820px}
+section{margin:0 0 40px}
+h2{font-size:24px;margin:0 0 12px;padding-top:6px;border-top:2px solid var(--line);letter-spacing:-.01em}
+h3{font-size:18px;margin:24px 0 8px}
+h4{font-size:16px;margin:18px 0 6px}
+p,li{max-width:76ch}
+ul,ol{padding-left:22px}
+li{margin:4px 0}
+code,kbd,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em}
+code{background:var(--code);border:1px solid var(--line);border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;line-height:1.5;white-space:pre}
+pre code{background:none;border:0;padding:0;overflow-wrap:normal}
+kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--panel2);white-space:nowrap}
+table{border-collapse:separate;border-spacing:0;width:100%;margin:10px 0 16px;font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:7px 10px;border-bottom:1px solid var(--line)}
+th{background:var(--panel2);font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td:first-child{min-width:8.5em}
+div.note,div.warn,div.tip{border-radius:10px;padding:10px 14px;margin:12px 0;border:1px solid var(--line);background:var(--panel)}
+div.note{border-left:4px solid var(--acc)}
+div.warn{border-left:4px solid var(--warn)}
+div.tip{border-left:4px solid var(--ok)}
+div.note p,div.warn p,div.tip p{margin:4px 0}
+.b{display:inline-block;font-size:13px;line-height:1.5;padding:0 8px;border-radius:99px;background:var(--chip);color:var(--chip-t);font-weight:600;white-space:nowrap}
+.b.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.b.warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.b.plain{background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+figure.shot{margin:16px 0 22px}
+figure.shot img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);background:#fff}
+figure.shot figcaption{font-size:14px;color:var(--muted);margin-top:6px}
+.steps{counter-reset:s;list-style:none;padding-left:0}
+.steps>li{counter-increment:s;position:relative;padding-left:34px;margin:10px 0}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+footer{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px;color:var(--muted);font-size:14px}
+@media (max-width:980px){
+  .page{grid-template-columns:minmax(0,1fr);gap:18px}
+  nav.toc{position:static;max-height:none}
+  nav.toc ol{columns:2;column-gap:28px}
+}
+@media (max-width:640px){
+  body{font-size:15.5px}
+  .page{padding:16px 16px 40px}
+  header.top h1{font-size:24px}
+  h2{font-size:21px}
+  nav.toc ol{columns:1}
+  td:first-child{min-width:0}
+  th,td{padding:6px 8px}
+  pre{font-size:13px}
+}
+@media print{
+  :root{--bg:#fff;--panel:#fff;--panel2:#f3f4f6;--line:#d1d5db;--text:#111;--muted:#444;--acc:#1d4ed8;--code:#f3f4f6;--shadow:none;
+        --chip:#eef2ff;--chip-t:#3730a3;--ok:#15803d;--warn:#b45309}
+  @page{size:A4;margin:14mm 13mm 16mm}
+  body{font-size:10.5pt;line-height:1.45;background:#fff;color:#111}
+  .page{display:block;max-width:none;padding:0}
+  nav.toc{position:static;max-height:none;border:0;padding:0;box-shadow:none;break-after:page}
+  nav.toc ol{columns:1}
+  nav.toc li{margin:2px 0}
+  main{max-width:none}
+  section{break-before:page;margin:0}
+  section:first-of-type{break-before:auto}
+  h2{font-size:17pt;border-top:0;padding-top:0}
+  h3,h4{break-after:avoid}
+  figure.shot,table,pre,div.note,div.warn,div.tip{break-inside:avoid}
+  figure.shot img{max-height:200mm;width:auto;max-width:100%;margin:0 auto}
+  a{color:inherit;text-decoration:none}
+  pre{white-space:pre-wrap;overflow-wrap:anywhere}
+  table{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="top">
+  <h1>YT Arhiva — uputstvo za upotrebu <span class="ver">3.2.1</span></h1>
+  <p>Lokalna arhiva YouTube videa na Mac-u: preuzimanje, transkript, prevod titla, editor titla i transkoder.</p>
+</header>
+
+<nav class="toc" aria-label="Sadržaj">
+  <b>Sadržaj</b>
+  <ol>
+    <li><a href="#sta-je">Šta je YT Arhiva</a></li>
+    <li><a href="#instalacija">Instalacija</a></li>
+    <li><a href="#prvo-pokretanje">Prvo pokretanje i dozvole</a></li>
+    <li><a href="#preuzimanje">Preuzimanje</a></li>
+    <li><a href="#red">Red poslova</a></li>
+    <li><a href="#biblioteka">Biblioteka</a></li>
+    <li><a href="#editor">Editor titla i ＋ Glosar</a></li>
+    <li><a href="#memorija">Memorija ispravki</a></li>
+    <li><a href="#prevod">Prevod</a></li>
+    <li><a href="#transkript">Transkript (whisper)</a></li>
+    <li><a href="#toolbox">Toolbox</a></li>
+    <li><a href="#podesavanja">Podešavanja</a></li>
+    <li><a href="#fajlovi">Gde su fajlovi</a></li>
+    <li><a href="#problemi">Rešavanje problema</a></li>
+    <li><a href="#deinstalacija">Deinstalacija</a></li>
+    <li><a href="#precice">Prečice na tastaturi</a></li>
+    <li><a href="#verzija">Verzija 3.2.1</a></li>
+  </ol>
+</nav>
+
+<main>
+<!-- ================================================================ 1 -->
+<section id="sta-je">
+<h2>1. Šta je YT Arhiva</h2>
+<p>YT Arhiva je program za Mac koji preuzima YouTube video u tvoju ličnu arhivu na disku. Radi sa tvojim YouTube
+nalogom (i sa Premium nalogom) tako što koristi kolačiće (cookies) iz Chrome-a u kome si prijavljen. Programom upravljaš
+iz pregledača, na adresi <code>http://127.0.0.1:8790</code>. Ta strana radi samo na tvom računaru — panel prima samo
+lokalne zahteve.</p>
+<p>Šta sve radi:</p>
+<ul>
+  <li><b>Preuzima ceo sadržaj</b>: najbolji video, svaku audio traku (originalnu, sinhronizovane, opisnu za slabovide)
+    i sve titlove. Sve ide u jedan MKV fajl, a titlovi i kao SRT fajlovi. Može i samo audio (sa omotom i tagovima) ili
+    samo titlovi.</li>
+  <li><b>Pravi transkript</b> govora lokalnim programom whisper, kad video nema titl (ili uvek, ako tako izabereš).</li>
+  <li><b>Prevodi titl</b> na srpski (latinica ili ćirilica) i na grčki — lokalno, bez interneta, ili preko Gemini,
+    Cloudflare ili Claude servisa ako ih sam izabereš.</li>
+  <li><b>Pravi video sa titlom</b>: MP4 sa upečenim titlom ili MKV sa mekim titlovima.</li>
+  <li><b>Editor titla</b> sa pregledom videa. Svaka ispravka se pamti u <b>Memoriji ispravki</b> i popravlja sledeće
+    prevode i transkripte.</li>
+  <li><b>Toolbox</b>: transkoder za bilo koji video ili audio fajl sa diska.</li>
+</ul>
+<div class="note">
+  <p><b>Šta ide na internet.</b> Preuzimanje sa YouTube-a; pri prvoj upotrebi preuzimanje alata i modela (Homebrew,
+  Ollama modeli, whisper modeli); i tekst titla, ali samo ako za prevod ili lekturu izabereš Gemini, Cloudflare ili Claude.
+  Lokalni prevod i transkript rade na tvom Mac-u.</p>
+</div>
+<p>Program ima šest kartica u zaglavlju: <b>⤓ Preuzmi</b>, <b>▶ Red</b>, <b>📚 Biblioteka</b>, <b>🧠 Memorija</b>,
+<b>🛠 Toolbox</b> i <b>⚙</b> (Podešavanja). Pored njih je <b>Pomoć</b>, koja otvara ovo uputstvo. Desno su pilule stanja:
+<b>Prevod</b> (koji prevodilac i da li radi), <b>Nalog</b> (odakle su kolačići) i <b>Whisper</b>.</p>
+</section>
+
+<!-- ================================================================ 2 -->
+<section id="instalacija">
+<h2>2. Instalacija</h2>
+<h3>Zahtevi</h3>
+<ul>
+  <li>Mac sa Apple Silicon procesorom (M1 i noviji) i macOS. Installer odbija Intel Mac (osim uz <code>--force</code>,
+    što nije podržano).</li>
+  <li><b>Homebrew</b> (<a href="https://brew.sh">brew.sh</a>). Ako ga nema, installer pita da li da ga instalira.</li>
+  <li>Internet tokom instalacije i pri prvom korišćenju prevoda i transkripta.</li>
+  <li>Mesta na disku: vidi <a href="#prostor">procenu prostora</a>.</li>
+</ul>
+
+<h3>Paketi</h3>
+<table>
+  <tr><th>Fajl</th><th>Kako se instalira</th></tr>
+  <tr><td><code>yt-arhiva-3.2.1.tar.gz</code></td><td>Raspakuj i pokreni installer u Terminalu (koraci ispod). Uz
+    njega je <code>.sha256</code> za proveru: <code>shasum -a 256 -c yt-arhiva-3.2.1.tar.gz.sha256</code>.</td></tr>
+  <tr><td><code>yt-arhiva-3.2.1.pkg</code><br><span class="muted small">samo ako je priložen uz izdanje</span></td><td>Dvoklik instalira program u <code>/Applications/YT Arhiva/app</code>.
+    Posle toga jednom, kao običan korisnik, u Terminalu:<br>
+    <code>"/Applications/YT Arhiva/app/installer/install.sh" --prefix "/Applications/YT Arhiva"</code><br>
+    Tada <code>YT Arhiva.app</code> ide u <code>~/Applications</code>, a podaci u
+    <code>~/Library/Application Support/YT Arhiva</code>.</td></tr>
+  <tr><td><code>YT-Arhiva-Uputstvo-3.2.1.pdf</code></td><td>Ovo uputstvo kao PDF.</td></tr>
+</table>
+
+<h3>Instalacija iz .tar.gz u tri koraka</h3>
+<ol class="steps">
+  <li>Otvori aplikaciju <b>Terminal</b> (Spotlight: <kbd>⌘</kbd> <kbd>Space</kbd>, ukucaj „Terminal“) i pređi u folder
+    gde je preuzet paket, npr. <code>cd ~/Downloads</code>.</li>
+  <li>Raspakuj i pokreni installer:
+<pre><code>tar -xzf yt-arhiva-3.2.1.tar.gz
+cd yt-arhiva-3.2.1
+./installer/install.sh</code></pre>
+    Za pregled bez ikakvih izmena: <code>./installer/install.sh --dry-run</code>.</li>
+  <li>Otvori <b>YT Arhiva</b> iz <code>~/Applications</code> (Finder → Go → Home → Applications, Launchpad ili Spotlight).
+    Zatim uradi korake iz <a href="#prvo-pokretanje">Prvo pokretanje i dozvole</a>.</li>
+</ol>
+
+<h3>Šta installer radi</h3>
+<ol>
+  <li>Proverava da li je Mac Apple Silicon i koliko ima mesta na disku.</li>
+  <li>Preko Homebrew-a instalira <code>yt-dlp</code>, <code>deno</code> i <code>ffmpeg-full</code> (ono što je već
+    instalirano preskače).</li>
+  <li>Kopira program u <code>~/Applications/YT Arhiva/app</code>; podaci idu u <code>~/Applications/YT Arhiva/data</code>.</li>
+  <li>Pravi <code>~/Applications/YT Arhiva.app</code>: dvoklik pokreće panel u pozadini (ako već ne radi) i otvara
+    <code>http://127.0.0.1:8790</code>.</li>
+  <li>Po želji: pokretanje pri prijavi na Mac, Ollama modeli za prevod, whisper model.</li>
+</ol>
+<p>Installer može da se pokrene više puta — tako se i ažurira. Ne dira podešavanja, arhivu ni modele, i ne pravi
+<code>.app</code> ponovo ako se ništa bitno nije promenilo (da dozvole iz macOS-a ostanu).</p>
+
+<h3>Šta se instalira odmah, a šta pri prvoj upotrebi</h3>
+<table>
+  <tr><th>Kada</th><th>Šta</th></tr>
+  <tr><td>Odmah (installer)</td><td><code>yt-dlp</code> (preuzimanje sa YouTube-a), <code>deno</code> (yt-dlp ga koristi
+    za YouTube JavaScript proveru), <code>ffmpeg-full</code> (spajanje traka, upečen titl preko libass, VideoToolbox enkoderi).</td></tr>
+  <tr><td>Prvi lokalni prevod</td><td><b>Ollama</b> (<code>brew install ollama</code>) i modeli
+    <code>gemma4:12b-it-qat</code> (7,2 GB) i <code>translategemma:12b</code> (8,1 GB) — ukupno oko 15 GB.</td></tr>
+  <tr><td>Prvi transkript</td><td><b>whisper.cpp</b> (<code>brew install whisper-cpp</code>), whisper model
+    <code>large-v3-turbo-q5_0</code> (oko 0,55 GB), mali VAD model, a za grčki i srpski i tačniji
+    <code>large-v3-q5_0</code> (1,08 GB).</td></tr>
+</table>
+<p>Ovo automatsko preuzimanje radi kad je u Podešavanjima „Alati i modeli“ = <i>Preuzmi automatski pri prvom
+korišćenju</i> (podrazumevano). Napredak se vidi u <b>▶ Red</b>, u fazi Prevod ili Titl. Ako želiš sve odmah, koristi
+<code>--full</code> (Ollama i whisper.cpp), <code>--models</code> (Ollama modeli) i <code>--whisper</code> (whisper model).</p>
+
+<h3 id="prostor">Procena prostora</h3>
+<table>
+  <tr><th>Šta</th><th>Koliko</th></tr>
+  <tr><td>Ollama modeli (oba)</td><td>15,3 GB; installer upozorava ako je slobodno manje od 18 GB</td></tr>
+  <tr><td>Whisper model (turbo)</td><td>oko 0,55 GB</td></tr>
+  <tr><td>Whisper „kvalitet“ model</td><td>1,08 GB (preuzima se tek za grčki/srpski)</td></tr>
+  <tr><td>Arhiva videa</td><td>zavisi od videa — najveći deo prostora</td></tr>
+</table>
+<div class="tip"><p>Arhivu i modele drži na eksternom disku: folder arhive menjaš u ⚙ Podešavanja → <i>Folder arhive</i>,
+a folder za modele pri instalaciji opcijom <code>--models-dir</code>. Kad sam preuzima Ollama model (pri prvom prevodu),
+panel traži bar 3 GB slobodnog prostora više od veličine modela.</p></div>
+
+<h3>Opcije installera</h3>
+<table>
+  <tr><th>Opcija</th><th>Šta radi</th></tr>
+  <tr><td><code>--dry-run</code></td><td>samo ispiše šta bi uradio, ništa ne menja</td></tr>
+  <tr><td><code>--full</code></td><td>odmah instalira i Ollama i whisper.cpp (inače pri prvom korišćenju)</td></tr>
+  <tr><td><code>--models</code> / <code>--no-models</code></td><td>preuzme oba Ollama modela (prvo pokaže slobodan prostor) / ne pita za modele.
+    Ollama mora već biti instaliran, ili dodaj <code>--full</code>; inače installer staje sa porukom
+    „ollama nije instaliran“.</td></tr>
+  <tr><td><code>--models-dir DIR</code></td><td>folder za Ollama modele, npr. na eksternom disku (upisuje se u <code>yta.env</code> aplikacije; podešavanja shell-a se ne menjaju)</td></tr>
+  <tr><td><code>--whisper [IME]</code></td><td>preuzme whisper model (podrazumevano <code>large-v3-turbo-q5_0</code>)</td></tr>
+  <tr><td><code>--autostart</code> / <code>--no-autostart</code></td><td>panel se pokreće pri prijavi na Mac, bez otvaranja pregledača / isključi to</td></tr>
+  <tr><td><code>--port N</code></td><td>drugi port panela (podrazumevano 8790)</td></tr>
+  <tr><td><code>--prefix DIR</code></td><td>druga lokacija umesto <code>~/Applications/YT Arhiva</code> (tada je i <code>.app</code>
+    u <code>DIR</code>, osim ako u <code>DIR</code> ne može da se piše, npr. posle <code>.pkg</code>)</td></tr>
+  <tr><td><code>--app-path PATH</code></td><td>gde ide <code>YT Arhiva.app</code></td></tr>
+  <tr><td><code>--no-brew</code></td><td>preskoči Homebrew (samo proveri da li alati postoje)</td></tr>
+  <tr><td><code>--rebuild-app</code></td><td>napravi <code>.app</code> iznova (dozvole tada treba dati ponovo)</td></tr>
+  <tr><td><code>--open</code></td><td>otvori aplikaciju na kraju</td></tr>
+  <tr><td><code>--yes</code>, <code>-y</code></td><td>„da“ na sva pitanja (modeli samo uz <code>--models</code>)</td></tr>
+  <tr><td><code>--force</code></td><td>nastavi i kad Mac nije Apple Silicon (nije podržano)</td></tr>
+</table>
+<p>Primer — sve odmah, modeli na eksternom disku, pokretanje pri prijavi:</p>
+<pre><code>./installer/install.sh --full --models --whisper --autostart --models-dir "/Volumes/Disk/ollama-models"</code></pre>
+</section>
+
+<!-- ================================================================ 3 -->
+<section id="prvo-pokretanje">
+<h2>3. Prvo pokretanje i dozvole</h2>
+<h3>Pokretanje</h3>
+<ul>
+  <li><b>YT Arhiva.app</b> (preporuka): dvoklik u <code>~/Applications</code>. Panel se pokreće u pozadini i otvara se
+    pregledač. Zatvaranje taba ne gasi panel.</li>
+  <li><b>Iz Terminala</b>: <code>~/Applications/YT\ Arhiva/app/installer/launcher.sh</code>. Dodatne opcije:
+    <code>--status</code> (radi li panel), <code>--stop</code> (ugasi), <code>--restart</code> (ponovo pokreni preko
+    <code>YT Arhiva.app</code>), <code>--no-browser</code> (bez otvaranja pregledača).</li>
+</ul>
+
+<h3>Zašto su bitne dozvole i zašto ponekad Terminal</h3>
+<p>Za preuzimanje sa tvojim nalogom panel (preko yt-dlp) čita Chrome kolačiće: fajl iz tvog Chrome profila i ključ
+„Chrome Safe Storage“ iz Keychain-a. macOS to dozvoljava samo programu kome si to odobrio, a dozvolu traži i dobija
+<b>program koji je pokrenuo panel</b>:</p>
+<ul>
+  <li>panel pokrenut iz <code>YT Arhiva.app</code> (dvoklik, pri prijavi, <code>launcher.sh --restart</code>) → dozvole na ime <b>YT Arhiva</b>;</li>
+  <li>panel pokrenut iz Terminala (<code>launcher.sh</code> bez opcija ili <code>python3 panel.py</code>) → dozvole na ime <b>Terminal</b>.</li>
+</ul>
+<p>Ako provera linka ili preuzimanje javi grešku sa kolačićima, tekst greške predlaže rešenje: Full Disk Access za
+Terminal i pokretanje panela iz Terminala. Ceo tekst vidiš kad zadržiš miš na grešci u ⤓ Preuzmi, ili u ▶ Red →
+<b>Detalji</b>. Dozvola data Terminalu ostaje i kad se <code>YT Arhiva.app</code> napravi ponovo
+(<code>--rebuild-app</code>), dok novoj <code>.app</code> dozvole moraš dati iznova. Dovoljno je podesiti jedan od ta dva
+programa — onaj iz kog pokrećeš panel.</p>
+
+<h3>Full Disk Access (pristup fajlovima)</h3>
+<ol class="steps">
+  <li>Otvori <b>System Settings → Privacy &amp; Security → Full Disk Access</b>.</li>
+  <li>Klikni <b>+</b> i izaberi program iz kog pokrećeš panel:
+    <code>~/Applications/YT Arhiva.app</code> (u dijalogu <kbd>⌘</kbd><kbd>⇧</kbd><kbd>G</kbd> i upiši
+    <code>~/Applications</code>) ili <b>Terminal</b> (<code>/System/Applications/Utilities/Terminal.app</code>).</li>
+  <li>Uključi prekidač pored njega.</li>
+  <li>Ponovo pokreni panel da bi dozvola važila:
+    za <code>YT Arhiva.app</code>: <code>~/Applications/YT\ Arhiva/app/installer/launcher.sh --restart</code>;
+    za Terminal: <code>launcher.sh --stop</code>, zatvori Terminal (<kbd>⌘</kbd><kbd>Q</kbd>), otvori ga ponovo i pokreni
+    <code>launcher.sh</code>.</li>
+</ol>
+<p>Ako macOS pita za eksterni disk („files on a removable volume“), klikni <b>Allow</b> — to se pamti.</p>
+
+<h3>Keychain „Chrome Safe Storage“ → Always Allow</h3>
+<p>Pri prvom preuzimanju sa nalogom macOS prikaže prozor: <i>„security wants to use your confidential information stored in
+"Chrome Safe Storage"“</i>.</p>
+<ol class="steps">
+  <li>Ukucaj lozinku za prijavu na Mac.</li>
+  <li>Klikni <b>Always Allow</b> (Uvek dozvoli), ne samo „Allow“. „Allow“ važi samo tog puta, pa se pitanje ponavlja.</li>
+</ol>
+<p>Ako je već kliknuto „Allow“: otvori <b>Keychain Access</b> → pretraga <code>Chrome Safe Storage</code> → dvoklik →
+kartica <b>Access Control</b> → <b>+</b> → <kbd>⌘</kbd><kbd>⇧</kbd><kbd>G</kbd> → <code>/usr/bin/security</code> → <b>Save Changes</b>.
+Dozvola važi za alat <code>/usr/bin/security</code>, koji yt-dlp koristi; ne menja se sa ažuriranjem Homebrew-a.</p>
+<div class="warn"><p>Posle „Always Allow“ svaki program pokrenut pod tvojim nalogom može preko <code>security</code> da
+pročita ključ Chrome kolačića bez pitanja. Ako to ne želiš, klikći „Allow“ svaki put, ili u ⚙ Podešavanja koristi
+<code>cookies.txt</code> umesto pregledača.</p></div>
+<p>Drugi pregledač (Brave, Edge, Firefox, Safari, Chromium, Vivaldi, Opera) ili „Bez naloga“ biraš u ⚙ Podešavanja →
+<i>Nalog — cookies iz browsera</i>, a putanju do <code>cookies.txt</code> u polju <i>…ili cookies.txt (putanja)</i>.</p>
+
+<div class="tip"><p><b>Provera:</b> nalepi jedan link u ⤓ Preuzmi. Ako se pojave naslov i bedževi (npr. „1080p“, „2 audio“,
+„3 CC“), nalog radi. Greška se vidi crvenim u redu; ceo tekst, sa predlogom šta da uradiš, vidiš kad zadržiš
+miš na njoj.</p></div>
+</section>
+
+<!-- ================================================================ 4 -->
+<section id="preuzimanje">
+<h2>4. Preuzimanje</h2>
+<figure class="shot"><img src="uputstvo/01-preuzmi.png" width="1400" height="754" alt="Kartica Preuzmi: polje za link, Šta da uradim sa čekiranim samo Preuzmi, prazna lista">
+<figcaption>Slika 1. ⤓ Preuzmi — podrazumevano je čekirano samo preuzimanje celog sadržaja.</figcaption></figure>
+
+<h3>1) Nalepi link</h3>
+<ul>
+  <li>Nalepi (<kbd>⌘</kbd><kbd>V</kbd>) link videa, plejliste ili kanala — može više odjednom. Lepljenje odmah dodaje
+    link na listu; <kbd>Enter</kbd> ili <b>Dodaj</b> dodaje ono što je ukucano. <kbd>⌘</kbd><kbd>V</kbd> radi bilo gde na kartici.</li>
+  <li>Prihvata i kanal kao <code>@ime</code> i ID videa od 11 znakova. Isti link se ne dodaje dva puta.</li>
+</ul>
+
+<h3>2) Provera linka</h3>
+<p>Svaki link se odmah proveri (najviše četiri istovremeno). Red dobija naslov, kanal, trajanje, procenu veličine i
+bedževe: najveća rezolucija (npr. <span class="b">4K★</span> — zvezdica znači Premium format), <span class="b">HDR</span>,
+broj audio traka, broj titlova (<span class="b">3 CC</span>, <span class="b plain">auto CC</span> ili
+<span class="b warn">bez CC</span>), <span class="b ok">SR CC</span> ako YouTube ima srpski titl, i
+<span class="b" style="background:#e11d48;color:#fff">LIVE</span> / <span class="b warn">ZAKAZAN</span>.</p>
+<ul>
+  <li>Ako video već imaš u biblioteci: bedž <span class="b ok">✓ imaš</span>, i red je podrazumevano odčekiran.
+    Šta tačno već imaš (i bedž stanja prevoda) piše u detaljima reda (⚙): „U biblioteci već imaš“.</li>
+  <li><b>⚙</b> na redu otvara detalje za taj video: najveći kvalitet, audio trake, titlovi i šta već imaš u biblioteci.
+    Tu biraš samo za taj video: tačan video format, audio trake, titlove u arhivu, titl za prevod, audio u videu sa titlom i
+    „preuzmi ponovo“. <b>Vrati na izbor gore</b> poništava izmene.</li>
+  <li>Link videa koji je deo plejliste ima dugme <b>📃 cela plejlista</b>.</li>
+</ul>
+
+<h3>Plejliste i kanali</h3>
+<p>Plejlista ili kanal je grupa: zaglavlje sa nazivom, brojem stavki, „u biblioteci X/Y“, brojem novih i uklonjenih
+stavki od prošle provere. Ispod su stavke.</p>
+<ul>
+  <li><b>Sve / Ništa / Samo novi / Nove (N)</b> — brz izbor; <b>Filter po naslovu</b>; <kbd>⇧</kbd> + klik na checkbox bira opseg.</li>
+  <li><b>podfolder „naziv“</b> — stavke idu u podfolder sa imenom plejliste (podrazumevano uključeno).</li>
+  <li>Klik na stavku (ili ⚙) proveri baš tu stavku i pokaže njene formate, audio trake i titlove.</li>
+  <li><b>Proveri sve</b> (ili „Proveri izabrane“) proverava stavke u pozadini, najviše tri istovremeno; <b>Stani</b> prekida.
+    Provera nije uslov za preuzimanje.</li>
+</ul>
+
+<h3>3) Šta da uradim</h3>
+<p>Ispod polja za link je lista koraka sa checkbox-ovima. Čekiran korak dobija menije u istom redu. Podrazumevano je
+čekirano <b>samo preuzimanje</b>; ostalo dodaješ po izboru. Izbor se pamti u pregledaču.</p>
+<table>
+  <tr><th>Korak</th><th>Izbori i šta radi</th></tr>
+  <tr><td>⬇ Preuzmi (uvek)</td><td><b>Šta</b>: <i>Ceo sadržaj</i> — najbolji video + sve audio trake + svi titlovi;
+    <i>Samo audio</i>; <i>Samo titlovi</i>. Za ceo sadržaj <b>Kvalitet</b> (najbolji ili do 2160p … 360p); za samo audio
+    <b>Format</b>: original bez rekodiranja (Opus/AAC), MP3 320, MP3 V0, M4A AAC 256, Opus 160, FLAC.</td></tr>
+  <tr><td>📝 Transkript (whisper)</td><td>Transkript na originalnom jeziku, bez prevoda. <b>Jezik</b> (automatski ili izabran),
+    <b>Kada</b>: <i>samo kad YouTube nema titl</i> ili <i>uvek</i>. Nije moguće uz „Samo titlovi“ (nema zvuka).</td></tr>
+  <tr><td>🌐 Prevod</td><td><b>na</b>: srpski latinica, srpski ćirilica, grčki; <b>Prevodilac</b> (vidi <a href="#prevod">Prevod</a>).</td></tr>
+  <tr><td>🎬 Video sa titlom</td><td><b>Format</b>: MP4 sa upečenim titlom, MKV sa mekim titlovima ili oba; <b>Kvalitet</b> i
+    <b>Rezolucija</b> (za upečen titl). Bez čekiranog Prevoda koristi se originalni titl. Nije moguće uz Samo audio / Samo titlovi.</td></tr>
+  <tr><td>🛠 Transkoduj (Toolbox)</td><td>Posle preuzimanja pokreće poseban Toolbox posao: <b>Preset</b> i <b>Titl</b>
+    (bez, meki, upečen). Titl uzima postojeći prevod — čekiraj Prevod ako ga nema. Upečen titl traži preset koji rekodira video.</td></tr>
+  <tr><td>🎵 Izvuci audio</td><td>Posle preuzimanja poseban posao: <b>Format</b> M4A (AAC 256), MP3 320 ili FLAC, iz originalne audio trake.</td></tr>
+</table>
+<figure class="shot"><img src="uputstvo/02-preuzmi-koraci.png" width="1400" height="787" alt="Šta da uradim sa čekiranim Prevod, Video sa titlom i Izvuci audio">
+<figcaption>Slika 2. Čekirani Prevod, Video sa titlom i Izvuci audio. Rečenica ispod liste opisuje šta će se uraditi.</figcaption></figure>
+
+<h4>Brzi izbor</h4>
+<p>Dugmići iznad liste jednim klikom postavljaju checkbox-ove: <b>⬇ Samo preuzmi</b>, <b>📝 + Transkript</b> (whisper uvek),
+<b>🌐 + Prevod</b>, <b>🎬 + Video sa titlom</b> (prevod + video), <b>🎵 Muzika</b> (samo audio, MP3 320) i
+<b>💬 Samo titlovi + Prevod</b>. Označen je onaj koji odgovara trenutnom izboru.</p>
+
+<h4>⚙ Sve opcije</h4>
+<p>Puna forma za one koji žele sve da podese. Dok je otvorena, ona određuje preuzimanje i obradu; redovi Transkoduj i
+Izvuci audio i dalje važe. Forma pamti poslednji izbor. Sadrži:</p>
+<ul>
+  <li><b>Preuzimanje</b>: Video (najbolji, do određene rezolucije, samo audio, bez videa), Audio trake (sve ili samo
+    originalna), Format zvuka (za samo audio), Titlovi (svi CC + automatski na originalnom jeziku; isto + YouTube automatski
+    prevodi na sve jezike; samo najbolji za prevod; bez titlova), Folder arhive.</li>
+  <li><b>Obrada</b> (čekiraj „transkript / prevod / video odmah posle preuzimanja“): titl za obradu, jezik govora,
+    prevod, prevodilac, lektura prevoda (drugi prolaz, oko 2× sporije), izlaz (bez videa, SRT pored videa, MKV sa mekim
+    titlovima, upečen titl, oba), audio u izlazu, meki titlovi u izlazu, enkoder (HEVC ili H.264 VideoToolbox, x265, x264),
+    kvalitet, rezolucija, audio kodek, zadrži izvor.</li>
+</ul>
+<div class="warn"><p>„Svi CC + YouTube automatski prevodi“ pravi mnogo fajlova, a YouTube tada ume da vrati grešku 429
+(previše zahteva).</p></div>
+
+<h3>4) Folder i slanje</h3>
+<ul>
+  <li><b>📁</b> ispod sažetka je folder arhive. Klik bira drugi folder samo za ovo preuzimanje; <b>vrati</b> vraća folder iz Podešavanja.</li>
+  <li>Donja traka: <b>Preuzmi (N)</b> šalje sve izabrane u red jednim klikom (ili <kbd>⌘</kbd><kbd>Enter</kbd>), <b>Očisti listu</b>,
+    i sažetak (broj stavki, izbor, procena veličine). Poslate stavke nestaju sa liste i pojavi se poruka „Dodato u red“.</li>
+</ul>
+
+<h3>Ceo sadržaj — šta tačno dobijaš</h3>
+<ul>
+  <li>Jedan video, najkvalitetniji (ili do izabrane rezolucije).</li>
+  <li>Svaku posebnu audio traku: originalnu, sinhronizovane (dub) i opisnu (za slabovide), sa jezikom i nazivom.</li>
+  <li>Sve ručne titlove na svim jezicima i automatski titl na originalnom jeziku, kao SRT u <code>subs/</code>. Uz
+    podešavanje „Titlovi i u MKV izvoru“ (podrazumevano Da) isti titlovi ulaze i kao trake u MKV, bez rekodiranja.</li>
+  <li>Omot, poglavlja i metapodatke.</li>
+</ul>
+
+<h3>Prenosi uživo</h3>
+<p>Prenos koji je u toku (<span class="b" style="background:#e11d48;color:#fff">LIVE</span>) snima se od početka. Zakazan
+prenos čeka da počne. U Redu dugme <b>■ Zaustavi snimanje</b> zadržava ono što je snimljeno i nastavlja obradu.</p>
+</section>
+
+<!-- ================================================================ 5 -->
+<section id="red">
+<h2>5. Red poslova</h2>
+<figure class="shot"><img src="uputstvo/03-red.png" width="1400" height="711" alt="Red poslova sa jednim neuspelim i četiri završena posla">
+<figcaption>Slika 3. ▶ Red — otvoreni detalji posla sa greškom i završeni poslovi sa bedžom stanja.</figcaption></figure>
+<p>Svaki posao je jedan red: sličica, stanje (<i>u redu, radi, gotovo, greška, otkazano</i>), vrsta
+(<span class="b plain">PREUZIMANJE</span>, <span class="b plain">OBRADA</span>, <span class="b plain">TOOLBOX</span>),
+naslov, traka napretka i trenutna faza (npr. „Preuzimanje 42% · brzina · ETA“, „Whisper 30%“, „Prevod 3/10“, „Burn 55%“).</p>
+<table>
+  <tr><th>Dugme</th><th>Šta radi</th></tr>
+  <tr><td>Otkaži</td><td>prekida posao koji radi ili čeka</td></tr>
+  <tr><td>■ Zaustavi snimanje</td><td>samo za prenos uživo: zadrži snimljeno i nastavi</td></tr>
+  <tr><td>Ponovi</td><td>ponovo pokreće posao; preuzimanje nastavlja gde je stalo</td></tr>
+  <tr><td>📂 Folder</td><td>otvara folder stavke u Finder-u</td></tr>
+  <tr><td>Detalji</td><td>četiri faze (Preuzimanje, Titl, Prevod, Izlaz; za Toolbox: Ulaz, Titl, Prevod, Transkod) i log posla</td></tr>
+  <tr><td>✕</td><td>uklanja završen posao sa liste (fajlovi ostaju)</td></tr>
+</table>
+<ul>
+  <li>Filteri <b>Svi / Aktivni / Završeni / Greške</b>; <b>Očisti završene</b> uklanja gotove i otkazane poslove sa liste.
+    Desno od filtera piše koliko poslova svake vrste trenutno radi od dozvoljenih, npr. „Zauzeto: preuzimanja 1/3 ·
+    prevod 0/1 · whisper 0/1 · enkodiranje 0/2“. Broj na kartici ▶ Red je broj aktivnih poslova.</li>
+  <li>Završen posao preuzimanja ili obrade pokazuje bedž stanja stavke (<a href="#biblioteka">vidi Biblioteka</a>) sa
+    dugmetom <b>Prevedi</b> ili <b>Transkribuj</b>. Koraci posle preuzimanja (Transkoduj, Izvuci audio) su linkovi „posle: …“;
+    preskočen korak ima žuti bedž sa razlogom.</li>
+  <li>Poslovi ostaju na listi i posle gašenja panela. Posao koji je radio kad je panel ugašen dobija grešku
+    „prekinuto (panel restartovan) — klikni Ponovi“.</li>
+</ul>
+</section>
+
+<!-- ================================================================ 6 -->
+<section id="biblioteka">
+<h2>6. Biblioteka</h2>
+<figure class="shot"><img src="uputstvo/04-biblioteka.png" width="1400" height="984" alt="Biblioteka sa četiri stavke, dve izabrane, otvoreni detalji jedne stavke i traka za izabrane">
+<figcaption>Slika 4. 📚 Biblioteka — bedževi stanja, dve izabrane stavke (traka dole) i otvoreni detalji (⚙) jedne stavke.</figcaption></figure>
+<p>Biblioteka je katalog svega preuzetog. Svaki red ima sličicu, naslov, kanal, trajanje, datum objave i bedževe:
+izvor (npr. <span class="b ok">720p H264</span>, <span class="b ok">🎵 M4A</span> ili <span class="b warn">bez izvora</span>),
+broj audio traka, broj titlova, stanje prevoda, broj izlaza i veličinu. Desno su <b>⚙</b> (detalji) i <b>📂 Folder</b>.</p>
+
+<h3>Bedž stanja</h3>
+<table>
+  <tr><th>Bedž</th><th>Značenje i dugme</th></tr>
+  <tr><td><span class="b ok">🟢 Prevedeno</span></td><td>Ima bar jedan prevod (srpski latinica/ćirilica ili grčki) ili srpski titl sa
+    YouTube-a. Bedž pokazuje jezike prevoda; kad je prevod samo na jedan jezik, i prevodioca i datum. „✓ lektura“ znači da je rađena lektura.</td></tr>
+  <tr><td><span class="b warn">🟠 Transkript bez prevoda</span></td><td>Ima titl ili transkript (ručni CC, YouTube automatski ili whisper), ali nema prevoda.
+    Dugme <b>Prevedi</b> dodaje jedan posao prevoda.</td></tr>
+  <tr><td><span class="b plain">⚪ Nema titla</span></td><td>Nema ni titla ni transkripta. Dugme <b>Transkribuj</b> (whisper) se pojavi
+    kad postoji izvor sa zvukom.</td></tr>
+</table>
+<p>Isti bedž se vidi i u ⤓ Preuzmi („U biblioteci već imaš“) i u ▶ Red. U Biblioteci <b>Prevedi</b> prevodi na jezik
+iz menija <b>Jezik</b> u traci za izabrane; na ostalim mestima na jezik iz reda Prevod.</p>
+
+<h3>Pretraga i filteri</h3>
+<ul>
+  <li>Pretraga po naslovu, kanalu, linku ili ID-u (<kbd>/</kbd> skače u polje).</li>
+  <li>Tip: svi, video, samo audio, bez izvora; plejlista; sortiranje: najnovije, naslov A–Z, veličina, datum objave.</li>
+  <li><b>Stanje</b>: sve, 🟢 Prevedeno, 🟠 Samo transkript bez prevoda, ⚪ Bez titla, i u grupi „Srpski prevod“: sa SR prevodom /
+    bez SR prevoda.</li>
+  <li><b>↻</b> osvežava, <b>Zdravlje</b> proverava katalog, <b>Otvori folder</b> otvara folder arhive.</li>
+</ul>
+
+<h3>Rad sa više stavki</h3>
+<p>Izaberi stavke checkbox-om (ili klikom po redu; <kbd>⇧</kbd> + klik bira opseg; „Izaberi sve prikazane“). Dole se pojavi
+traka <b>Izabrano N</b> sa menijem <b>Jezik</b> (srpski latinica, srpski ćirilica, grčki) i dugmićima:</p>
+<table>
+  <tr><th>Dugme</th><th>Šta radi</th></tr>
+  <tr><td>Prevedi</td><td>Prevod titla na izabrani jezik. Preskače stavke koje već imaju taj prevod ili srpski titl sa YouTube-a.
+    Stavka bez titla prvo dobija whisper transkript.</td></tr>
+  <tr><td>Transkribuj</td><td>Whisper transkript na originalnom jeziku, bez prevoda. Preskače stavke koje već imaju whisper transkript
+    i one bez izvora zvuka.</td></tr>
+  <tr><td>Video sa titlom</td><td>MP4 sa upečenim titlom (HEVC). Koristi postojeći prevod; ako ga nema, prvo prevede.</td></tr>
+  <tr><td>MKV sa titlovima</td><td>MKV sa mekim titlovima, bez rekodiranja.</td></tr>
+  <tr><td>Lektura…</td><td>Lektor: Claude Sonnet, Claude Opus ili Gemini. Uzima najnoviji prevod i njegov izvor, ispravlja gramatiku,
+    rod i padež, značenje i imena. Nastaje nov titl „… — Claude lektura“ (ili Gemini), stari ostaje. Opcija „ponovo i za
+    stavke koje već imaju lekturu“.</td></tr>
+  <tr><td>Transkoduj…</td><td>Toolbox preset + titl na jeziku iz menija <b>Jezik</b> (ne, meki, upečen). Izlaz ide u folder
+    stavke, sufiks je kratka oznaka preseta (npr. <code>.arhiva</code>, <code>.apple</code>, <code>.kompat</code>).
+    Kad je izabran titl, preskaču se stavke koje nemaju ni prevod ni srpski titl sa YouTube-a.</td></tr>
+  <tr><td>Izvuci audio…</td><td><b>Izvuci audio (bez rekodiranja)</b>: originalna traka kakva je na YouTube-u (AAC → .m4a,
+    Opus → .opus, ostali kodeci → .mka), sa omotom i tagovima. Ili konverzija: M4A (AAC 256), MP3 320, FLAC.</td></tr>
+  <tr><td>Otvori foldere</td><td>Otvara foldere u Finder-u (najviše 5).</td></tr>
+</table>
+<p>Posle klika poruka kaže koliko je poslova dodato i koliko je stavki preskočeno, sa razlogom.</p>
+
+<h3>Detalji stavke (⚙)</h3>
+<ul>
+  <li>Putanja, plejliste, stanje, audio trake (jezik · uloga · kodek) i titlovi (npr. en, en auto, el whisper, SR lat, EL prevod).</li>
+  <li>Izbor titla i <b>✎ Uredi titl</b> (vidi <a href="#editor">Editor titla</a>), <b>Otvori folder</b>, <b>U Toolbox</b>
+    (izvor ide u 🛠 Toolbox), <b>YouTube ↗</b>.</li>
+  <li><b>Obradi ovu stavku</b>: ista forma obrade kao u „⚙ Sve opcije“ + <b>Pokreni obradu</b>. Obrada može da se ponavlja
+    koliko god puta, sa različitim izborima.</li>
+</ul>
+
+<h3>Plejliste</h3>
+<p>Dugme <b>Plejliste</b> (pored „Stavke“) prikazuje plejliste i kanale koje si proveravao: koliko stavki imaš, koliko
+nedostaje, koliko je uklonjeno sa YouTube-a i koliko je novih. Dugmići:</p>
+<ul>
+  <li><b>↻ Osveži</b> — ponovo proveri plejlistu na YouTube-u (nove i uklonjene stavke).</li>
+  <li><b>⤓ Preuzmi nedostajuće</b> — preuzme sve što nedostaje, trenutnim izborom iz ⤓ Preuzmi, u podfolder plejliste.</li>
+  <li><b>💿 Napravi album</b> — za samo-audio stavke upiše tagove albuma (album, broj numere, izvođač) bez rekodiranja i
+    napravi <code>.m3u8</code> listu po redosledu iz plejliste.</li>
+  <li>Klik na naziv plejliste prikazuje njene stavke u biblioteci.</li>
+</ul>
+
+<h3>Zdravlje kataloga</h3>
+<p><b>Zdravlje</b> proverava: izvori koji nedostaju ili su skraćeni (kraći od 98% trajanja), titlovi i izlazi koji
+nedostaju, i folderi koji u imenu imaju <code>[ID]</code>, a nemaju indeks (<code>.yta/manifest.json</code>) pa se ne vide u
+biblioteci. <b>Obnovi indeks</b> pravi indeks za takve foldere i vraća ih u biblioteku.</p>
+</section>
+
+<!-- ================================================================ 7 -->
+<section id="editor">
+<h2>7. Editor titla i ＋ Glosar</h2>
+<figure class="shot"><img src="uputstvo/05-editor.png" width="1400" height="787" alt="Editor titla: pregled videa levo, tabela vreme, original i prevod desno, jedna nesačuvana izmena">
+<figcaption>Slika 5. Editor titla — original levo od prevoda, jedna izmenjena linija (●) čeka čuvanje.</figcaption></figure>
+<p>Otvaranje: 📚 Biblioteka → <b>⚙</b> na stavci → izaberi titl (prevodi su prvi, najnoviji gore) → <b>✎ Uredi titl</b>.</p>
+<ul>
+  <li>Levo je pregled videa ili zvuka sa trenutnim titlom. Neke MKV fajlove (npr. HEVC/AV1 video ili AC-3 zvuk) pregledač
+    ne može da pusti — tada editor to napiše, a uređivanje radi normalno.</li>
+  <li>Desno su kolone <b>Vreme</b>, <b>Original</b> (titl iz kog je nastao prevod) i <b>Prevod</b>. Kod transkripta i
+    originalnog titla kolone Original nema, a tekst je u koloni <b>Tekst</b>. Klik na red skače na to mesto u videu.</li>
+  <li>Izmenjeni red dobija oznaku ●, a gore piše broj nesačuvanih izmena. <b>Sačuvaj</b> ili <kbd>⌘</kbd><kbd>S</kbd>.
+    Prazan red se pri čuvanju briše.</li>
+  <li><b>Traži u titlu</b> traži u prevodu i u originalu; <kbd>Enter</kbd> ide na sledeći pogodak, <kbd>⇧</kbd><kbd>Enter</kbd> na prethodni.</li>
+  <li>Prečice: <kbd>⌥</kbd><kbd>↓</kbd> / <kbd>⌥</kbd><kbd>↑</kbd> sledeći / prethodni titl, <kbd>⌥</kbd><kbd>Space</kbd> pusti/pauza,
+    <kbd>Esc</kbd> zatvori (pita ako ima nesačuvanog).</li>
+</ul>
+<div class="note">
+  <p><b>Šta se dešava pri čuvanju.</b> Prethodna verzija titla ide u <code>.yta/history/</code> u folderu stavke. Svaka
+  ispravljena linija prevoda ili transkripta (whisper ili YouTube automatski titl) pamti se u Memoriji kao par
+  „pre → posle“ i popravlja buduće prevode i transkripte. Ispravka ručnog YouTube titla se čuva u fajlu, ali ne ulazi u
+  Memoriju. Za učenje se računa samo izmena teksta jedne linije (ne deljenje reda).</p>
+</div>
+
+<h3>＋ Glosar</h3>
+<p>Termin koji uvek mora da se prevede isto (ime, naziv, stručni izraz):</p>
+<ol class="steps">
+  <li>Označi reč u titlu — u koloni originala ili u prevodu.</li>
+  <li>Klikni <b>＋ Glosar</b>. Otvori se mala forma, a označen tekst je već upisan. Dugme <b>iz označenog</b> upisuje novu oznaku.</li>
+  <li>Proveri polja: <b>Tip</b> (Prevod — termin u prevodu, ili Whisper — termin u transkriptu), <b>Jezik</b>,
+    <b>Izvorni oblik</b> (kako piše u originalu), <b>Prevod — uvek ovako</b> (ili za whisper <b>Tačan termin</b> i opciono
+    <b>Kako ga whisper pogrešno čuje</b>), <b>Važi za</b> (sve kanale ili samo jedan kanal), <b>Napomena</b>.</li>
+  <li><b>Dodaj u glosar</b>.</li>
+</ol>
+</section>
+
+<!-- ================================================================ 8 -->
+<section id="memorija">
+<h2>8. Memorija ispravki</h2>
+<figure class="shot"><img src="uputstvo/06-memorija.png" width="1219" height="1400" alt="Kartica Memorija: pregled, glosar, naučena pravila i poslednje ispravke">
+<figcaption>Slika 6. 🧠 Memorija — pregled, glosar, naučena pravila sa stanjem i poslednje ispravke.</figcaption></figure>
+<p>Memorija pamti tvoje ispravke iz editora titla i koristi ih u sledećim prevodima i transkriptima. Nema treninga
+modela: sve je lokalno i deluje od sledećeg prevoda.</p>
+<h3>Delovi kartice</h3>
+<ul>
+  <li><b>Vrh kartice</b> (pregled): broj ispravki (prevod / whisper), aktivna pravila, stavke glosara, isključene
+    ispravke, ispravke po jeziku i da li je memorija uključena. Pretraga i filter <b>Sve / Prevod / Whisper</b>, ↻ osvežava,
+    a „Kako radi memorija?“ ukratko objašnjava pravila.</li>
+  <li><b>Glosar</b>: tvoji termini. <b>＋ Dodaj termin</b>, <b>Izmeni</b>, <b>Obriši</b>.
+    Prevodni termin: prevodilac za taj izvorni oblik uvek koristi tvoj prevod (ima prednost nad modelom).
+    Whisper termin: ide whisper-u kao nagoveštaj, a pogrešno čut oblik se posle transkripcije zamenjuje tačnim.</li>
+  <li><b>Naučena pravila</b>: „pogrešno → ispravno“, tip i jezik, koliko puta je viđeno, klasa i stanje.</li>
+  <li><b>Poslednje ispravke</b>: izvor, „pre“ i „posle“, kanal i vreme. Prekidač <b>koristi</b> isključuje ispravku koja ne
+    valja — tada se ne koristi ni za pravila ni kao primer.</li>
+</ul>
+
+<h3>Šta se uči automatski, a šta ne</h3>
+<table>
+  <tr><th>Klasa</th><th>Primer</th><th>Automatski?</th></tr>
+  <tr><td>Ime</td><td>veliko slovo usred rečenice ili broj: „kenobi → Kenobi“, „dva → 2“</td><td>da, kad je viđeno bar 2 puta</td></tr>
+  <tr><td>Pravopis</td><td>ista reč, druge kvačice ili akcenti: „cesto → često“</td><td>da, kad je viđeno bar 2 puta</td></tr>
+  <tr><td>Termin</td><td>drugačiji izraz od više reči</td><td>da, kad je viđeno bar 2 puta</td></tr>
+  <tr><td>Gramatika</td><td>pojedinačna reč, rod, padež, vreme, ti/vi: „bio → bila“</td><td>ne — ide modelu samo kao savet</td></tr>
+</table>
+<ul>
+  <li>Ako je ista greška ispravljena na različite načine, to je <b>konflikt</b> i ništa od toga nije automatsko.</li>
+  <li>Nije pravilo: promena koja samo spušta veliko slovo, samo cifre, i veliko slovo na početku rečenice.</li>
+  <li>Prevodna memorija: ista rečenica (bar 4 reči i 20 znakova) iz <b>istog kanala</b> dobija tvoj ispravljen prevod.</li>
+  <li>Uz svaki blok prevoda model dobija i najsličnije ranije ispravke kao primere.</li>
+</ul>
+
+<h3>Stanje pravila</h3>
+<table>
+  <tr><th>Stanje</th><th>Značenje</th></tr>
+  <tr><td>Automatski</td><td>podrazumevano: odluka po pravilima iznad. Bedž pokazuje <span class="b ok">aktivno</span>,
+    <span class="b plain">čeka</span> (viđeno jednom), <span class="b plain">savet modelu</span> (gramatika) ili <span class="b warn">konflikt</span>.</td></tr>
+  <tr><td>Uvek</td><td>primenjuje se na svaki novi prevod, i posle jedne pojave i za gramatiku</td></tr>
+  <tr><td>Nikad</td><td>isključeno: ne primenjuje se i ne ide modelu</td></tr>
+</table>
+<p>Memoriju uključuješ i isključuješ u ⚙ Podešavanja: <i>Memorija ispravki u prevodu</i> (prevod i lektura) i
+<i>Memorija ispravki u whisper-u</i> (termini u whisper promptu, zamene u transkriptu i u YouTube automatskom titlu pre prevoda).</p>
+</section>
+
+<!-- ================================================================ 9 -->
+<section id="prevod">
+<h2>9. Prevod</h2>
+<p>Titl se prevodi na <b>srpski latinica</b>, <b>srpski ćirilica</b> ili <b>grčki</b>. Ćirilica nastaje iz latiničnog
+prevoda pravilnom transliteracijom; imena koja se pišu latinicom ostaju latinicom.</p>
+<p>Izvor za prevod je „Automatski“: ručni YouTube titl → automatski YouTube titl → whisper transkript (ako nema titla).
+Ako YouTube ima ručni srpski titl, on se koristi direktno, bez prevoda.</p>
+
+<h3>Prevodioci</h3>
+<table>
+  <tr><th>Prevodilac</th><th>Kako radi</th></tr>
+  <tr><td>Kvalitetno — TranslateGemma + Gemma<br><span class="muted small">(preporuka, podrazumevano)</span></td><td>Lokalno, besplatno i privatno.
+    TranslateGemma napravi nacrt, Gemma prevodi sa kontekstom videa, pa spaja. Koristi oba Ollama modela.</td></tr>
+  <tr><td>Brzo — gemma4:12b-it-qat</td><td>Lokalno, samo Gemma. Brže od „Kvalitetno“.</td></tr>
+  <tr><td>Samo TranslateGemma</td><td>Lokalno, za grčki i druge jezike; za srpski se koristi „Kvalitetno“.</td></tr>
+  <tr><td>Gemini Flash-Lite / Gemini Flash</td><td>Besplatni cloud, <b>samo za javni sadržaj</b>. Treba ključ u Keychain-u.
+    Kad se potroši kvota, prelazi na Cloudflare, a zatim na lokalni model (za srpski Gemma, za grčki TranslateGemma).</td></tr>
+  <tr><td>Cloudflare Gemma 4 26B</td><td>Besplatni cloud, samo za javni sadržaj. Treba token u Keychain-u i Account ID u Podešavanjima.
+    Kad ne radi, prelazi na lokalni model (za srpski Gemma, za grčki TranslateGemma).</td></tr>
+  <tr><td>Claude Sonnet / Claude Opus</td><td>Preko Claude CLI (<code>claude</code>) i tvoje pretplate. Treba instaliran i prijavljen <code>claude</code>.</td></tr>
+</table>
+<p>Prevodilac biraš u redu Prevod (⤓ Preuzmi), u formi obrade, ili kao podrazumevani u ⚙ Podešavanja. Bez ključa
+cloud prevodilac u listi piše „(nema ključa → lokalno)“.</p>
+
+<h3>Kvalitet i brzina, okvirno</h3>
+<ul>
+  <li>Lokalni modeli od 12B prave oko jednu grešku na 5–8 redova. Za važne videe koristi Claude ili, posle prevoda, <b>Lektura…</b>
+    u Biblioteci, pa ispravi ostatak u editoru (ispravke idu u Memoriju).</li>
+  <li>„Lektura prevoda: Drugi prolaz“ u formi obrade je oko 2× sporija od prevoda bez lekture.</li>
+  <li>Lokalni prevod koristi grafički procesor Mac-a; zato je „Paralelni prevodi“ podrazumevano 1.</li>
+  <li>Prevod se pamti u kešu stavke: ponovljen prevod istog titla istim prevodiocem ne prevodi ponovo ono što je već prevedeno.</li>
+</ul>
+
+<h3>Kako se dobija dobar prevod</h3>
+<p>Pre prevoda model dobije naslov, opis i početak titla i napravi kratak sažetak, spisak imena i način obraćanja (ti/vi).
+Prevodi se u blokovima po scenama (lokalno do 30 titlova u bloku). Posle prevoda provera traži prazne, neprevedene, predugačke i redove sa mešanim
+pismom i te redove prevodi ponovo. Tvoj glosar i naučena pravila iz Memorije imaju prednost.</p>
+
+<h3>Gemini i Cloudflare ključevi (Keychain)</h3>
+<p>Ključevi se ne upisuju u fajlove; panel ih čita iz Keychain-a. U Terminalu:</p>
+<pre><code>security add-generic-password -a "$USER" -s yt-arhiva-gemini   -U -w   # pa nalepi Gemini API ključ
+security add-generic-password -a "$USER" -s yt-arhiva-cf-token -U -w   # Cloudflare API token</code></pre>
+<p><code>-w</code> na kraju znači da <code>security</code> traži ključ bez prikazivanja na ekranu; <code>-U</code> menja
+postojeći ključ. Cloudflare Account ID upiši u ⚙ Podešavanja. Panel u Podešavanjima pokazuje
+„Ključevi (Keychain): Gemini ✓/✗ · Cloudflare ✓/✗“ (osvežava se u roku od minuta).</p>
+<pre><code>security find-generic-password -a "$USER" -s yt-arhiva-gemini &gt;/dev/null &amp;&amp; echo postoji   # provera
+security delete-generic-password -a "$USER" -s yt-arhiva-gemini                          # brisanje</code></pre>
+</section>
+
+<!-- ================================================================ 10 -->
+<section id="transkript">
+<h2>10. Transkript (whisper)</h2>
+<p>Whisper pretvara govor iz audio trake u titl na originalnom jeziku. Radi lokalno (whisper.cpp na Metal-u; ako on ne
+uspe, program proba python whisper, ako je instaliran). Rezultat je <code>subs/whisper.srt</code>, u biblioteci „Whisper (jezik)“.</p>
+<h3>Kada se pokreće</h3>
+<ul>
+  <li>Red <b>📝 Transkript</b> u ⤓ Preuzmi: „samo kad YouTube nema titl“ ili „uvek“.</li>
+  <li><b>Transkribuj</b> u Biblioteci (bedž ⚪ ili traka za izabrane).</li>
+  <li>Kad tražiš prevod, a video nema nijedan titl.</li>
+  <li>U Toolbox-u, kad je titl „Lokalni whisper“.</li>
+</ul>
+<h3>Modeli</h3>
+<table>
+  <tr><th>Model (⚙ Podešavanja → Whisper model)</th><th>Napomena</th></tr>
+  <tr><td>large-v3-turbo q5</td><td>≈550 MB, preporuka (podrazumevano)</td></tr>
+  <tr><td>large-v3-turbo</td><td>≈1,6 GB</td></tr>
+  <tr><td>large-v3</td><td>≈3 GB, najtačniji, sporiji</td></tr>
+  <tr><td>medium</td><td>≈1,5 GB</td></tr>
+  <tr><td>small</td><td>≈470 MB, brz</td></tr>
+</table>
+<p>Za jezike iz polja <i>Whisper „kvalitet“ model za jezike</i> (podrazumevano <code>el,sr</code>) koristi se tačniji
+<code>large-v3-q5_0</code> (1,08 GB, 3–4× sporiji). Prazno polje = nikad. Modeli se preuzimaju jednom, u
+<code>~/Library/Application Support/YT Arhiva/whisper</code> (drugi folder zadaje promenljiva <code>YTA_WHISPER_DIR</code>).</p>
+<h3>Jezik, VAD i prompt</h3>
+<ul>
+  <li><b>Jezik</b>: „automatski“ uzima jezik iz YouTube podataka, a ako ga nema, prepoznaje ga iz prvih 30 sekundi.
+    Može se izabrati i ručno (srpski, engleski, grčki, nemački, francuski, italijanski, španski i drugi).</li>
+  <li><b>VAD (Silero)</b>: uključen podrazumevano — manje izmišljenog teksta na muzici i tišini.</li>
+  <li><b>Prompt po jeziku</b>: za srpski, grčki, engleski, španski, italijanski i nemački fiksira pismo (srpski = latinica) i
+    interpunkciju i dodaje imena iz naslova. Uz uključenu Memoriju u whisper-u dodaju se i tvoji termini.</li>
+</ul>
+</section>
+
+<!-- ================================================================ 11 -->
+<section id="toolbox">
+<h2>11. Toolbox</h2>
+<figure class="shot"><img src="uputstvo/07-toolbox.png" width="1342" height="1400" alt="Toolbox sa jednim dodatim fajlom: analiza, preset Arhiva i grupe polja Video, Audio, Titlovi i prevod, Izlaz">
+<figcaption>Slika 7. 🛠 Toolbox — analiza fajla, preset i podešavanja po grupama.</figcaption></figure>
+<p>Toolbox je transkoder za bilo koji video ili audio fajl sa diska, i za izvore iz Biblioteke. Podrazumevano se ništa ne
+upeče (burn) i ne prevodi dok to ne izabereš.</p>
+<ul>
+  <li>Dodavanje: <b>Dodaj fajlove…</b> (macOS dijalog), nalepi putanje u polje (<kbd>Enter</kbd> = Dodaj), ili Biblioteka →
+    ⚙ → <b>U Toolbox</b>.</li>
+  <li>Za svaki fajl: analiza (kontejner, trajanje, veličina, video kodek, rezolucija, fps, dubina boje, HDR, audio i titl trake),
+    <b>Preset</b> i polja po grupama: <b>Video</b>, <b>Audio</b> (trake, kodek, bitrate, kanali, normalizacija glasnoće),
+    <b>Titlovi i prevod</b> (postojeći titlovi; titl za dodavanje, upečen titl ili prevod: traka iz fajla, spoljni fajl ili
+    lokalni whisper; prevod; način: meki ili upečen) i <b>Izlaz</b> (kontejner, isečak od–do, poglavlja, folder, sufiks).</li>
+  <li>Polja koja nemaju smisla za izabrani kodek ili kontejner su sive (isključena).</li>
+  <li><b>Prikaži komandu</b> pokazuje tačnu ffmpeg komandu i upozorenja; <b>Transkoduj</b> šalje posao u ▶ Red; <b>Ukloni</b>.</li>
+  <li>Gore: <b>Primeni prvu na sve</b> (kopira podešavanja prve kartice; audio i titl trake uparuje po jeziku) i <b>Transkoduj sve</b>.</li>
+  <li>Izlaz ide pored izvora (ili u izabran folder), sa sufiksom <code>.transkod</code>. Izvor se nikad ne prepisuje; ako
+    fajl sa istim imenom postoji, dodaje se „ (2)“.</li>
+</ul>
+<h3>Preseti</h3>
+<table>
+  <tr><th>Preset</th><th>Šta pravi</th></tr>
+  <tr><td>Arhiva</td><td>HEVC VideoToolbox q65, 10-bit ako je izvor 10-bit, HDR zadržan, zvuk bez rekodiranja, svi titlovi i poglavlja, MKV</td></tr>
+  <tr><td>Apple (iPhone/iPad/Apple TV)</td><td>HEVC VideoToolbox q60 (hvc1), AAC 192k stereo, titlovi kao mov_text, MP4</td></tr>
+  <tr><td>Kompatibilno svuda</td><td>H.264 VideoToolbox q60, 8-bit (HDR → SDR), AAC 192k stereo, najviše 1080p, MP4</td></tr>
+  <tr><td>Manji fajl</td><td>x265 CRF 24 preset slow, Opus 128k, MKV (sporije od VideoToolbox-a)</td></tr>
+  <tr><td>AV1 SVT</td><td>SVT-AV1 CRF 30 preset 6, Opus 128k, MKV (najmanji fajl, najsporije)</td></tr>
+  <tr><td>Montaža (ProRes)</td><td>ProRes 422 HQ VideoToolbox, PCM zvuk, MOV (veliki fajl)</td></tr>
+  <tr><td>Samo remux</td><td>bez rekodiranja: video i zvuk kopirani, titlovi i poglavlja zadržani → MKV</td></tr>
+  <tr><td>Samo audio — M4A / MP3 / FLAC</td><td>AAC 256k / MP3 320k / FLAC, prva audio traka</td></tr>
+</table>
+</section>
+
+<!-- ================================================================ 12 -->
+<section id="podesavanja">
+<h2>12. Podešavanja</h2>
+<figure class="shot"><img src="uputstvo/08-podesavanja.png" width="1400" height="1093" alt="Kartica Podešavanja sa grupama Preuzimanje, Prevod, Obrada i Prilagođeno">
+<figcaption>Slika 8. ⚙ Podešavanja. Izmene važe tek posle <b>Sačuvaj</b> (<kbd>⌘</kbd><kbd>S</kbd>).</figcaption></figure>
+<h3>Preuzimanje</h3>
+<table>
+  <tr><th>Polje</th><th>Šta znači</th></tr>
+  <tr><td>Podrazumevani izbor</td><td>Koji koraci su čekirani u ⤓ Preuzmi pri prvom otvaranju i kad ga ovde promeniš:
+    Samo preuzmi (ceo sadržaj), Arhiva (+ prevod), Arhiva + video sa titlom, Muzika / podkast, Samo titlovi, ⚙ Sve opcije.
+    Inače se pamti tvoj poslednji izbor.</td></tr>
+  <tr><td>Titlovi i u MKV izvoru</td><td>Da: titlovi ulaze i kao trake u MKV (bez rekodiranja). Ne: samo SRT fajlovi u <code>subs/</code>.</td></tr>
+  <tr><td>Nalog — cookies iz browsera</td><td>Chrome (podrazumevano), Brave, Edge, Firefox, Safari, Chromium, Vivaldi, Opera ili Bez naloga.</td></tr>
+  <tr><td>…ili cookies.txt</td><td>Putanja do <code>cookies.txt</code>; prazno = koristi pregledač.</td></tr>
+  <tr><td>Folder arhive</td><td>Gde se čuva arhiva (podrazumevano <code>~/Movies/YT-Arhiva</code>); <b>Izaberi…</b> otvara dijalog.</td></tr>
+  <tr><td>Paralelna preuzimanja</td><td>Koliko videa se preuzima istovremeno (1–8, podrazumevano 3).</td></tr>
+  <tr><td>Fragmenti po preuzimanju</td><td>Delovi jednog videa koji se preuzimaju paralelno (1–16, podrazumevano 8).</td></tr>
+</table>
+<h3>Prevod (srpski titl)</h3>
+<table>
+  <tr><th>Polje</th><th>Šta znači</th></tr>
+  <tr><td>Prevod u receptima</td><td>Da: izbori Arhiva, Arhiva + video i Samo titlovi prevode. Ne: bez prevoda.</td></tr>
+  <tr><td>Pismo prevoda</td><td>Srpski latinica ili ćirilica (podrazumevani jezik reda Prevod).</td></tr>
+  <tr><td>Prevodilac</td><td>Podrazumevani prevodilac (vidi <a href="#prevod">Prevod</a>).</td></tr>
+  <tr><td>Cloudflare Account ID</td><td>Za Cloudflare prevodioca; token je u Keychain-u. Ispod piše da li ključevi postoje.</td></tr>
+  <tr><td>Paralelni prevodi</td><td>1–4; za lokalni prevod ostavi 1.</td></tr>
+  <tr><td>Ollama model (preuzimanje)</td><td>Ime modela + <b>Preuzmi model</b>: ručno preuzimanje sa prikazom napretka.</td></tr>
+  <tr><td>Whisper „kvalitet“ model za jezike</td><td>Jezici za tačniji large-v3 model, npr. <code>el,sr</code>; prazno = nikad.</td></tr>
+  <tr><td>Whisper VAD (Silero)</td><td>Uključen / isključen.</td></tr>
+  <tr><td>Whisper prompt po jeziku</td><td>Uključen / isključen.</td></tr>
+  <tr><td>Memorija ispravki u prevodu</td><td>Glosar, naučena pravila i primeri ispravki u prevodu i lekturi.</td></tr>
+  <tr><td>Memorija ispravki u whisper-u</td><td>Termini u whisper promptu i ispravke transkripta i automatskih titlova.</td></tr>
+  <tr><td>Alati i modeli</td><td>Preuzmi automatski pri prvom korišćenju (Ollama, whisper, modeli) ili ručno (javi grešku ako nešto nedostaje).</td></tr>
+  <tr><td>Whisper model</td><td>Model za transkript (vidi <a href="#transkript">Transkript</a>).</td></tr>
+</table>
+<h3>Obrada</h3>
+<table>
+  <tr><th>Polje</th><th>Šta znači</th></tr>
+  <tr><td>Zadrži preuzeti izvor posle obrade</td><td>Početna vrednost polja „zadrži preuzeti izvor“ u formi „⚙ Sve opcije“
+    i u „Obradi ovu stavku“ (Biblioteka). Da (može ponovna obrada) / Ne (štedi prostor; izvor se briše tek kad obrada
+    napravi video). Koraci iz „Šta da uradim“ i dugmad u traci Biblioteke izvor uvek zadržavaju.</td></tr>
+  <tr><td>Paralelna enkodiranja</td><td>1–4, podrazumevano 2.</td></tr>
+</table>
+<h3>Prilagođeno — početne vrednosti</h3>
+<p>Početne vrednosti forme „⚙ Sve opcije“: <b>Audio trake</b> (sve ili samo originalna), <b>Titlovi</b> (svi CC + auto
+original ili samo najbolji za prevod), <b>Obrada</b> (samo preuzmi ili odmah prevedi/obradi; važi kad je „⚙ Sve opcije“
+podrazumevani izbor). Forma posle pamti tvoj poslednji izbor; izmena ovde ga zamenjuje.</p>
+</section>
+
+<!-- ================================================================ 13 -->
+<section id="fajlovi">
+<h2>13. Gde su fajlovi</h2>
+<h3>Arhiva (jedna stavka = jedan folder)</h3>
+<pre><code>~/Movies/YT-Arhiva/
+  20260912 - Naslov videa [ID]/              datum objave - naslov [YouTube ID]
+    Naslov videa [ID].source.mkv             izvor: video + sve audio trake (+ titlovi kao trake)
+    Naslov videa [ID].audio.m4a              …ili samo audio (m4a, mp3, opus, flac…)
+    subs/en.srt                              ručni YouTube titl
+    subs/en.auto.srt                         automatski YouTube titl
+    subs/whisper.srt                         whisper transkript
+    subs/sr-lat.&lt;izvor&gt;.&lt;prevodilac&gt;.srt     srpski prevod (sr-cyr = ćirilica)
+    subs/el.&lt;izvor&gt;.&lt;prevodilac&gt;.srt         grčki prevod
+    Naslov videa [ID].&lt;oznaka&gt;.mp4 / .mkv     izlazi obrade (upečen / meki titl), .srt pored videa
+    Naslov videa [ID].audio-orig.m4a         Izvuci audio bez rekodiranja
+    .yta/manifest.json                       indeks stavke (šta postoji, trake, titlovi, izlazi)
+    .yta/info.json  .yta/thumb.jpg           podaci sa YouTube-a i sličica
+    .yta/history/                            prethodne verzije titlova iz editora
+  Naziv plejliste/                           podfolder plejliste (stavke iste strukture)
+    Naziv plejliste.m3u8                     posle „Napravi album“</code></pre>
+<p>Folder bez <code>.yta/manifest.json</code> se ne vidi u biblioteci — vidi <a href="#biblioteka">Zdravlje kataloga</a>.</p>
+<h3>Program i podaci (instalacija u ~/Applications)</h3>
+<table>
+  <tr><th>Putanja</th><th>Šta je</th></tr>
+  <tr><td><code>~/Applications/YT Arhiva.app</code></td><td>aplikacija za pokretanje</td></tr>
+  <tr><td><code>~/Applications/YT Arhiva/app/</code></td><td>program (installer ga zamenjuje pri ažuriranju)</td></tr>
+  <tr><td><code>~/Applications/YT Arhiva/data/</code></td><td><code>settings.json</code> (podešavanja), <code>jobs.json</code> (red),
+    <code>corrections.jsonl</code> i <code>memory.json</code> (memorija ispravki), <code>playlists/</code>, <code>panel.log</code>, <code>ollama.log</code></td></tr>
+  <tr><td><code>~/Applications/YT Arhiva/yta.env</code></td><td>okruženje: <code>YTA_DATA</code>, <code>YTA_APP_BUNDLE</code>, a uz
+    <code>--port</code> / <code>--models-dir</code> i <code>YTA_PORT</code> / <code>OLLAMA_MODELS</code></td></tr>
+  <tr><td><code>~/.ollama/models</code></td><td>Ollama modeli (ili folder iz <code>--models-dir</code>)</td></tr>
+  <tr><td><code>~/Library/Application Support/YT Arhiva/whisper</code></td><td>whisper i VAD modeli (ili folder iz <code>YTA_WHISPER_DIR</code>)</td></tr>
+  <tr><td><code>~/Library/LaunchAgents/com.ytarhiva.panel.plist</code></td><td>pokretanje pri prijavi (samo uz <code>--autostart</code>)</td></tr>
+</table>
+<p>Posle instalacije iz <code>.pkg</code> program je u <code>/Applications/YT Arhiva/app</code>, a podaci i <code>yta.env</code> u
+<code>~/Library/Application Support/YT Arhiva</code>.</p>
+</section>
+
+<!-- ================================================================ 14 -->
+<section id="problemi">
+<h2>14. Rešavanje problema</h2>
+<p>Prvo pogledaj <b>▶ Red → Detalji</b> (log posla). Log panela: <code>~/Applications/YT Arhiva/data/panel.log</code>.
+Stanje panela: <code>~/Applications/YT\ Arhiva/app/installer/launcher.sh --status</code>.</p>
+
+<h3>Greška sa kolačićima (cookies, Full Disk Access)</h3>
+<p>Poruke kao „could not find chrome cookies database“, „operation not permitted“ ili greška koja pominje cookies.</p>
+<ol>
+  <li>Daj <b>Full Disk Access</b> programu iz kog pokrećeš panel (YT Arhiva.app ili Terminal) i ponovo pokreni panel —
+    <a href="#prvo-pokretanje">koraci</a>.</li>
+  <li>Na pitanje za Keychain „Chrome Safe Storage“ izaberi <b>Always Allow</b>.</li>
+  <li>Ako i dalje ne radi, pokreni panel iz Terminala: <code>launcher.sh --stop</code>, pa <code>launcher.sh</code>
+    (Terminal sa Full Disk Access). Pun put u instaliranoj verziji:
+    <code>~/Applications/YT\ Arhiva/app/installer/launcher.sh</code>.</li>
+  <li>Ili u ⚙ Podešavanja izaberi drugi pregledač ili <code>cookies.txt</code>.</li>
+</ol>
+
+<h3>Greška 429 (previše zahteva)</h3>
+<ul>
+  <li>YouTube privremeno ograničava zahteve, najčešće kod titlova. Ne biraj „Svi CC + YouTube automatski prevodi“ ako ti ne trebaju.</li>
+  <li>Titl tada ne bude preuzet (u logu posla: „titl … nije preuzet“); posao bez videa (npr. „Samo titlovi“) javi „YouTube ima titl, ali nije preuzet u arhivu
+    (vidi log)“. Sačekaj malo, pa <b>Ponovi</b>.</li>
+  <li>Kod Gemini/Cloudflare prevodioca 429 znači da je limit potrošen: kod minutnog limita program sačeka (do 60 sekundi,
+    najviše 3 puta), pa prelazi na sledeći servis u lancu; kod dnevnog prelazi odmah.</li>
+</ul>
+
+<h3>Nema libass / ffmpeg-full</h3>
+<p>Poruka „ffmpeg-full nije instaliran (treba libass za burn)“. U Terminalu: <code>brew install ffmpeg-full</code>. Program
+koristi <code>/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg</code>; obični <code>ffmpeg</code> iz Homebrew-a nema sve što treba za upečen titl.</p>
+
+<h3>Ollama (lokalni prevod)</h3>
+<ul>
+  <li>Pilula „Prevod: … · ne radi“ sa dugmetom <b>Pokreni</b> — Ollama nije pokrenuta; klikni Pokreni (ili se pokrene sama pri prevodu).</li>
+  <li>„disk sa modelima nije povezan (/Volumes/…)“ — poveži eksterni disk sa modelima. Do tada panel koristi interni folder <code>~/.ollama/models</code>.</li>
+  <li>„modeli se preuzimaju pri prvom prevodu“ — normalno posle instalacije. Ručno: ⚙ Podešavanja → <b>Preuzmi model</b>, ili <code>install.sh --models</code>.</li>
+  <li>„Ollama ne radi“ — pogledaj <code>~/Applications/YT Arhiva/data/ollama.log</code>.</li>
+  <li>Ako je „Alati i modeli“ = ručno, a nešto nedostaje, posao javi grešku sa tačnom komandom (npr. <code>brew install ollama</code>).</li>
+</ul>
+
+<h3>Malo prostora na disku</h3>
+<ul>
+  <li>„nema mesta za model …: treba ~X GB (+3 GB rezerve)“ — oslobodi prostor ili poveži disk za modele (<code>--models-dir</code>).</li>
+  <li>Arhivu premesti na eksterni disk: ⚙ Podešavanja → Folder arhive.</li>
+  <li>Prostor štedi i isključeno „zadrži preuzeti izvor“ u formi „⚙ Sve opcije“ ili „Obradi ovu stavku“ (početna vrednost:
+    ⚙ Podešavanja → Zadrži preuzeti izvor posle obrade = Ne). Izvor se tada briše posle uspešnog video izlaza.</li>
+</ul>
+
+<h3>Port zauzet</h3>
+<p>Poruka „Port 8790 je zauzet drugim programom (nije YT Arhiva panel)“. Ugasi taj program, ili izaberi drugi port:
+<code>~/Applications/YT\ Arhiva/app/installer/install.sh --port 8795</code> (upisuje <code>YTA_PORT</code> u
+<code>yta.env</code>), pa <code>launcher.sh --restart</code>. Panel je tada na <code>http://127.0.0.1:8795</code>. Koji program drži port: <code>lsof -nP -iTCP:8790 -sTCP:LISTEN</code>.</p>
+
+<h3>Ostalo</h3>
+<ul>
+  <li><b>Panel se ne otvara</b>: <code>launcher.sh --status</code>; poslednje linije loga: <code>tail -n 30 ~/Applications/YT\ Arhiva/data/panel.log</code>.</li>
+  <li><b>Pregled u editoru ne radi</b>: pregledač ne pušta taj kodek; uređivanje radi normalno.</li>
+  <li><b>Posao je „prekinut (panel restartovan)“</b>: klikni <b>Ponovi</b>; preuzimanje nastavlja gde je stalo.</li>
+  <li><b>Video ne vidim u biblioteci</b>: <b>Zdravlje</b> → <b>Obnovi indeks</b>.</li>
+</ul>
+</section>
+
+<!-- ================================================================ 15 -->
+<section id="deinstalacija">
+<h2>15. Deinstalacija</h2>
+<pre><code>~/Applications/YT\ Arhiva/app/installer/uninstall.sh            # program, .app, LaunchAgent
+~/Applications/YT\ Arhiva/app/installer/uninstall.sh --purge    # + pita za podatke, arhivu i modele</code></pre>
+<ul>
+  <li>Bez <code>--purge</code> ostaju arhiva videa, modeli, podešavanja i ispravke iz memorije. Na kraju piše gde su.</li>
+  <li>Uz <code>--purge</code> pita za svaku stavku posebno (samo u Terminalu). Za brisanje arhive treba ukucati <code>OBRIŠI</code>.
+    Obrisano ide u Kantu kad je moguće. Folderi kao <code>~</code>, <code>~/Movies</code> ili ceo disk se nikad ne brišu automatski.</li>
+  <li><code>--dry-run</code> samo ispiše šta bi uradio. Za instalaciju sa drugim <code>--prefix</code> isti <code>--prefix</code> daj i ovde
+    (i <code>--app-path</code> ako je <code>.app</code> na drugom mestu).</li>
+  <li>Posle <code>.pkg</code>: <code>"/Applications/YT Arhiva/app/installer/uninstall.sh" --prefix "/Applications/YT Arhiva"</code>, pa
+    <code>sudo rm -rf "/Applications/YT Arhiva/app" &amp;&amp; sudo pkgutil --forget com.ytarhiva.app.pkg</code>.</li>
+  <li>Homebrew alati (yt-dlp, deno, ffmpeg-full, ollama, whisper-cpp) ostaju; uklanjaš ih sa <code>brew uninstall …</code> ako ti ne trebaju.</li>
+</ul>
+</section>
+
+<!-- ================================================================ 16 -->
+<section id="precice">
+<h2>16. Prečice na tastaturi</h2>
+<table>
+  <tr><th>Prečica</th><th>Gde i šta</th></tr>
+  <tr><td><kbd>1</kbd> – <kbd>6</kbd></td><td>kartice Preuzmi, Red, Biblioteka, Memorija, Toolbox, Podešavanja</td></tr>
+  <tr><td><kbd>⌘</kbd><kbd>V</kbd></td><td>⤓ Preuzmi: nalepljen link se odmah dodaje</td></tr>
+  <tr><td><kbd>Enter</kbd></td><td>⤓ Preuzmi: dodaj ukucani link</td></tr>
+  <tr><td><kbd>⌘</kbd><kbd>Enter</kbd></td><td>⤓ Preuzmi: preuzmi izabrane</td></tr>
+  <tr><td><kbd>/</kbd></td><td>skok u polje za link (Preuzmi) ili u pretragu (Biblioteka, Memorija)</td></tr>
+  <tr><td><kbd>⌘</kbd><kbd>S</kbd></td><td>sačuvaj (Podešavanja, editor titla)</td></tr>
+  <tr><td><kbd>Esc</kbd></td><td>zatvori iskačući prozor ili editor</td></tr>
+  <tr><td><kbd>⌥</kbd><kbd>↓</kbd> / <kbd>⌥</kbd><kbd>↑</kbd></td><td>editor: sledeći / prethodni titl</td></tr>
+  <tr><td><kbd>⌥</kbd><kbd>Space</kbd></td><td>editor: pusti / pauza</td></tr>
+</table>
+</section>
+
+<!-- ================================================================ 17 -->
+<section id="verzija">
+<h2>17. Verzija 3.2.1</h2>
+<ul>
+  <li><b>3.2.1</b>: prva javna verzija (MIT licenca). Whisper modeli su u <code>~/Library/Application Support/YT Arhiva/whisper</code>
+    (drugi folder: <code>YTA_WHISPER_DIR</code>).</li>
+  <li><b>3.2</b>: „Šta da uradim“ u kartici ⤓ Preuzmi (koraci sa checkbox-ovima, brzi izbor, ⚙ Sve opcije); ceo sadržaj sa svim audio
+    trakama i titlovima i kao trakama u MKV; tačno stanje stavke (🟢 / 🟠 / ⚪) sa Prevedi / Transkribuj jednim klikom;
+    Transkoduj i Izvuci audio posle preuzimanja.</li>
+  <li><b>3.1</b>: memorija ispravki — glosar, naučena pravila, primeri i prevodna memorija.</li>
+  <li><b>3.0</b>: editor titla, lektura, plejliste (snimak, nedostajuće, album), zdravlje kataloga, audio iz arhive, installer.</li>
+</ul>
+<p class="muted small">Za programere: tehnička dokumentacija je u <code>docs/ARHITEKTURA.md</code>, a instalacija detaljno u
+<code>installer/README.md</code>.</p>
+</section>
+</main>
+
+<footer>YT Arhiva 3.2.1 — uputstvo. Slike ekrana su napravljene na izmišljenoj demo arhivi.</footer>
+</div>
+</body>
+</html>

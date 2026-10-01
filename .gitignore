@@ -1,0 +1,32 @@
+# lokalni podaci panela (podesavanja, poslovi, kes, backup-i) — nikad u git
+data/
+dist/
+__pycache__/
+*.pyc
+.DS_Store
+._*
+*.part
+*.tmp
+
+# kolacici i tajne (kljucevi su u Keychain-u, ne u fajlovima)
+cookies*.txt
+*_cookies.txt
+*.cookies
+.env
+yta.env
+*.pem
+
+# mediji i metapodaci arhive (izlazni folder nije deo repoa)
+*.mkv
+*.mp4
+*.webm
+*.m4a
+*.mp3
+*.opus
+*.flac
+*.mka
+.yta/
+
+# logovi i rezervne kopije
+*.log
+*.bak*
